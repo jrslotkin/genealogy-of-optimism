@@ -50,7 +50,7 @@ NOTE = [
     "institutions turn knowledge into growth, how innovation is built and financed, and the "
     "attempt to engineer away every remaining constraint.",
     "About three quarters of the books make the case. The other quarter are the strongest "
-    "arguments against it. Each critic sits next to the claim it attacks, and critiques of "
+    "arguments against it. Each critic sits next to the claims it attacks, and critiques of "
     "technology as such are held for the end.",
 ]
 
