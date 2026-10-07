@@ -38,6 +38,8 @@ EP_DIR = pathlib.Path(os.environ.get("EP_DIR", ROOT / "episodes"))
 EP_JSON = pathlib.Path(os.environ.get("EPISODES_JSON", ROOT / "episodes.json"))
 OUT = pathlib.Path(os.environ.get("SITE_OUT", ROOT.parent / "docs"))
 MONTH = "October 2026"
+HERO_CROP = 1390 / 1600          # top of the cover art, above the title banner
+HERO_H = round(1200 * HERO_CROP)
 
 DESCRIPTION = ("One hundred books in ten acts, ten minutes each: how the idea of technological "
                "progress was built, and the strongest arguments against it.")
@@ -298,8 +300,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .cta{display:grid;gap:14px;justify-items:start;margin-top:34px}
 .cta .fine a,.hint a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--faint)}
 .cover{margin:0}
-.cover img{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:4px;
-  box-shadow:0 1px 1px rgba(0,0,0,.04),0 24px 48px -24px rgba(0,0,0,.35)}
+.cover img{display:block;width:100%;height:auto;border-radius:3px;
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 18px 40px -22px rgba(0,0,0,.30)}
 .hero-foot{grid-column:1 / -1;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   margin-top:40px;padding-top:12px;border-top:1px solid var(--rule);font:400 13px/1.4 var(--sans);color:var(--muted)}
 .hero-foot a{color:var(--ink);text-decoration:none}
@@ -458,7 +460,7 @@ footer a:hover{color:var(--ink)}
   .hero{grid-template-columns:minmax(0,1fr);gap:0;padding-top:4px}
   .hero-text{gap:0;display:block}
   .hero .label{margin-top:24px}
-  .cover{order:-1;max-width:184px}
+  .cover{order:-1;width:100%;max-width:none}
   .hero h1{margin-top:14px;font-size:clamp(2.3rem,1.4rem + 4.2vw,3rem)}
   .hero-foot{margin-top:24px}
   .sec{margin-top:64px}
@@ -626,7 +628,7 @@ def build_html(zip_info):
 
   <header class="hero">
     <div class="hero-text">
-      <p class="label">A podcast in one hundred episodes</p>
+      <p class="label">A podcast &middot; One hundred books, 1626 to 2025</p>
       <div class="hero-main">
         <h1>A Genealogy of Technological Optimism</h1>
         <div class="cta">
@@ -638,7 +640,7 @@ def build_html(zip_info):
         </div>
       </div>
     </div>
-    <figure class="cover"><img src="cover.jpg" width="1000" height="1000" alt="Cover art: a lone figure on a ridge faces a radiant sun above power lines, a cooling tower and a city."></figure>
+    <figure class="cover"><img src="hero.jpg" width="1200" height="{HERO_H}" alt="A lone figure on a ridge faces a radiant sun above power lines, a cooling tower and a city."></figure>
     <div class="hero-foot">
       <span>Created and hosted by <a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></span>
       <span class="n">{released} of 100 released</span>
@@ -696,6 +698,10 @@ def build_assets():
 
     cover = Image.open(COVER_SRC).convert("RGB")
     cover.resize((1000, 1000), Image.LANCZOS).save(OUT / "cover.jpg", quality=86, optimize=True, progressive=True)
+    # The page shows the artwork without its baked-in title banner; the type does that job.
+    art = cover.crop((0, 0, cover.size[0], int(cover.size[1] * HERO_CROP)))
+    art.resize((1200, round(1200 * art.size[1] / art.size[0])), Image.LANCZOS).save(
+        OUT / "hero.jpg", quality=86, optimize=True, progressive=True)
     w = cover.size[0]
     sun = cover.crop((int(w * .26), int(w * .16), int(w * .74), int(w * .64)))
     sun.resize((180, 180), Image.LANCZOS).save(OUT / "apple-touch-icon.png", optimize=True)
