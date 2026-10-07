@@ -186,7 +186,14 @@ def episode_parts(ep):
             return f'<li>{e(s if isinstance(s, str) else s.get("text", ""))}</li>'
         sources = f'<details class="fold"><summary>Sources</summary><ul class="sources">{"".join(src_li(s) for s in ep["sources"])}</ul></details>'
     folds = chapters + transcript_html(ep) + sources
-    inner = (f"{player_html(src, dur) if src else ''}"
+    pull = ""
+    if ep.get("pull"):
+        q = ep["pull"]
+        cap = (f'<a href="#" data-t="{to_seconds(q["at"])}">Hear it at {clock(to_seconds(q["at"]))}</a>'
+               if q.get("at") else "From the episode")
+        pull = (f'<figure class="pull"><blockquote>&ldquo;{e(q["text"])}&rdquo;</blockquote>'
+                f'<figcaption>{cap}</figcaption></figure>')
+    inner = (f"{pull}{player_html(src, dur) if src else ''}"
              f'<p class="summary">{e(ep.get("summary") or b["note"])}</p>{dl}'
              f"{f'<div class=folds>{folds}</div>' if folds else ''}")
     return b, meta, inner
@@ -378,6 +385,11 @@ details summary::-webkit-details-marker{display:none}
 .ep h3{margin:0;font:400 34px/1.1 var(--serif);letter-spacing:-.014em;color:var(--ink);text-wrap:balance}
 .meta{margin:10px 0 0;font:400 13.5px/1.4 var(--sans);color:var(--muted)}
 .summary{margin:22px 0 0;font:400 19px/1.6 var(--serif);color:var(--text);text-wrap:pretty}
+.pull{margin:34px 0 34px;padding:0}
+.pull blockquote{margin:0;font:330 28px/1.3 var(--serif);letter-spacing:-.012em;color:var(--ink);text-indent:-.42em;text-wrap:pretty}
+.pull figcaption{margin-top:16px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.pull figcaption a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--faint);padding-bottom:2px}
+.pull figcaption a:hover{border-color:var(--ink)}
 .dl{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .dl a{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
 .dl a::after{content:" \\2193"}
@@ -478,6 +490,8 @@ footer a:hover{color:var(--ink)}
   .num-inline{display:inline}
   .ep h3{font-size:29px}
   .summary{font-size:18px}
+  .pull{margin:28px 0}
+  .pull blockquote{font-size:23px}
   .note p{font-size:18.5px}
   .acts{grid-column:1}
   .act summary{grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"r n g" "r t t";gap:8px 12px}

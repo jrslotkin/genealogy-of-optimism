@@ -48,6 +48,10 @@
       ]
     ],
     "transcript_file": "ep001-transcript.txt",
-    "sources": []
+    "sources": [],
+    "pull": {
+      "text": "If you assume at the outset that the universe is converging on a divine center, then every increase in complexity you observe will look like evidence for the convergence. The conclusion is loaded into the premises.",
+      "at": "6:24"
+    }
   }
 ]

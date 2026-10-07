@@ -149,6 +149,11 @@ details summary::-webkit-details-marker{display:none}
 .ep h3{margin:0;font:400 34px/1.1 var(--serif);letter-spacing:-.014em;color:var(--ink);text-wrap:balance}
 .meta{margin:10px 0 0;font:400 13.5px/1.4 var(--sans);color:var(--muted)}
 .summary{margin:22px 0 0;font:400 19px/1.6 var(--serif);color:var(--text);text-wrap:pretty}
+.pull{margin:34px 0 34px;padding:0}
+.pull blockquote{margin:0;font:330 28px/1.3 var(--serif);letter-spacing:-.012em;color:var(--ink);text-indent:-.42em;text-wrap:pretty}
+.pull figcaption{margin-top:16px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.pull figcaption a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--faint);padding-bottom:2px}
+.pull figcaption a:hover{border-color:var(--ink)}
 .dl{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .dl a{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
 .dl a::after{content:" \2193"}
@@ -249,6 +254,8 @@ footer a:hover{color:var(--ink)}
   .num-inline{display:inline}
   .ep h3{font-size:29px}
   .summary{font-size:18px}
+  .pull{margin:28px 0}
+  .pull blockquote{font-size:23px}
   .note p{font-size:18.5px}
   .acts{grid-column:1}
   .act summary{grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"r n g" "r t t";gap:8px 12px}
@@ -300,7 +307,7 @@ footer a:hover{color:var(--ink)}
             <p class="kicker"><span class="num-inline">1</span><span class="latest">Latest</span><span class="kact">Act I</span></p>
             <h3>The Phenomenon of Man</h3>
             <p class="meta">Pierre Teilhard de Chardin<span class="dot">1955</span><span class="dot">11 min 27 sec</span></p>
-            
+            <figure class="pull"><blockquote>&ldquo;If you assume at the outset that the universe is converging on a divine center, then every increase in complexity you observe will look like evidence for the convergence. The conclusion is loaded into the premises.&rdquo;</blockquote><figcaption><a href="#" data-t="384">Hear it at 6:24</a></figcaption></figure>
           <div class="player" data-src="audio/ep001.mp3" data-dur="687">
             <audio preload="none"></audio>
             <button class="play" type="button" aria-label="Play"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></svg></button>
