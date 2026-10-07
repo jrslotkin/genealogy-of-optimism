@@ -362,6 +362,7 @@ details summary::-webkit-details-marker{display:none}
 .transcript{max-height:62vh;overflow:auto;padding:4px 8px 18px 0;font:400 17px/1.7 var(--serif);color:var(--text)}
 .transcript p{margin:0 0 16px}
 .transcript .ts{margin-right:12px}
+.ep:not(:has(.player)) [data-t]{pointer-events:none;cursor:default}
 .sources{margin:0 0 18px;padding-left:1.1em;display:grid;gap:8px;font:400 14px/1.5 var(--sans);color:var(--muted)}
 .sources a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--faint)}
 
@@ -537,6 +538,8 @@ JS = r"""
       navigator.mediaSession.setActionHandler("seekforward",function(){a.currentTime=a.currentTime+30;});}catch(e){}
   }
   document.querySelectorAll(".ep").forEach(setup);
+  document.addEventListener("click",function(ev){var t=ev.target.closest&&ev.target.closest("[data-t]");
+    if(t&&!t.closest(".ep").querySelector(".player"))ev.preventDefault();});
 
   var listen=document.getElementById("listen-here");
   function syncListen(){var p=document.querySelector("#episode-list .player");
