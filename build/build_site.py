@@ -161,7 +161,7 @@ def transcript_html(ep):
     return f'<details class="fold"><summary>Transcript</summary><div class="transcript">{"".join(paras)}</div></details>'
 
 
-def episode_html(ep, latest):
+def episode_parts(ep):
     b = BOOKS[ep["num"]]
     dur = to_seconds(ep.get("duration") or 0)
     src, nice, local, size = episode_audio(ep)
@@ -184,19 +184,34 @@ def episode_html(ep, latest):
             return f'<li>{e(s if isinstance(s, str) else s.get("text", ""))}</li>'
         sources = f'<details class="fold"><summary>Sources</summary><ul class="sources">{"".join(src_li(s) for s in ep["sources"])}</ul></details>'
     folds = chapters + transcript_html(ep) + sources
+    inner = (f"{player_html(src, dur) if src else ''}"
+             f'<p class="summary">{e(ep.get("summary") or b["note"])}</p>{dl}'
+             f"{f'<div class=folds>{folds}</div>' if folds else ''}")
+    return b, meta, inner
+
+
+def episode_html(ep):
+    b, meta, inner = episode_parts(ep)
     return f"""
-        <article class="ep row{' is-latest' if latest else ''}" id="ep-{ep['num']}" data-n="{ep['num']}" data-act="{b['roman']}" data-title="{e(b['title'])}">
+        <article class="ep row is-latest" id="ep-{ep['num']}" data-n="{ep['num']}" data-title="{e(b['title'])}">
           <div class="gut num">{ep['num']}</div>
           <div class="body">
             <p class="kicker"><span class="num-inline">{ep['num']}</span><span class="latest">Latest</span><span class="kact">Act {b['roman']}</span></p>
             <h3>{e(b['title'])}</h3>
             <p class="meta">{meta}</p>
-            {player_html(src, dur) if src else ''}
-            <p class="summary">{e(ep.get('summary') or b['note'])}</p>
-            {dl}
-            {f'<div class="folds">{folds}</div>' if folds else ''}
+            {inner}
           </div>
         </article>"""
+
+
+def episode_row_html(ep):
+    b, meta, inner = episode_parts(ep)
+    return f"""
+        <details class="ep ep-row" id="ep-{ep['num']}" data-n="{ep['num']}" data-title="{e(b['title'])}">
+          <summary class="row"><span class="gut num">{ep['num']}</span>
+            <span class="body"><span class="rt"><span class="num-inline">{ep['num']}</span>{e(b['title'])}</span><span class="meta">{meta}</span></span></summary>
+          <div class="row"><div class="gut"></div><div class="body">{inner}</div></div>
+        </details>"""
 
 
 def act_html(roman, name, entries):
@@ -278,9 +293,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* Hero */
 .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:24px 72px;align-items:stretch;padding-top:24px}
-.hero-text{display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+.hero-text{display:flex;flex-direction:column;justify-content:space-between;gap:40px}
 .hero h1{margin:0;font:330 clamp(2.6rem,1.6rem + 4vw,4.6rem)/1 var(--serif);letter-spacing:-.024em;color:var(--ink);text-wrap:balance}
-.hero .sub{margin:22px 0 0;font:400 italic 20px/1.45 var(--serif);color:var(--muted);max-width:28em}
+.cta{display:grid;gap:14px;justify-items:start;margin-top:34px}
+.cta .fine a,.hint a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--faint)}
 .cover{margin:0}
 .cover img{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:4px;
   box-shadow:0 1px 1px rgba(0,0,0,.04),0 24px 48px -24px rgba(0,0,0,.35)}
@@ -292,16 +308,19 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* Sections */
 .sec{margin-top:104px}
-.sec-head{display:grid;grid-template-columns:var(--gutter) minmax(0,1fr) auto;align-items:baseline;
+.sec-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:24px;align-items:baseline;
   padding-bottom:10px;border-bottom:1px solid var(--rule);margin-bottom:36px}
 .sec-head > :last-child{text-align:right;font-variant-numeric:tabular-nums;letter-spacing:.06em}
-.sec-head h2{margin:0;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.head-link{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+.head-link:hover{text-decoration-color:var(--ink)}
+.sec-head h2{white-space:nowrap;margin:0;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
 .row{display:grid;grid-template-columns:var(--gutter) minmax(0,var(--measure)) minmax(0,1fr);align-items:start}
 .gut{font:400 12px/1 var(--sans);color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
 .body{min-width:0}
 
-/* Follow */
-.follow .body{display:grid;gap:16px;justify-items:start}
+/* Buttons, feed */
+.more .body{display:grid;gap:22px}
+.more .steps{margin:0}
 .pill{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:999px;
   border:1px solid #D6D6D2;font:500 14.5px/1 var(--sans);color:var(--ink);text-decoration:none;white-space:nowrap;
   transition:background-color .15s ease,border-color .15s ease}
@@ -322,10 +341,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .textlink{font:400 15px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);
   text-underline-offset:4px}
 .textlink:hover{text-decoration-color:var(--ink)}
-.handoff{grid-column:3;justify-self:end;display:none;width:150px}
-.handoff svg{display:block;width:112px;height:112px;color:var(--ink)}
-.handoff p{margin:12px 0 0;font:400 12.5px/1.45 var(--sans);color:var(--muted)}
-html[data-os=mac] .handoff,html[data-os=desktop] .handoff{display:block}
+.handoff{display:none;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;margin-top:6px}
+.handoff svg{display:block;width:64px;height:64px;color:var(--ink)}
+.handoff p{margin:0;max-width:16em;font:400 13px/1.45 var(--sans);color:var(--muted)}
+html[data-os=mac] .handoff,html[data-os=desktop] .handoff{display:grid}
 
 details summary{list-style:none;cursor:pointer}
 details summary::-webkit-details-marker{display:none}
@@ -338,7 +357,17 @@ details summary::-webkit-details-marker{display:none}
 .steps b{font-weight:500;color:var(--ink)}
 
 /* Episodes */
-.ep + .ep{margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.ep-row{border-top:1px solid var(--rule)}
+.ep-row:last-child{border-bottom:1px solid var(--rule)}
+.ep-row > summary{align-items:baseline;padding:18px 0;position:relative}
+.ep-row > summary::after{content:"+";position:absolute;right:0;top:20px;font:300 18px/1 var(--sans);color:var(--muted)}
+.ep-row[open] > summary::after{content:"\\2212"}
+.ep-row .num{font-size:30px}
+.rt{display:block;font:400 22px/1.2 var(--serif);color:var(--ink);padding-right:28px}
+.rt .num-inline{margin-right:10px;color:var(--muted)}
+.ep-row .meta{margin-top:6px}
+.ep-row > .row{padding-bottom:30px}
+.ep-row > .row .player{margin-top:6px}
 .num{font:300 40px/.9 var(--serif);color:var(--ink);letter-spacing:-.02em;font-variant-numeric:lining-nums}
 .kicker{margin:0 0 10px;display:flex;gap:14px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .latest{display:none;color:var(--ink)}
@@ -431,22 +460,19 @@ footer a:hover{color:var(--ink)}
   .hero .label{margin-top:24px}
   .cover{order:-1;max-width:184px}
   .hero h1{margin-top:14px;font-size:clamp(2.3rem,1.4rem + 4.2vw,3rem)}
-  .hero .sub{margin-top:12px;font-size:18px}
   .hero-foot{margin-top:24px}
   .sec{margin-top:64px}
-  .follow{margin-top:28px}
-  .follow .sec-head{display:none}
   .sec-head{margin-bottom:24px;grid-template-columns:minmax(0,1fr) auto}
   .sec-head > :nth-child(2):empty{display:none}
   .sec-head > :nth-child(2){grid-row:2;grid-column:1 / -1;margin-top:10px}
   .row{grid-template-columns:minmax(0,1fr)}
   .gut{display:none}
-  .follow .body{justify-items:stretch}
-  .follow .textlink{justify-self:start}
+  .cta{justify-items:stretch;margin-top:24px}
   .pill-ink{width:100%}
   .apps{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
   .apps .pill{padding:0 8px;font-size:14px}
   .handoff{display:none!important}
+  .rt{font-size:20px}
   .num-inline{display:inline}
   .ep h3{font-size:29px}
   .summary{font-size:18px}
@@ -541,93 +567,34 @@ JS = r"""
   document.addEventListener("click",function(ev){var t=ev.target.closest&&ev.target.closest("[data-t]");
     if(t&&!t.closest(".ep").querySelector(".player"))ev.preventDefault();});
 
-  var listen=document.getElementById("listen-here");
-  function syncListen(){var p=document.querySelector("#episode-list .player");
-    if(!p){listen.hidden=true;return;}var c=p.closest(".ep");listen.hidden=false;listen.href="#"+c.id;
-    listen.textContent="Or listen to episode "+c.getAttribute("data-n")+" here";}
-  syncListen();
-  listen.addEventListener("click",function(ev){var p=document.querySelector("#episode-list .player");if(!p)return;
-    var c=p.closest(".ep");ev.preventDefault();c.scrollIntoView({behavior:"smooth",block:"start"});if(c._toggle)c._toggle();});
-
-  /* Read the live feed when the browser allows it, so new episodes appear without a rebuild */
-  var BOOKS=JSON.parse(document.getElementById("books").textContent);
-  var list=document.getElementById("episode-list"),tpl=document.getElementById("ep-tpl");
-  function tag(el,n){var x=el.getElementsByTagName(n)[0];return x?x.textContent:"";}
-  function secs(v){if(!v)return 0;if(/^\d+$/.test(v))return +v;return v.split(":").reduce(function(t,x){return t*60+(+x||0);},0);}
-  function strip(h){var d=new DOMParser().parseFromString("<div>"+h+"</div>","text/html");return (d.body.textContent||"").trim();}
-  function mark(n){document.querySelectorAll('[data-n="'+n+'"]').forEach(function(el){
-    if(el.tagName==="I")el.className="on";
-    if(el.tagName==="LI"&&!el.classList.contains("out")){el.classList.add("out");
-      var b=document.createElement("a");b.className="listen";b.href="#ep-"+n;b.textContent="Listen";el.appendChild(b);}});}
-  function attach(card,url,dur){
-    if(card.querySelector(".player"))return;
-    var p=tpl.content.querySelector(".player").cloneNode(true);
-    p.setAttribute("data-src",url);p.setAttribute("data-dur",dur||0);
-    p.querySelector(".rem").textContent="−"+fmt(dur||0);
-    card.querySelector(".meta").after(p);
-    if(!card.querySelector(".dl")){var d=tpl.content.querySelector(".dl").cloneNode(true);
-      d.querySelector("a").href=url;card.querySelector(".summary").after(d);}
-    setup(card);
-  }
-  function make(n,desc,dur){
-    var b=BOOKS[n];if(!b)return null;var c=tpl.content.querySelector(".ep").cloneNode(true);
-    c.id="ep-"+n;c.setAttribute("data-n",n);c.setAttribute("data-act",b[3]);c.setAttribute("data-title",b[0]);
-    c.querySelector(".num").textContent=n;c.querySelector(".num-inline").textContent=n;
-    c.querySelector(".kact").textContent="Act "+b[3];c.querySelector("h3").textContent=b[0];
-    var meta=c.querySelector(".meta");meta.textContent=b[1];
-    [String(b[2])].concat(dur?[Math.floor(dur/60)+" min"+(dur%60?" "+dur%60+" sec":"")]:[]).forEach(function(t){
-      var s=document.createElement("span");s.className="dot";s.textContent=t;meta.appendChild(s);});
-    c.querySelector(".summary").textContent=desc||b[4];
-    c.querySelector(".player").remove();c.querySelector(".dl").remove();
-    return c;
-  }
-  if(window.fetch&&window.DOMParser){
-    fetch(root.getAttribute("data-feed"),{mode:"cors"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(txt){
-      var x=new DOMParser().parseFromString(txt,"application/xml");
-      if(x.getElementsByTagName("parsererror").length)return;
-      var items=x.getElementsByTagName("item"),seen={};
-      for(var i=0;i<items.length;i++){
-        var it=items[i],title=tag(it,"title"),n=parseInt(tag(it,"itunes:episode"),10);
-        if(!n){var m=title.match(/^\s*(?:Episode\s*)?(\d{1,3})\b/i);n=m?+m[1]:0;}
-        if(!n||!BOOKS[n]||seen[n])continue;seen[n]=1;
-        var enc=it.getElementsByTagName("enclosure")[0],url=enc?enc.getAttribute("url"):"";
-        if(url)url=url.replace(/^http:\/\//,"https://");
-        var dur=secs(tag(it,"itunes:duration")),desc=strip(tag(it,"itunes:summary")||tag(it,"description"));
-        var card=document.getElementById("ep-"+n);
-        if(!card){card=make(n,desc,dur);if(!card)continue;list.appendChild(card);}
-        if(url)attach(card,url,dur);
-        mark(n);
-      }
-      var cards=[].slice.call(list.querySelectorAll(".ep")).sort(function(a,b){return b.getAttribute("data-n")-a.getAttribute("data-n");});
-      cards.forEach(function(c,i){list.appendChild(c);c.classList.toggle("is-latest",i===0);});
-      var count=document.querySelectorAll(".ticks i.on").length;
-      document.querySelectorAll("[data-released]").forEach(function(el){el.textContent=count;});
-      syncListen();
-    }).catch(function(){});
-  }
+  /* Open an earlier episode when a link points at it */
+  function openHash(){var id=decodeURIComponent(location.hash.slice(1));if(!id)return;
+    var el=document.getElementById(id);if(el&&el.tagName==="DETAILS")el.open=true;}
+  window.addEventListener("hashchange",openHash);openHash();
 })();
 """
 
 
 def build_html(zip_info):
-    eps = "".join(episode_html(ep, i == 0) for i, ep in enumerate(EPISODES))
     acts = "".join(act_html(r, n, items) for r, n, _d, items in ACTS)
-    books_json = json.dumps({b["n"]: [b["title"], b["author"], b["year"], b["roman"], b["note"]] for b in BOOKS.values()},
-                            ensure_ascii=False, separators=(",", ":"))
     released = len(RELEASED)
-    first = EPISODES[0]["num"]
+    latest_n = EPISODES[0]["num"]
+    latest_html = episode_html(EPISODES[0])
     others = "".join(app_link(k) for k in ["overcast", "pocketcasts", "castro", "antennapod"])
-    dl_all = (f'<a class="textlink" href="audio/{e(zip_info[0])}" download>Download all episodes</a>'
-              if zip_info else "")
+    earlier_html = ""
+    if len(EPISODES) > 1:
+        dl_all = (f'<a class="label head-link" href="audio/{e(zip_info[0])}" download>Download all</a>'
+                  if zip_info else '<span></span>')
+        rows = "".join(episode_row_html(ep) for ep in EPISODES[1:])
+        earlier_html = f"""
+  <section class="sec" aria-labelledby="earlier-h">
+    <div class="sec-head"><h2 id="earlier-h">Earlier episodes</h2><span></span>{dl_all}</div>
+    <div class="earlier">{rows}</div>
+  </section>
+"""
     og = f"{SITE_URL}/og.jpg"
-    tpl = f"""
-        <article class="ep row"><div class="gut num"></div><div class="body">
-          <p class="kicker"><span class="num-inline"></span><span class="latest">Latest</span><span class="kact"></span></p><h3></h3><p class="meta"></p>
-          {player_html("", 0)}<p class="summary"></p>
-          <p class="dl"><a href="#" download>Download episode</a><span class="size">On iPhone, touch and hold, then tap Download Linked File.</span></p>
-        </div></article>"""
     return f"""<!doctype html>
-<html lang="en" data-feed="{e(FEED_FETCH)}">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -660,61 +627,54 @@ def build_html(zip_info):
   <header class="hero">
     <div class="hero-text">
       <p class="label">A podcast in one hundred episodes</p>
-      <div>
+      <div class="hero-main">
         <h1>A Genealogy of Technological Optimism</h1>
-        <p class="sub">One hundred books in ten acts, ten minutes each.</p>
+        <div class="cta">
+          <div id="primary">{app_link("apple", True)}</div>
+          <div class="apps" id="apps">{others}</div>
+          <p class="fine">The show isn&rsquo;t in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app. <a href="#more">Other apps and RSS</a></p>
+          <p class="hint" id="hint" hidden>Nothing opened? <a href="#more">Copy the feed</a> and add it by URL in your app.</p>
+          <div class="handoff">{qr_svg(SITE_URL + "/")}<p>On your phone? Scan to open this page there.</p></div>
+        </div>
       </div>
     </div>
     <figure class="cover"><img src="cover.jpg" width="1000" height="1000" alt="Cover art: a lone figure on a ridge faces a radiant sun above power lines, a cooling tower and a city."></figure>
     <div class="hero-foot">
       <span>Created and hosted by <a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></span>
-      <span class="n"><span data-released>{released}</span> of 100 released</span>
+      <span class="n">{released} of 100 released</span>
     </div>
   </header>
-
-  <section class="sec follow" id="follow" aria-labelledby="follow-h">
-    <div class="sec-head"><h2 id="follow-h">Follow</h2><span></span><span class="label">Free, in any podcast app</span></div>
-    <div class="row">
-      <div class="gut"></div>
-      <div class="body">
-        <div id="primary">{app_link("apple", True)}</div>
-        <div class="apps" id="apps">{others}</div>
-        <p class="fine">The show isn&rsquo;t listed in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app, and new episodes arrive on their own.</p>
-        <div class="feed"><span class="label">RSS</span><code id="feed-url">{e(FEED_URL)}</code><button class="copy" id="copy" type="button">Copy</button></div>
-        <p class="hint" id="hint" hidden>Nothing opened? Copy the feed and add it by URL in your app.</p>
-        <a class="textlink" id="listen-here" href="#ep-{first}">Or listen to episode {first} here</a>
-        <details class="help">
-          <summary>Add it by hand, or use another app</summary>
-          <ul class="steps">
-            <li><b>Apple Podcasts.</b> Library, then the &hellip; menu, then Follow a Show by URL. Paste the feed.</li>
-            <li><b>Overcast.</b> Tap +, then Add URL. Paste the feed.</li>
-            <li><b>Pocket Casts.</b> Discover, paste the feed into search, then Subscribe.</li>
-            <li><b>YouTube Music.</b> Library, Podcasts, Add podcast, then Add a podcast by RSS feed.</li>
-            <li><b>Podcast Addict.</b> Tap +, then Add RSS feed. Paste the feed and tap Add.</li>
-            <li><b>Spotify</b> can&rsquo;t add shows by feed URL. Any app above works.</li>
-          </ul>
-        </details>
-      </div>
-      <div class="handoff">{qr_svg(SITE_URL + "/")}<p>On your phone? Scan to open this page there.</p></div>
-    </div>
-  </section>
-
-  <section class="sec episodes" aria-labelledby="eps-h">
-    <div class="sec-head"><h2 id="eps-h">Episodes</h2><span>{dl_all}</span><span class="label"><span data-released>{released}</span> of 100</span></div>
-    <div id="episode-list">{eps}</div>
-  </section>
 
   <section class="sec note" aria-labelledby="note-h">
     <div class="sec-head"><h2 id="note-h">Note</h2><span></span><span></span></div>
     <div class="row"><div class="gut"></div><div class="body">
       {''.join(f'<p>{e(p)}</p>' for p in NOTE)}
-      <a class="textlink" href="syllabus.pdf" target="_blank" rel="noopener">Read the syllabus, 22 pages (PDF)</a>
     </div></div>
   </section>
 
+  <section class="sec" aria-labelledby="latest-h">
+    <div class="sec-head"><h2 id="latest-h">Latest episode</h2><span></span><span class="label">Episode {latest_n} of 100</span></div>
+    {latest_html}
+  </section>
+
   <section class="sec" aria-labelledby="acts-h">
-    <div class="sec-head"><h2 id="acts-h">Acts</h2><span></span><span class="label">1&thinsp;&ndash;&thinsp;100</span></div>
+    <div class="sec-head"><h2 id="acts-h">The ten acts</h2><span></span><a class="label head-link" href="syllabus.pdf" target="_blank" rel="noopener">Syllabus (PDF)</a></div>
     <div class="row"><div class="gut"></div><div class="acts">{acts}</div></div>
+  </section>
+{earlier_html}
+  <section class="sec more" id="more" aria-labelledby="more-h">
+    <div class="sec-head"><h2 id="more-h">Other apps and RSS</h2><span></span><span class="label">Free, in any podcast app</span></div>
+    <div class="row"><div class="gut"></div><div class="body">
+      <div class="feed"><span class="label">RSS</span><code id="feed-url">{e(FEED_URL)}</code><button class="copy" id="copy" type="button">Copy</button></div>
+      <ul class="steps">
+        <li><b>Apple Podcasts.</b> Library, then the &hellip; menu, then Follow a Show by URL. Paste the feed.</li>
+        <li><b>Overcast.</b> Tap +, then Add URL. Paste the feed.</li>
+        <li><b>Pocket Casts.</b> Discover, paste the feed into search, then Subscribe.</li>
+        <li><b>YouTube Music.</b> Library, Podcasts, Add podcast, then Add a podcast by RSS feed.</li>
+        <li><b>Podcast Addict.</b> Tap +, then Add RSS feed. Paste the feed and tap Add.</li>
+        <li><b>Spotify</b> can&rsquo;t add shows by feed URL. Any app above works.</li>
+      </ul>
+    </div></div>
   </section>
 
   <footer>
@@ -722,8 +682,6 @@ def build_html(zip_info):
     <nav><a href="syllabus.pdf" target="_blank" rel="noopener">Syllabus</a><a href="{e(FEED_URL)}">RSS</a><a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></nav>
   </footer>
 </div>
-<template id="ep-tpl">{tpl}</template>
-<script type="application/json" id="books">{books_json}</script>
 <script>{JS}</script>
 </body>
 </html>
