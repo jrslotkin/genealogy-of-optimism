@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en" data-feed="https://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A Genealogy of Technological Optimism</title>
+<meta name="description" content="One hundred books in ten acts, ten minutes each: how the idea of technological progress was built, and the strongest arguments against it.">
+<link rel="canonical" href="https://jrslotkin.github.io/genealogy-of-optimism/">
+<link rel="alternate" type="application/rss+xml" title="A Genealogy of Technological Optimism" href="http://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="A Genealogy of Technological Optimism">
+<meta property="og:title" content="A Genealogy of Technological Optimism">
+<meta property="og:description" content="One hundred books in ten acts, ten minutes each: how the idea of technological progress was built, and the strongest arguments against it.">
+<meta property="og:url" content="https://jrslotkin.github.io/genealogy-of-optimism/">
+<meta property="og:image" content="https://jrslotkin.github.io/genealogy-of-optimism/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A Genealogy of Technological Optimism">
+<meta name="twitter:description" content="One hundred books in ten acts, ten minutes each: how the idea of technological progress was built, and the strongest arguments against it.">
+<meta name="twitter:image" content="https://jrslotkin.github.io/genealogy-of-optimism/og.jpg">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/newsreader.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2122,U+2212}
+@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/newsreader-ext.woff2) format("woff2");
+  unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20CF,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Newsreader;font-style:italic;font-weight:200 800;font-display:swap;src:url(fonts/newsreader-italic.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2122,U+2212}
+@font-face{font-family:Geist;font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/geist.woff2) format("woff2")}
+
+/* Layout: the syllabus page, carried onto the screen. A narrow label gutter on the left,
+   one reading measure beside it, hairlines between sections, and the cover art as the
+   only colour on the page. */
+:root{
+  --paper:#FFFFFF;
+  --wash:#F6F6F4;
+  --ink:#121212;
+  --text:#2A2A2A;
+  --muted:#6E6E69;
+  --faint:#C9C9C5;
+  --rule:#E4E4E1;
+  --signal:#D9531E;               /* the cover banner; used only for the "latest" dot */
+  --serif:Newsreader,"Iowan Old Style",Georgia,serif;
+  --sans:Geist,ui-sans-serif,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --gutter:120px;
+  --measure:600px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--text);font:400 16px/1.55 var(--sans);
+  -webkit-font-smoothing:antialiased;font-kerning:normal;text-rendering:optimizeLegibility}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+.page{max-width:1080px;margin:0 auto;padding-inline:max(24px,env(safe-area-inset-left));
+  padding-block:max(32px,env(safe-area-inset-top)) max(48px,env(safe-area-inset-bottom))}
+.label{margin:0;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.dot::before{content:"";display:inline-block;width:3px;height:3px;border-radius:50%;background:currentColor;
+  opacity:.55;vertical-align:middle;margin:0 .7em .15em}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:24px 72px;align-items:stretch;padding-top:24px}
+.hero-text{display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+.hero h1{margin:0;font:330 clamp(2.6rem,1.6rem + 4vw,4.6rem)/1 var(--serif);letter-spacing:-.024em;color:var(--ink);text-wrap:balance}
+.hero .sub{margin:22px 0 0;font:400 italic 20px/1.45 var(--serif);color:var(--muted);max-width:28em}
+.cover{margin:0}
+.cover img{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:4px;
+  box-shadow:0 1px 1px rgba(0,0,0,.04),0 24px 48px -24px rgba(0,0,0,.35)}
+.hero-foot{grid-column:1 / -1;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-top:40px;padding-top:12px;border-top:1px solid var(--rule);font:400 13px/1.4 var(--sans);color:var(--muted)}
+.hero-foot a{color:var(--ink);text-decoration:none}
+.hero-foot a:hover{text-decoration:underline;text-underline-offset:3px}
+.hero-foot .n{font-variant-numeric:tabular-nums}
+
+/* Sections */
+.sec{margin-top:104px}
+.sec-head{display:grid;grid-template-columns:var(--gutter) minmax(0,1fr) auto;align-items:baseline;
+  padding-bottom:10px;border-bottom:1px solid var(--rule);margin-bottom:36px}
+.sec-head > :last-child{text-align:right;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.sec-head h2{margin:0;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.row{display:grid;grid-template-columns:var(--gutter) minmax(0,var(--measure)) minmax(0,1fr);align-items:start}
+.gut{font:400 12px/1 var(--sans);color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.body{min-width:0}
+
+/* Follow */
+.follow .body{display:grid;gap:16px;justify-items:start}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:999px;
+  border:1px solid #D6D6D2;font:500 14.5px/1 var(--sans);color:var(--ink);text-decoration:none;white-space:nowrap;
+  transition:background-color .15s ease,border-color .15s ease}
+.pill:hover{background:var(--wash);border-color:#BDBDB8}
+.pill-ink{min-height:52px;padding:0 30px;font-size:16px;background:var(--ink);border-color:var(--ink);color:#fff}
+.pill-ink:hover{background:#000;border-color:#000}
+.apps{display:flex;flex-wrap:wrap;gap:8px}
+.apps:empty{display:none}
+.fine{margin:0;font:400 14px/1.55 var(--sans);color:var(--muted);max-width:34em}
+.feed{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;
+  padding:6px 6px 6px 16px;background:var(--wash);border-radius:12px}
+.feed code{font:400 13px/1.3 var(--sans);font-variant-numeric:tabular-nums;color:var(--text);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;-webkit-user-select:all;user-select:all}
+.copy{min-height:36px;padding:0 14px;border-radius:999px;background:var(--paper);font:500 13px/1 var(--sans);color:var(--ink);
+  box-shadow:0 0 0 1px var(--rule)}
+.copy:hover{box-shadow:0 0 0 1px #BDBDB8}
+.hint{margin:0;font-size:14px;color:var(--ink)}
+.textlink{font:400 15px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);
+  text-underline-offset:4px}
+.textlink:hover{text-decoration-color:var(--ink)}
+.handoff{grid-column:3;justify-self:end;display:none;width:150px}
+.handoff svg{display:block;width:112px;height:112px;color:var(--ink)}
+.handoff p{margin:12px 0 0;font:400 12.5px/1.45 var(--sans);color:var(--muted)}
+html[data-os=mac] .handoff,html[data-os=desktop] .handoff{display:block}
+
+details summary{list-style:none;cursor:pointer}
+details summary::-webkit-details-marker{display:none}
+.help{width:100%;border-top:1px solid var(--rule)}
+.help summary,.fold summary{display:flex;justify-content:space-between;align-items:center;padding:14px 0;
+  font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.help summary::after,.fold summary::after{content:"+";font:300 18px/1 var(--sans);letter-spacing:0;color:var(--muted)}
+.help[open] summary::after,.fold[open] summary::after{content:"\2212"}
+.steps{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:10px;font:400 14.5px/1.55 var(--sans);color:var(--muted)}
+.steps b{font-weight:500;color:var(--ink)}
+
+/* Episodes */
+.ep + .ep{margin-top:56px;padding-top:56px;border-top:1px solid var(--rule)}
+.num{font:300 40px/.9 var(--serif);color:var(--ink);letter-spacing:-.02em;font-variant-numeric:lining-nums}
+.kicker{margin:0 0 10px;display:flex;gap:14px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.latest{display:none;color:var(--ink)}
+.latest::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--signal);margin-right:8px;vertical-align:1px}
+.is-latest .latest{display:inline}
+.ep h3{margin:0;font:400 34px/1.1 var(--serif);letter-spacing:-.014em;color:var(--ink);text-wrap:balance}
+.meta{margin:10px 0 0;font:400 13.5px/1.4 var(--sans);color:var(--muted)}
+.summary{margin:22px 0 0;font:400 19px/1.6 var(--serif);color:var(--text);text-wrap:pretty}
+.dl{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.dl a{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
+.dl a::after{content:" \2193"}
+.dl a:hover{text-decoration-color:var(--ink)}
+.size{font:400 13px/1.4 var(--sans);color:var(--muted)}
+.folds{margin-top:26px;border-bottom:1px solid var(--rule)}
+.fold{border-top:1px solid var(--rule)}
+.chapters{list-style:none;margin:0 0 16px;padding:0}
+.chapters a{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:8px 0;text-decoration:none}
+.ct,.ts{font:400 13px/1.7 var(--sans);font-variant-numeric:tabular-nums;color:var(--muted);text-decoration:none}
+.cn{font:400 17px/1.45 var(--serif);color:var(--ink)}
+.chapters a:hover .cn{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+.transcript{max-height:62vh;overflow:auto;padding:4px 8px 18px 0;font:400 17px/1.7 var(--serif);color:var(--text)}
+.transcript p{margin:0 0 16px}
+.transcript .ts{margin-right:12px}
+.sources{margin:0 0 18px;padding-left:1.1em;display:grid;gap:8px;font:400 14px/1.5 var(--sans);color:var(--muted)}
+.sources a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--faint)}
+
+/* Player */
+.player{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;margin-top:24px;
+  padding:14px 18px 14px 14px;background:var(--wash);border-radius:16px}
+.player audio{display:none}
+.play{width:48px;height:48px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;
+  transition:transform .12s ease}
+.play:active{transform:scale(.96)}
+.play svg{width:22px;height:22px}
+.play .i-pause,.player.playing .i-play{display:none}
+.player.playing .i-pause{display:block}
+.track{display:grid;gap:6px;min-width:0}
+.times{display:flex;justify-content:space-between;font:400 12px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--muted)}
+.seek{-webkit-appearance:none;appearance:none;width:100%;height:18px;margin:0;background:transparent;cursor:pointer}
+.seek::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(to right,var(--ink) var(--p,0%),#DADAD6 var(--p,0%))}
+.seek::-moz-range-track{height:3px;border-radius:2px;background:#DADAD6}
+.seek::-moz-range-progress{height:3px;border-radius:2px;background:var(--ink)}
+.seek::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5px;border-radius:50%;background:var(--ink);border:0}
+.seek::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--ink);border:0}
+.tools{display:flex;gap:2px}
+.tool{min-width:38px;height:32px;border-radius:8px;font:500 12.5px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--muted)}
+.tool:hover{color:var(--ink);background:rgba(0,0,0,.04)}
+
+/* Note */
+.note p{margin:0;font:400 20px/1.6 var(--serif);color:var(--text);text-wrap:pretty}
+.note p + p{margin-top:14px}
+.note .textlink{display:inline-block;margin-top:22px}
+
+/* Acts */
+.acts{grid-column:2 / 4;max-width:760px}
+.act{border-bottom:1px solid var(--rule)}
+.act:first-child{border-top:1px solid var(--rule)}
+.act summary{display:grid;grid-template-columns:44px minmax(0,1fr) auto 64px;align-items:center;gap:16px;padding:15px 0}
+.ar,.rg{font:400 12px/1 var(--sans);letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
+.rg{text-align:right}
+.an{font:400 18px/1.35 var(--serif);color:var(--ink);text-wrap:balance}
+.act summary:hover .an{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--faint)}
+.ticks{display:flex;gap:3px}
+.ticks i{width:7px;height:7px;border-radius:1px;box-shadow:inset 0 0 0 1px var(--faint)}
+.ticks i.on{background:var(--ink);box-shadow:none}
+.act[open] .ar{color:var(--ink)}
+.books{list-style:none;margin:0;padding:2px 0 22px 60px;display:grid;gap:12px}
+.books li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:baseline}
+.bn{font:400 12px/1 var(--sans);color:var(--muted);font-variant-numeric:tabular-nums}
+.bt{display:grid;gap:3px;font:400 16.5px/1.35 var(--serif);color:var(--ink)}
+.ba{font:400 13px/1.4 var(--sans);color:var(--muted)}
+.listen{font:500 12px/1 var(--sans);letter-spacing:.06em;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+.listen::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--signal);margin-right:7px;vertical-align:1px}
+
+footer{margin-top:120px;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:8px 24px;font:400 12.5px/1.4 var(--sans);color:var(--muted)}
+footer nav{display:flex;gap:22px}
+footer a{text-decoration:none}
+footer a:hover{color:var(--ink)}
+
+.num-inline{display:none;color:var(--ink)}
+
+/* Phone */
+@media (max-width:820px){
+  :root{--gutter:0px}
+  .page{padding-inline:max(20px,env(safe-area-inset-left))}
+  .hero{grid-template-columns:minmax(0,1fr);gap:0;padding-top:4px}
+  .hero-text{gap:0;display:block}
+  .hero .label{margin-top:24px}
+  .cover{order:-1;max-width:184px}
+  .hero h1{margin-top:14px;font-size:clamp(2.3rem,1.4rem + 4.2vw,3rem)}
+  .hero .sub{margin-top:12px;font-size:18px}
+  .hero-foot{margin-top:24px}
+  .sec{margin-top:64px}
+  .follow{margin-top:28px}
+  .follow .sec-head{display:none}
+  .sec-head{margin-bottom:24px;grid-template-columns:minmax(0,1fr) auto}
+  .sec-head > :nth-child(2):empty{display:none}
+  .sec-head > :nth-child(2){grid-row:2;grid-column:1 / -1;margin-top:10px}
+  .row{grid-template-columns:minmax(0,1fr)}
+  .gut{display:none}
+  .follow .body{justify-items:stretch}
+  .follow .textlink{justify-self:start}
+  .pill-ink{width:100%}
+  .apps{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+  .apps .pill{padding:0 8px;font-size:14px}
+  .handoff{display:none!important}
+  .num-inline{display:inline}
+  .ep h3{font-size:29px}
+  .summary{font-size:18px}
+  .note p{font-size:18.5px}
+  .acts{grid-column:1}
+  .act summary{grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"r n g" "r t t";gap:8px 12px}
+  .ar{grid-area:r;align-self:start;padding-top:4px}.an{grid-area:n}.rg{grid-area:g}.ticks{grid-area:t;flex-wrap:wrap}
+  .books{padding-left:0}
+  .player{grid-template-columns:auto minmax(0,1fr);gap:10px 14px;padding:12px 14px}
+  .tools{grid-column:1 / -1;justify-content:space-between;border-top:1px solid var(--rule);padding-top:8px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="label">A podcast in one hundred episodes</p>
+      <div>
+        <h1>A Genealogy of Technological Optimism</h1>
+        <p class="sub">One hundred books in ten acts, ten minutes each.</p>
+      </div>
+    </div>
+    <figure class="cover"><img src="cover.jpg" width="1000" height="1000" alt="Cover art: a lone figure on a ridge faces a radiant sun above power lines, a cooling tower and a city."></figure>
+    <div class="hero-foot">
+      <span>Created and hosted by <a href="https://x.com/slotkinjr" target="_blank" rel="noopener">Jon Slotkin</a></span>
+      <span class="n"><span data-released>1</span> of 100 released</span>
+    </div>
+  </header>
+
+  <section class="sec follow" id="follow" aria-labelledby="follow-h">
+    <div class="sec-head"><h2 id="follow-h">Follow</h2><span></span><span class="label">Free, in any podcast app</span></div>
+    <div class="row">
+      <div class="gut"></div>
+      <div class="body">
+        <div id="primary"><a class="pill pill-ink" data-app="apple" data-name="Apple Podcasts" href="podcast://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">Follow in Apple Podcasts</a></div>
+        <div class="apps" id="apps"><a class="pill" data-app="overcast" data-name="Overcast" href="overcast://x-callback-url/add?url=http%3A%2F%2Fmuse.ai%2Fpodcasts%2Ffeed%2F1259445163926232%2F56841503-f373-44e6-99b5-326cfad9be97">Overcast</a><a class="pill" data-app="pocketcasts" data-name="Pocket Casts" href="pktc://subscribe/muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">Pocket Casts</a><a class="pill" data-app="castro" data-name="Castro" href="castro://subscribe/muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">Castro</a><a class="pill" data-app="antennapod" data-name="AntennaPod" href="https://antennapod.org/deeplink/subscribe?url=http%3A%2F%2Fmuse.ai%2Fpodcasts%2Ffeed%2F1259445163926232%2F56841503-f373-44e6-99b5-326cfad9be97&amp;title=A%20Genealogy%20of%20Technological%20Optimism" target="_blank" rel="noopener">AntennaPod</a></div>
+        <p class="fine">The show isn&rsquo;t listed in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app, and new episodes arrive on their own.</p>
+        <div class="feed"><span class="label">RSS</span><code id="feed-url">http://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97</code><button class="copy" id="copy" type="button">Copy</button></div>
+        <p class="hint" id="hint" hidden>Nothing opened? Copy the feed and add it by URL in your app.</p>
+        <a class="textlink" id="listen-here" href="#ep-1">Or listen to episode 1 here</a>
+        <details class="help">
+          <summary>Add it by hand, or use another app</summary>
+          <ul class="steps">
+            <li><b>Apple Podcasts.</b> Library, then the &hellip; menu, then Follow a Show by URL. Paste the feed.</li>
+            <li><b>Overcast.</b> Tap +, then Add URL. Paste the feed.</li>
+            <li><b>Pocket Casts.</b> Discover, paste the feed into search, then Subscribe.</li>
+            <li><b>YouTube Music.</b> Library, Podcasts, Add podcast, then Add a podcast by RSS feed.</li>
+            <li><b>Podcast Addict.</b> Tap +, then Add RSS feed. Paste the feed and tap Add.</li>
+            <li><b>Spotify</b> can&rsquo;t add shows by feed URL. Any app above works.</li>
+          </ul>
+        </details>
+      </div>
+      <div class="handoff"><svg viewBox="0 0 33 33" role="img" aria-label="QR code for this page" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h7v1h-7zM8 0h7v1h-7zM17 0h2v1h-2zM26 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h2v1h-2zM12 1h3v1h-3zM16 1h1v1h-1zM18 1h3v1h-3zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM12 2h3v1h-3zM19 2h3v1h-3zM23 2h1v1h-1zM26 2h1v1h-1zM28 2h3v1h-3zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM11 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h2v1h-2zM23 3h2v1h-2zM26 3h1v1h-1zM28 3h3v1h-3zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM15 4h2v1h-2zM21 4h1v1h-1zM26 4h1v1h-1zM28 4h3v1h-3zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM10 5h3v1h-3zM14 5h6v1h-6zM23 5h2v1h-2zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h7v1h-7zM9 7h2v1h-2zM13 7h1v1h-1zM15 7h2v1h-2zM18 7h1v1h-1zM0 8h1v1h-1zM3 8h7v1h-7zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h2v1h-2zM20 8h1v1h-1zM24 8h2v1h-2zM28 8h1v1h-1zM30 8h3v1h-3zM0 9h1v1h-1zM5 9h1v1h-1zM7 9h1v1h-1zM9 9h2v1h-2zM13 9h3v1h-3zM17 9h1v1h-1zM19 9h1v1h-1zM21 9h3v1h-3zM28 9h3v1h-3zM6 10h1v1h-1zM9 10h3v1h-3zM13 10h1v1h-1zM15 10h2v1h-2zM21 10h5v1h-5zM28 10h5v1h-5zM1 11h3v1h-3zM9 11h1v1h-1zM12 11h2v1h-2zM15 11h1v1h-1zM18 11h1v1h-1zM23 11h1v1h-1zM25 11h3v1h-3zM30 11h2v1h-2zM0 12h1v1h-1zM2 12h1v1h-1zM4 12h1v1h-1zM6 12h1v1h-1zM10 12h2v1h-2zM13 12h1v1h-1zM17 12h1v1h-1zM20 12h1v1h-1zM26 12h2v1h-2zM31 12h2v1h-2zM0 13h1v1h-1zM4 13h1v1h-1zM9 13h1v1h-1zM11 13h4v1h-4zM18 13h4v1h-4zM23 13h1v1h-1zM25 13h1v1h-1zM27 13h1v1h-1zM29 13h1v1h-1zM1 14h1v1h-1zM3 14h1v1h-1zM6 14h2v1h-2zM10 14h1v1h-1zM12 14h1v1h-1zM15 14h1v1h-1zM19 14h1v1h-1zM22 14h1v1h-1zM24 14h1v1h-1zM26 14h1v1h-1zM28 14h1v1h-1zM30 14h1v1h-1zM0 15h1v1h-1zM2 15h3v1h-3zM7 15h3v1h-3zM12 15h1v1h-1zM16 15h1v1h-1zM20 15h1v1h-1zM24 15h2v1h-2zM27 15h1v1h-1zM29 15h2v1h-2zM32 15h1v1h-1zM2 16h1v1h-1zM5 16h4v1h-4zM11 16h5v1h-5zM20 16h1v1h-1zM22 16h8v1h-8zM2 17h2v1h-2zM5 17h1v1h-1zM8 17h1v1h-1zM12 17h11v1h-11zM26 17h1v1h-1zM28 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM1 18h3v1h-3zM6 18h2v1h-2zM9 18h2v1h-2zM12 18h1v1h-1zM15 18h1v1h-1zM17 18h3v1h-3zM21 18h3v1h-3zM26 18h2v1h-2zM29 18h2v1h-2zM32 18h1v1h-1zM0 19h5v1h-5zM7 19h2v1h-2zM12 19h1v1h-1zM15 19h2v1h-2zM22 19h4v1h-4zM28 19h3v1h-3zM32 19h1v1h-1zM0 20h1v1h-1zM2 20h2v1h-2zM6 20h1v1h-1zM8 20h1v1h-1zM12 20h1v1h-1zM16 20h1v1h-1zM18 20h2v1h-2zM25 20h1v1h-1zM27 20h1v1h-1zM29 20h1v1h-1zM0 21h1v1h-1zM3 21h3v1h-3zM9 21h1v1h-1zM11 21h4v1h-4zM20 21h2v1h-2zM23 21h1v1h-1zM28 21h2v1h-2zM0 22h1v1h-1zM2 22h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM12 22h1v1h-1zM18 22h1v1h-1zM21 22h1v1h-1zM23 22h1v1h-1zM31 22h2v1h-2zM0 23h1v1h-1zM2 23h1v1h-1zM9 23h1v1h-1zM11 23h1v1h-1zM13 23h3v1h-3zM17 23h4v1h-4zM26 23h1v1h-1zM30 23h1v1h-1zM32 23h1v1h-1zM0 24h2v1h-2zM4 24h1v1h-1zM6 24h2v1h-2zM9 24h1v1h-1zM12 24h3v1h-3zM16 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM24 24h6v1h-6zM31 24h2v1h-2zM8 25h3v1h-3zM13 25h6v1h-6zM23 25h2v1h-2zM28 25h1v1h-1zM30 25h2v1h-2zM0 26h7v1h-7zM8 26h1v1h-1zM10 26h1v1h-1zM12 26h2v1h-2zM15 26h1v1h-1zM17 26h1v1h-1zM19 26h1v1h-1zM22 26h3v1h-3zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM10 27h3v1h-3zM16 27h4v1h-4zM23 27h2v1h-2zM28 27h3v1h-3zM0 28h1v1h-1zM2 28h3v1h-3zM6 28h1v1h-1zM8 28h1v1h-1zM10 28h1v1h-1zM14 28h1v1h-1zM16 28h2v1h-2zM19 28h2v1h-2zM22 28h7v1h-7zM31 28h1v1h-1zM0 29h1v1h-1zM2 29h3v1h-3zM6 29h1v1h-1zM8 29h3v1h-3zM12 29h1v1h-1zM16 29h1v1h-1zM18 29h2v1h-2zM21 29h3v1h-3zM25 29h1v1h-1zM27 29h1v1h-1zM30 29h3v1h-3zM0 30h1v1h-1zM2 30h3v1h-3zM6 30h1v1h-1zM9 30h2v1h-2zM12 30h1v1h-1zM15 30h1v1h-1zM19 30h1v1h-1zM23 30h2v1h-2zM27 30h2v1h-2zM31 30h2v1h-2zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM13 31h1v1h-1zM18 31h2v1h-2zM27 31h6v1h-6zM0 32h7v1h-7zM8 32h1v1h-1zM10 32h1v1h-1zM12 32h6v1h-6zM22 32h3v1h-3zM27 32h3v1h-3z"/></svg><p>On your phone? Scan to open this page there.</p></div>
+    </div>
+  </section>
+
+  <section class="sec episodes" aria-labelledby="eps-h">
+    <div class="sec-head"><h2 id="eps-h">Episodes</h2><span></span><span class="label"><span data-released>1</span> of 100</span></div>
+    <div id="episode-list">
+        <article class="ep row is-latest" id="ep-1" data-n="1" data-act="I" data-title="The Phenomenon of Man">
+          <div class="gut num">1</div>
+          <div class="body">
+            <p class="kicker"><span class="num-inline">1</span><span class="latest">Latest</span><span class="kact">Act I</span></p>
+            <h3>The Phenomenon of Man</h3>
+            <p class="meta">Pierre Teilhard de Chardin<span class="dot">1955</span><span class="dot">11 min 27 sec</span></p>
+            
+            <p class="summary">A Jesuit paleontologist, silenced by his own Church, writes a cosmic history in wartime Beijing: evolution as one movement toward complexity, consciousness, and a final convergence he calls the Omega Point. The episode lays out the argument in Teilhard’s own terms, reconstructs the double attack from scientists and Rome, and follows its afterlife through the internet and transhumanism.</p>
+            
+            
+          </div>
+        </article></div>
+  </section>
+
+  <section class="sec note" aria-labelledby="note-h">
+    <div class="sec-head"><h2 id="note-h">Note</h2><span></span><span></span></div>
+    <div class="row"><div class="gut"></div><div class="body">
+      <p>An intellectual genealogy of technological optimism in 100 books, ordered as an argument in ten acts. It starts with the theology the idea of progress grew out of and the psychology of the people who act on it. It then moves through how knowledge grows, how markets and institutions turn knowledge into growth, how innovation is built and financed, and the attempt to engineer away every remaining constraint.</p><p>About three quarters of the books make the case. The other quarter are the strongest arguments against it. Each critic sits next to the claim it attacks, and critiques of technology as such are held for the end.</p>
+      <a class="textlink" href="syllabus.pdf" target="_blank" rel="noopener">Read the syllabus, 22 pages (PDF)</a>
+    </div></div>
+  </section>
+
+  <section class="sec" aria-labelledby="acts-h">
+    <div class="sec-head"><h2 id="acts-h">Acts</h2><span></span><span class="label">1&thinsp;&ndash;&thinsp;100</span></div>
+    <div class="row"><div class="gut"></div><div class="acts">
+        <details class="act">
+          <summary><span class="ar">I</span><span class="an">Why should history go anywhere?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="1" class=on></i><i data-n="2"></i><i data-n="3"></i><i data-n="4"></i><i data-n="5"></i><i data-n="6"></i><i data-n="7"></i><i data-n="8"></i><i data-n="9"></i><i data-n="10"></i></span><span class="rg">1&thinsp;&ndash;&thinsp;10</span></summary>
+          <ol class="books"><li data-n="1" class=out><span class="bn">1</span><span class="bt">The Phenomenon of Man<span class="ba">Pierre Teilhard de Chardin<span class="dot">1955</span></span></span><a class="listen" href="#ep-1">Listen</a></li><li data-n="2"><span class="bn">2</span><span class="bt">The Philosophy of the Common Task<span class="ba">Nikolai Fedorov<span class="dot">1906</span></span></span></li><li data-n="3"><span class="bn">3</span><span class="bt">New Atlantis<span class="ba">Francis Bacon<span class="dot">1626</span></span></span></li><li data-n="4"><span class="bn">4</span><span class="bt">Sketch for a Historical Picture of the Progress of the Human Mind<span class="ba">Nicolas de Condorcet<span class="dot">1795</span></span></span></li><li data-n="5"><span class="bn">5</span><span class="bt">History of the Idea of Progress<span class="ba">Robert Nisbet<span class="dot">1980</span></span></span></li><li data-n="6"><span class="bn">6</span><span class="bt">Meaning in History<span class="ba">Karl Löwith<span class="dot">1949</span></span></span></li><li data-n="7"><span class="bn">7</span><span class="bt">The Legitimacy of the Modern Age<span class="ba">Hans Blumenberg<span class="dot">1966</span></span></span></li><li data-n="8"><span class="bn">8</span><span class="bt">The Protestant Ethic and the Spirit of Capitalism<span class="ba">Max Weber<span class="dot">1905</span></span></span></li><li data-n="9"><span class="bn">9</span><span class="bt">The Spirit of Democratic Capitalism<span class="ba">Michael Novak<span class="dot">1982</span></span></span></li><li data-n="10"><span class="bn">10</span><span class="bt">Frankenstein; or, The Modern Prometheus<span class="ba">Mary Shelley<span class="dot">1818</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">II</span><span class="an">What kind of creature is building the future?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="11"></i><i data-n="12"></i><i data-n="13"></i><i data-n="14"></i><i data-n="15"></i><i data-n="16"></i><i data-n="17"></i><i data-n="18"></i><i data-n="19"></i><i data-n="20"></i></span><span class="rg">11&thinsp;&ndash;&thinsp;20</span></summary>
+          <ol class="books"><li data-n="11"><span class="bn">11</span><span class="bt">Thus Spoke Zarathustra<span class="ba">Friedrich Nietzsche<span class="dot">1883</span></span></span></li><li data-n="12"><span class="bn">12</span><span class="bt">The Denial of Death<span class="ba">Ernest Becker<span class="dot">1973</span></span></span></li><li data-n="13"><span class="bn">13</span><span class="bt">Things Hidden Since the Foundation of the World<span class="ba">René Girard, with Jean-Michel Oughourlian and Guy Lefort<span class="dot">1978</span></span></span></li><li data-n="14"><span class="bn">14</span><span class="bt">Notes from Underground<span class="ba">Fyodor Dostoevsky<span class="dot">1864</span></span></span></li><li data-n="15"><span class="bn">15</span><span class="bt">Thinking, Fast and Slow<span class="ba">Daniel Kahneman<span class="dot">2011</span></span></span></li><li data-n="16"><span class="bn">16</span><span class="bt">Rationality for Mortals<span class="ba">Gerd Gigerenzer<span class="dot">2008</span></span></span></li><li data-n="17"><span class="bn">17</span><span class="bt">The Secret of Our Success<span class="ba">Joseph Henrich<span class="dot">2015</span></span></span></li><li data-n="18"><span class="bn">18</span><span class="bt">Origins of Genius<span class="ba">Dean Keith Simonton<span class="dot">1999</span></span></span></li><li data-n="19"><span class="bn">19</span><span class="bt">Expert Political Judgment<span class="ba">Philip E. Tetlock<span class="dot">2005</span></span></span></li><li data-n="20"><span class="bn">20</span><span class="bt">Foundation<span class="ba">Isaac Asimov<span class="dot">1951</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">III</span><span class="an">How can a creature like that know anything?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="21"></i><i data-n="22"></i><i data-n="23"></i><i data-n="24"></i><i data-n="25"></i><i data-n="26"></i><i data-n="27"></i><i data-n="28"></i></span><span class="rg">21&thinsp;&ndash;&thinsp;28</span></summary>
+          <ol class="books"><li data-n="21"><span class="bn">21</span><span class="bt">Science and the Modern World<span class="ba">Alfred North Whitehead<span class="dot">1925</span></span></span></li><li data-n="22"><span class="bn">22</span><span class="bt">Conjectures and Refutations<span class="ba">Karl Popper<span class="dot">1963</span></span></span></li><li data-n="23"><span class="bn">23</span><span class="bt">The Structure of Scientific Revolutions<span class="ba">Thomas S. Kuhn<span class="dot">1962</span></span></span></li><li data-n="24"><span class="bn">24</span><span class="bt">The Tacit Dimension<span class="ba">Michael Polanyi<span class="dot">1966</span></span></span></li><li data-n="25"><span class="bn">25</span><span class="bt">Individualism and Economic Order<span class="ba">Friedrich A. Hayek<span class="dot">1948</span></span></span></li><li data-n="26"><span class="bn">26</span><span class="bt">Micromotives and Macrobehavior<span class="ba">Thomas C. Schelling<span class="dot">1978</span></span></span></li><li data-n="27"><span class="bn">27</span><span class="bt">The Human Use of Human Beings<span class="ba">Norbert Wiener<span class="dot">1950</span></span></span></li><li data-n="28"><span class="bn">28</span><span class="bt">The Sciences of the Artificial<span class="ba">Herbert A. Simon<span class="dot">1969</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">IV</span><span class="an">Can markets turn ignorance into progress?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="29"></i><i data-n="30"></i><i data-n="31"></i><i data-n="32"></i><i data-n="33"></i><i data-n="34"></i><i data-n="35"></i><i data-n="36"></i><i data-n="37"></i><i data-n="38"></i><i data-n="39"></i><i data-n="40"></i></span><span class="rg">29&thinsp;&ndash;&thinsp;40</span></summary>
+          <ol class="books"><li data-n="29"><span class="bn">29</span><span class="bt">An Inquiry into the Nature and Causes of the Wealth of Nations<span class="ba">Adam Smith<span class="dot">1776</span></span></span></li><li data-n="30"><span class="bn">30</span><span class="bt">Risk, Uncertainty and Profit<span class="ba">Frank H. Knight<span class="dot">1921</span></span></span></li><li data-n="31"><span class="bn">31</span><span class="bt">The Theory of Economic Development<span class="ba">Joseph A. Schumpeter<span class="dot">1911</span></span></span></li><li data-n="32"><span class="bn">32</span><span class="bt">The Firm, the Market, and the Law<span class="ba">Ronald H. Coase<span class="dot">1988</span></span></span></li><li data-n="33"><span class="bn">33</span><span class="bt">Bourgeois Dignity<span class="ba">Deirdre N. McCloskey<span class="dot">2010</span></span></span></li><li data-n="34"><span class="bn">34</span><span class="bt">Atlas Shrugged<span class="ba">Ayn Rand<span class="dot">1957</span></span></span></li><li data-n="35"><span class="bn">35</span><span class="bt">Anarchy, State, and Utopia<span class="ba">Robert Nozick<span class="dot">1974</span></span></span></li><li data-n="36"><span class="bn">36</span><span class="bt">The Great Transformation<span class="ba">Karl Polanyi<span class="dot">1944</span></span></span></li><li data-n="37"><span class="bn">37</span><span class="bt">The Economy of Cities<span class="ba">Jane Jacobs<span class="dot">1969</span></span></span></li><li data-n="38"><span class="bn">38</span><span class="bt">Institutions, Institutional Change and Economic Performance<span class="ba">Douglass C. North<span class="dot">1990</span></span></span></li><li data-n="39"><span class="bn">39</span><span class="bt">The Rise and Decline of Nations<span class="ba">Mancur Olson<span class="dot">1982</span></span></span></li><li data-n="40"><span class="bn">40</span><span class="bt">Exit, Voice, and Loyalty<span class="ba">Albert O. Hirschman<span class="dot">1970</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">V</span><span class="an">Why did growth happen, and why did it slow?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="41"></i><i data-n="42"></i><i data-n="43"></i><i data-n="44"></i><i data-n="45"></i><i data-n="46"></i><i data-n="47"></i><i data-n="48"></i><i data-n="49"></i><i data-n="50"></i><i data-n="51"></i></span><span class="rg">41&thinsp;&ndash;&thinsp;51</span></summary>
+          <ol class="books"><li data-n="41"><span class="bn">41</span><span class="bt">A Culture of Growth<span class="ba">Joel Mokyr<span class="dot">2016</span></span></span></li><li data-n="42"><span class="bn">42</span><span class="bt">Knowledge and the Wealth of Nations<span class="ba">David Warsh<span class="dot">2006</span></span></span></li><li data-n="43"><span class="bn">43</span><span class="bt">An Essay on the Principle of Population<span class="ba">Thomas Robert Malthus<span class="dot">1798</span></span></span></li><li data-n="44"><span class="bn">44</span><span class="bt">The Ultimate Resource 2<span class="ba">Julian L. Simon<span class="dot">1996</span></span></span></li><li data-n="45"><span class="bn">45</span><span class="bt">The Rational Optimist<span class="ba">Matt Ridley<span class="dot">2010</span></span></span></li><li data-n="46"><span class="bn">46</span><span class="bt">Stubborn Attachments<span class="ba">Tyler Cowen<span class="dot">2018</span></span></span></li><li data-n="47"><span class="bn">47</span><span class="bt">The Cost Disease<span class="ba">William J. Baumol<span class="dot">2012</span></span></span></li><li data-n="48"><span class="bn">48</span><span class="bt">The Rise and Fall of American Growth<span class="ba">Robert J. Gordon<span class="dot">2016</span></span></span></li><li data-n="49"><span class="bn">49</span><span class="bt">Where Is My Flying Car?<span class="ba">J. Storrs Hall<span class="dot">2018</span></span></span></li><li data-n="50"><span class="bn">50</span><span class="bt">Abundance<span class="ba">Ezra Klein and Derek Thompson<span class="dot">2025</span></span></span></li><li data-n="51"><span class="bn">51</span><span class="bt">Breakneck<span class="ba">Dan Wang<span class="dot">2025</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">VI</span><span class="an">What is innovation made of?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="52"></i><i data-n="53"></i><i data-n="54"></i><i data-n="55"></i><i data-n="56"></i><i data-n="57"></i></span><span class="rg">52&thinsp;&ndash;&thinsp;57</span></summary>
+          <ol class="books"><li data-n="52"><span class="bn">52</span><span class="bt">An Evolutionary Theory of Economic Change<span class="ba">Richard R. Nelson and Sidney G. Winter<span class="dot">1982</span></span></span></li><li data-n="53"><span class="bn">53</span><span class="bt">Inside the Black Box<span class="ba">Nathan Rosenberg<span class="dot">1982</span></span></span></li><li data-n="54"><span class="bn">54</span><span class="bt">The Nature of Technology<span class="ba">W. Brian Arthur<span class="dot">2009</span></span></span></li><li data-n="55"><span class="bn">55</span><span class="bt">Diffusion of Innovations<span class="ba">Everett M. Rogers<span class="dot">1962</span></span></span></li><li data-n="56"><span class="bn">56</span><span class="bt">Science, the Endless Frontier<span class="ba">Vannevar Bush<span class="dot">1945</span></span></span></li><li data-n="57"><span class="bn">57</span><span class="bt">Pasteur’s Quadrant<span class="ba">Donald E. Stokes<span class="dot">1997</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">VII</span><span class="an">Technology meets the real world</span>
+            <span class="ticks" aria-hidden="true"><i data-n="58"></i><i data-n="59"></i><i data-n="60"></i><i data-n="61"></i><i data-n="62"></i><i data-n="63"></i><i data-n="64"></i><i data-n="65"></i><i data-n="66"></i><i data-n="67"></i><i data-n="68"></i><i data-n="69"></i><i data-n="70"></i></span><span class="rg">58&thinsp;&ndash;&thinsp;70</span></summary>
+          <ol class="books"><li data-n="58"><span class="bn">58</span><span class="bt">Networks of Power<span class="ba">Thomas P. Hughes<span class="dot">1983</span></span></span></li><li data-n="59"><span class="bn">59</span><span class="bt">The Making of the Atomic Bomb<span class="ba">Richard Rhodes<span class="dot">1986</span></span></span></li><li data-n="60"><span class="bn">60</span><span class="bt">The Idea Factory<span class="ba">Jon Gertner<span class="dot">2012</span></span></span></li><li data-n="61"><span class="bn">61</span><span class="bt">The Dream Machine<span class="ba">M. Mitchell Waldrop<span class="dot">2001</span></span></span></li><li data-n="62"><span class="bn">62</span><span class="bt">Regional Advantage<span class="ba">AnnaLee Saxenian<span class="dot">1994</span></span></span></li><li data-n="63"><span class="bn">63</span><span class="bt">The Box<span class="ba">Marc Levinson<span class="dot">2006</span></span></span></li><li data-n="64"><span class="bn">64</span><span class="bt">Chip War<span class="ba">Chris Miller<span class="dot">2022</span></span></span></li><li data-n="65"><span class="bn">65</span><span class="bt">The Entrepreneurial State<span class="ba">Mariana Mazzucato<span class="dot">2013</span></span></span></li><li data-n="66"><span class="bn">66</span><span class="bt">Power and Progress<span class="ba">Daron Acemoglu and Simon Johnson<span class="dot">2023</span></span></span></li><li data-n="67"><span class="bn">67</span><span class="bt">Seeing Like a State<span class="ba">James C. Scott<span class="dot">1998</span></span></span></li><li data-n="68"><span class="bn">68</span><span class="bt">Normal Accidents<span class="ba">Charles Perrow<span class="dot">1984</span></span></span></li><li data-n="69"><span class="bn">69</span><span class="bt">The Whale and the Reactor<span class="ba">Langdon Winner<span class="dot">1986</span></span></span></li><li data-n="70"><span class="bn">70</span><span class="bt">The Collapse of Complex Societies<span class="ba">Joseph A. Tainter<span class="dot">1988</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">VIII</span><span class="an">Who pays for the future?</span>
+            <span class="ticks" aria-hidden="true"><i data-n="71"></i><i data-n="72"></i><i data-n="73"></i><i data-n="74"></i><i data-n="75"></i><i data-n="76"></i><i data-n="77"></i><i data-n="78"></i><i data-n="79"></i><i data-n="80"></i><i data-n="81"></i></span><span class="rg">71&thinsp;&ndash;&thinsp;81</span></summary>
+          <ol class="books"><li data-n="71"><span class="bn">71</span><span class="bt">VC<span class="ba">Tom Nicholas<span class="dot">2019</span></span></span></li><li data-n="72"><span class="bn">72</span><span class="bt">Doing Capitalism in the Innovation Economy<span class="ba">William H. Janeway<span class="dot">2012</span></span></span></li><li data-n="73"><span class="bn">73</span><span class="bt">Technological Revolutions and Financial Capital<span class="ba">Carlota Perez<span class="dot">2002</span></span></span></li><li data-n="74"><span class="bn">74</span><span class="bt">Engines That Move Markets<span class="ba">Alasdair Nairn<span class="dot">2002</span></span></span></li><li data-n="75"><span class="bn">75</span><span class="bt">Fortune’s Formula<span class="ba">William Poundstone<span class="dot">2005</span></span></span></li><li data-n="76"><span class="bn">76</span><span class="bt">The Innovator’s Dilemma<span class="ba">Clayton M. Christensen<span class="dot">1997</span></span></span></li><li data-n="77"><span class="bn">77</span><span class="bt">7 Powers<span class="ba">Hamilton Helmer<span class="dot">2016</span></span></span></li><li data-n="78"><span class="bn">78</span><span class="bt">The Power Law<span class="ba">Sebastian Mallaby<span class="dot">2022</span></span></span></li><li data-n="79"><span class="bn">79</span><span class="bt">High Output Management<span class="ba">Andrew S. Grove<span class="dot">1983</span></span></span></li><li data-n="80"><span class="bn">80</span><span class="bt">Zero to One<span class="ba">Peter Thiel with Blake Masters<span class="dot">2014</span></span></span></li><li data-n="81"><span class="bn">81</span><span class="bt">Bad Blood<span class="ba">John Carreyrou<span class="dot">2018</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">IX</span><span class="an">The attempt to escape every constraint</span>
+            <span class="ticks" aria-hidden="true"><i data-n="82"></i><i data-n="83"></i><i data-n="84"></i><i data-n="85"></i><i data-n="86"></i><i data-n="87"></i><i data-n="88"></i><i data-n="89"></i><i data-n="90"></i><i data-n="91"></i><i data-n="92"></i><i data-n="93"></i><i data-n="94"></i><i data-n="95"></i></span><span class="rg">82&thinsp;&ndash;&thinsp;95</span></summary>
+          <ol class="books"><li data-n="82"><span class="bn">82</span><span class="bt">Daedalus, or Science and the Future<span class="ba">J.B.S. Haldane<span class="dot">1923</span></span></span></li><li data-n="83"><span class="bn">83</span><span class="bt">The World, the Flesh and the Devil<span class="ba">J.D. Bernal<span class="dot">1929</span></span></span></li><li data-n="84"><span class="bn">84</span><span class="bt">The Abolition of Man<span class="ba">C.S. Lewis<span class="dot">1943</span></span></span></li><li data-n="85"><span class="bn">85</span><span class="bt">The High Frontier<span class="ba">Gerard K. O’Neill<span class="dot">1976</span></span></span></li><li data-n="86"><span class="bn">86</span><span class="bt">The Human Condition<span class="ba">Hannah Arendt<span class="dot">1958</span></span></span></li><li data-n="87"><span class="bn">87</span><span class="bt">Engines of Creation<span class="ba">K. Eric Drexler<span class="dot">1986</span></span></span></li><li data-n="88"><span class="bn">88</span><span class="bt">The Sovereign Individual<span class="ba">James Dale Davidson and William Rees-Mogg<span class="dot">1997</span></span></span></li><li data-n="89"><span class="bn">89</span><span class="bt">Anti-Oedipus<span class="ba">Gilles Deleuze and Félix Guattari<span class="dot">1972</span></span></span></li><li data-n="90"><span class="bn">90</span><span class="bt">Fanged Noumena<span class="ba">Nick Land<span class="dot">2011</span></span></span></li><li data-n="91"><span class="bn">91</span><span class="bt">Erewhon<span class="ba">Samuel Butler<span class="dot">1872</span></span></span></li><li data-n="92"><span class="bn">92</span><span class="bt">Summa Technologiae<span class="ba">Stanisław Lem<span class="dot">1964</span></span></span></li><li data-n="93"><span class="bn">93</span><span class="bt">Mind Children<span class="ba">Hans Moravec<span class="dot">1988</span></span></span></li><li data-n="94"><span class="bn">94</span><span class="bt">The Singularity Is Nearer<span class="ba">Ray Kurzweil<span class="dot">2024</span></span></span></li><li data-n="95"><span class="bn">95</span><span class="bt">The Scaling Era<span class="ba">Dwarkesh Patel with Gavin Leech<span class="dot">2025</span></span></span></li></ol>
+        </details>
+        <details class="act">
+          <summary><span class="ar">X</span><span class="an">The trial</span>
+            <span class="ticks" aria-hidden="true"><i data-n="96"></i><i data-n="97"></i><i data-n="98"></i><i data-n="99"></i><i data-n="100"></i></span><span class="rg">96&thinsp;&ndash;&thinsp;100</span></summary>
+          <ol class="books"><li data-n="96"><span class="bn">96</span><span class="bt">The Technological Society<span class="ba">Jacques Ellul<span class="dot">1954</span></span></span></li><li data-n="97"><span class="bn">97</span><span class="bt">The Question Concerning Technology<span class="ba">Martin Heidegger<span class="dot">1954</span></span></span></li><li data-n="98"><span class="bn">98</span><span class="bt">The Imperative of Responsibility<span class="ba">Hans Jonas<span class="dot">1979</span></span></span></li><li data-n="99"><span class="bn">99</span><span class="bt">If Anyone Builds It, Everyone Dies<span class="ba">Eliezer Yudkowsky and Nate Soares<span class="dot">2025</span></span></span></li><li data-n="100"><span class="bn">100</span><span class="bt">The Beginning of Infinity<span class="ba">David Deutsch<span class="dot">2011</span></span></span></li></ol>
+        </details></div></div>
+  </section>
+
+  <footer>
+    <span>A Genealogy of Technological Optimism &middot; October 2026</span>
+    <nav><a href="syllabus.pdf" target="_blank" rel="noopener">Syllabus</a><a href="http://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">RSS</a><a href="https://x.com/slotkinjr" target="_blank" rel="noopener">Jon Slotkin</a></nav>
+  </footer>
+</div>
+<template id="ep-tpl">
+        <article class="ep row"><div class="gut num"></div><div class="body">
+          <p class="kicker"><span class="num-inline"></span><span class="latest">Latest</span><span class="kact"></span></p><h3></h3><p class="meta"></p>
+          
+          <div class="player" data-src="" data-dur="0">
+            <audio preload="none"></audio>
+            <button class="play" type="button" aria-label="Play"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></svg></button>
+            <div class="track">
+              <input class="seek" type="range" min="0" max="1" step="1" value="0" aria-label="Position">
+              <div class="times"><span class="cur">0:00</span><span class="rem">&minus;0:00</span></div>
+            </div>
+            <div class="tools">
+              <button class="tool back" type="button" aria-label="Back 15 seconds">&minus;15</button>
+              <button class="tool fwd" type="button" aria-label="Forward 30 seconds">+30</button>
+              <button class="tool rate" type="button" aria-label="Playback speed">1&times;</button>
+            </div>
+          </div><p class="summary"></p>
+          <p class="dl"><a href="#" download>Download episode</a><span class="size">On iPhone, touch and hold, then tap Download Linked File.</span></p>
+        </div></article></template>
+<script type="application/json" id="books">{"1":["The Phenomenon of Man","Pierre Teilhard de Chardin",1955,"I","A Jesuit paleontologist reads evolution as one movement toward greater complexity and consciousness, ending in a planetary mind. The list opens with progress at its most cosmic, stated as destiny."],"2":["The Philosophy of the Common Task","Nikolai Fedorov",1906,"I","A Moscow librarian argues that humanity’s shared moral duty is to defeat death and resurrect every ancestor through science. Tsiolkovsky studied in his reading room, and Russian cosmism starts here."],"3":["New Atlantis","Francis Bacon",1626,"I","Salomon’s House is a detailed blueprint for a state-funded research institution, written before one existed. A template for the Royal Society and, at some distance, for every lab since."],"4":["Sketch for a Historical Picture of the Progress of the Human Mind","Nicolas de Condorcet",1795,"I","Written in hiding during the Terror, shortly before he died in custody. Argues that improvement in knowledge, equality, and even lifespan has no fixed limit."],"5":["History of the Idea of Progress","Robert Nisbet",1980,"I","Traces progress from the Greeks through Augustine to the moderns and argues it has always rested on something close to faith. Sets up the dispute in the next two books."],"6":["Meaning in History","Karl Löwith",1949,"I","The charge: modern faith in progress is Christian eschatology with God removed. Worth holding against the way AGI is now described."],"7":["The Legitimacy of the Modern Age","Hans Blumenberg",1966,"I","The reply to Löwith. Curiosity and human self-assertion are modernity’s own achievements and owe nothing to the theology they replaced; the most rigorous defense of progress on its own terms."],"8":["The Protestant Ethic and the Spirit of Capitalism","Max Weber",1905,"I","Capitalist discipline grew out of religious anxiety about salvation. It ends with the iron cage, a system that keeps running after the belief that built it has gone."],"9":["The Spirit of Democratic Capitalism","Michael Novak",1982,"I","A Catholic theologian’s case that democratic capitalism is a moral and spiritual achievement. The theological defense its critics seldom engage."],"10":["Frankenstein; or, The Modern Prometheus","Mary Shelley",1818,"I","A maker abandons what he made, and the creation asks what it is owed. The question the rest of the list keeps returning to."],"11":["Thus Spoke Zarathustra","Friedrich Nietzsche",1883,"II","Man as something to be overcome. Transhumanism and accelerationism both draw on it, usually without saying so."],"12":["The Denial of Death","Ernest Becker",1973,"II","Civilization as an immortality project built to manage the fear of death. Explains a great deal about why people build, and raises a hard question about longevity research."],"13":["Things Hidden Since the Foundation of the World","René Girard, with Jean-Michel Oughourlian and Guy Lefort",1978,"II","Mimetic desire and the scapegoat mechanism, set out as dialogues. Thiel encountered Girard at Stanford, and Zero to One’s view of competition comes from here."],"14":["Notes from Underground","Fyodor Dostoevsky",1864,"II","A narrator who would rather act against his own interest than live as a piano key in a rationally planned world. The first serious argument that people will reject a utopia designed for their benefit."],"15":["Thinking, Fast and Slow","Daniel Kahneman",2011,"II","The catalog of systematic error in human judgment. Read the priming chapters with the replication record in mind; the core heuristics-and-biases findings have held up better."],"16":["Rationality for Mortals","Gerd Gigerenzer",2008,"II","Under real uncertainty, simple heuristics often outperform optimization. Closer to how founders and investors actually decide, and a direct challenge to Kahneman’s framing."],"17":["The Secret of Our Success","Joseph Henrich",2015,"II","Humans succeed through accumulated culture, and innovation scales with the size and connectedness of the population sharing it. The anthropological base for why networks and cities matter later."],"18":["Origins of Genius","Dean Keith Simonton",1999,"II","Creativity treated as Darwinian variation and selection. The best predictor of a creator’s hits is the number of attempts, the same distribution venture portfolios live in."],"19":["Expert Political Judgment","Philip E. Tetlock",2005,"II","Two decades of expert forecasts scored against outcomes. Foxes beat hedgehogs, and simple statistical extrapolation beat most of the experts."],"20":["Foundation","Isaac Asimov",1951,"II","Placed right after Tetlock: a mathematician who can forecast the fall of a galactic civilization. Psychohistory has had a long afterlife among people who build companies."],"21":["Science and the Modern World","Alfred North Whitehead",1925,"III","Names the method of invention as the nineteenth century’s greatest invention. Also introduces the fallacy of misplaced concreteness, a warning against mistaking models for the world."],"22":["Conjectures and Refutations","Karl Popper",1963,"III","Knowledge grows through bold guesses and criticism, never through confirmation. The epistemology underneath Deutsch, who closes the list."],"23":["The Structure of Scientific Revolutions","Thomas S. Kuhn",1962,"III","Science moves through paradigms that decide which questions count and which anomalies get ignored. The complication Popper never fully answered."],"24":["The Tacit Dimension","Michael Polanyi",1966,"III","We can know more than we can tell. Explains why expertise resisted codification for decades, and why systems that learn from examples finally got around it."],"25":["Individualism and Economic Order","Friedrich A. Hayek",1948,"III","Contains “The Use of Knowledge in Society” (1945): prices coordinate knowledge that no single mind holds. The deepest argument for decentralized experimentation."],"26":["Micromotives and Macrobehavior","Thomas C. Schelling",1978,"III","Mild individual preferences produce aggregate outcomes nobody chose, from segregated neighborhoods to tipping points. Adoption dynamics and network effects, worked out before the startup vocabulary existed."],"27":["The Human Use of Human Beings","Norbert Wiener",1950,"III","Feedback and control as the logic of machines and societies, from the founder of cybernetics, with an early warning about automation and labor."],"28":["The Sciences of the Artificial","Herbert A. Simon",1969,"III","Design, engineering, and organizations treated as one science of the artificial under bounded rationality. Simon co-wrote one of the first AI programs, and this is his clearest statement of intelligence as search and design."],"29":["An Inquiry into the Nature and Causes of the Wealth of Nations","Adam Smith",1776,"IV","Markets as a way of coordinating strangers. Worth rereading for the claim that the division of labor is limited by the extent of the market, which is an argument about scale."],"30":["Risk, Uncertainty and Profit","Frank H. Knight",1921,"IV","Separates measurable risk from true uncertainty and argues that profit exists only because of the second. The theory of venture, written a century before the industry."],"31":["The Theory of Economic Development","Joseph A. Schumpeter",1911,"IV","The entrepreneur first appears as the agent of “new combinations” who breaks equilibrium. Capitalism, Socialism and Democracy is the famous book; this is the source."],"32":["The Firm, the Market, and the Law","Ronald H. Coase",1988,"IV","Collects “The Nature of the Firm” (1937): firms exist because using markets has costs. Each drop in coordination cost, including the one AI is producing, moves the boundary of the firm."],"33":["Bourgeois Dignity","Deirdre N. McCloskey",2010,"IV","The Great Enrichment followed a change in how societies talked about and honored commerce and innovation, more than any shift in capital, trade, or institutions. The middle volume of her trilogy."],"34":["Atlas Shrugged","Ayn Rand",1957,"IV","The producer as moral hero. The novel builder culture returns to most, and worth reading against Notes from Underground twenty books earlier."],"35":["Anarchy, State, and Utopia","Robert Nozick",1974,"IV","The rigorous case for a minimal state, ending in a “framework for utopia” where people sort into communities of their choosing. Network-state and charter-city arguments are versions of Part III."],"36":["The Great Transformation","Karl Polanyi",1944,"IV","Self-regulating markets were built by states, and society pushes back when they outrun it. Michael Polanyi’s brother, placed directly after Rand and Nozick."],"37":["The Economy of Cities","Jane Jacobs",1969,"IV","New work grows by adding to old work, in dense places. Also argues, against the textbook sequence, that cities came before agriculture."],"38":["Institutions, Institutional Change and Economic Performance","Douglass C. North",1990,"IV","Institutions are the rules of the game and set the incentives for everything else. The source Why Nations Fail builds on."],"39":["The Rise and Decline of Nations","Mancur Olson",1982,"IV","Stable societies accumulate interest groups that block change, which helps explain why defeated or disrupted nations often grow fastest afterward. The most precise account of institutional sclerosis."],"40":["Exit, Voice, and Loyalty","Albert O. Hirschman",1970,"IV","Dissatisfied members can leave or speak up, and each option weakens the other. The analytic root of every exit argument later in the list."],"41":["A Culture of Growth","Joel Mokyr",2016,"V","A competitive market for ideas among Europe’s scholars, the Republic of Letters, set up the Industrial Revolution. Mokyr shared the 2025 Nobel for this line of work."],"42":["Knowledge and the Wealth of Nations","David Warsh",2006,"V","The story of Paul Romer’s point that ideas are nonrival, so growth can keep compounding. The economics software and AI actually run on."],"43":["An Essay on the Principle of Population","Thomas Robert Malthus",1798,"V","Written against Condorcet and Godwin: population outruns food, so improvement is temporary. Wrong about the outcome for two centuries and still the template for every scarcity argument."],"44":["The Ultimate Resource 2","Julian L. Simon",1996,"V","A revision of The Ultimate Resource (1981). Human ingenuity is the resource that does not run out, and Simon’s 1980 bet with Paul Ehrlich on commodity prices gives the Malthus rebuttal a scorecard."],"45":["The Rational Optimist","Matt Ridley",2010,"V","Exchange and specialization as the engine, with ideas recombining the way genes do. The broad popular synthesis of the optimist case."],"46":["Stubborn Attachments","Tyler Cowen",2018,"V","Sustainable growth deserves near-absolute moral priority because its benefits compound across generations. The moral claim the rest of the optimist case usually leaves implicit."],"47":["The Cost Disease","William J. Baumol",2012,"V","Labor-intensive services get relatively more expensive as productivity rises elsewhere. Health care and education are the standard cases, and whether AI breaks the pattern is an open question."],"48":["The Rise and Fall of American Growth","Robert J. Gordon",2016,"V","The inventions of 1870 to 1970 (electricity, the internal combustion engine, indoor plumbing, antibiotics) changed daily life more than anything since. The strongest case that the big gains are behind us."],"49":["Where Is My Flying Car?","J. Storrs Hall",2018,"V","The same question with the opposite answer: per-capita energy use flattened in the 1970s and regulation did the rest. The engineer’s account of stagnation."],"50":["Abundance","Ezra Klein and Derek Thompson",2025,"V","The case for building, made from the center left: permitting, process, and a governing culture organized around veto points. Significant partly because of which coalition it comes from."],"51":["Breakneck","Dan Wang",2025,"V","China as an engineering state that builds and the United States as a lawyerly society that litigates, with the costs of each. Grounds the stagnation debate in a live comparison."],"52":["An Evolutionary Theory of Economic Change","Richard R. Nelson and Sidney G. Winter",1982,"VI","Firms as bundles of routines that vary and get selected, in place of the optimizing firm of textbook economics. The foundation of evolutionary economics."],"53":["Inside the Black Box","Nathan Rosenberg",1982,"VI","Opens the box economists drew around technology. Science often follows engineering, and most of the value arrives through incremental improvement after the invention."],"54":["The Nature of Technology","W. Brian Arthur",2009,"VI","Technologies are assembled from other technologies and evolve by combination. The clearest account of why innovation speeds up as the stock of components grows."],"55":["Diffusion of Innovations","Everett M. Rogers",1962,"VI","The S-curve and adopter categories that Crossing the Chasm and every adoption chart since are built on, drawn partly from studies of Iowa farmers adopting hybrid corn."],"56":["Science, the Endless Frontier","Vannevar Bush",1945,"VI","The report to the president that shaped the postwar American research system and its linear model running from basic science to products."],"57":["Pasteur’s Quadrant","Donald E. Stokes",1997,"VI","Takes Bush’s linear model apart. Pasteur pursued fundamental understanding because he wanted to solve practical problems, and much of the most productive research sits in that quadrant."],"58":["Networks of Power","Thomas P. Hughes",1983,"VII","Electrification compared across Chicago, Berlin, and London, with Edison and Insull as system builders. The closest historical analog to the AI infrastructure buildout."],"59":["The Making of the Atomic Bomb","Richard Rhodes",1986,"VII","Physics converted into a weapon at wartime speed, with the science, the institutions, and the moral weight in one book. Widely read inside the frontier AI labs."],"60":["The Idea Factory","Jon Gertner",2012,"VII","The transistor, information theory, the laser, and the management model behind them. Also a study of what a regulated monopoly could afford to fund."],"61":["The Dream Machine","M. Mitchell Waldrop",2001,"VII","Licklider’s idea of human-computer symbiosis and how ARPA turned it into interactive computing and the network that became the internet. A case study in how one funder with a clear vision can redirect a field."],"62":["Regional Advantage","AnnaLee Saxenian",1994,"VII","Why the Valley’s open, networked culture outcompeted Route 128’s vertically integrated firms. The ecosystem argument, made with evidence."],"63":["The Box","Marc Levinson",2006,"VII","A steel box rewired global trade by cutting the cost of the whole system, in ways the early players did not foresee. The model for recognizing technologies whose impact is mostly second-order."],"64":["Chip War","Chris Miller",2022,"VII","How semiconductors became the strategic chokepoint, from Fairchild to TSMC to export controls. Compute as geopolitics."],"65":["The Entrepreneurial State","Mariana Mazzucato",2013,"VII","Public money funded the riskiest underlying science (the internet, GPS, touchscreens) before private capital commercialized it. The best version of the claim that public risk earns public returns."],"66":["Power and Progress","Daron Acemoglu and Simon Johnson",2023,"VII","Gains from technology are shared only when workers and institutions can claim them, and the direction of innovation is a choice. Both authors shared the 2024 Nobel."],"67":["Seeing Like a State","James C. Scott",1998,"VII","High-modernist schemes fail because they erase the local, practical knowledge they cannot see. Hayek’s argument aimed at the state, and just as applicable to platforms."],"68":["Normal Accidents","Charles Perrow",1984,"VII","In tightly coupled, interactively complex systems, some catastrophic failures are built into the design. Written after Three Mile Island and directly relevant to autonomous systems and grids."],"69":["The Whale and the Reactor","Langdon Winner",1986,"VII","Contains “Do Artifacts Have Politics?”: design choices settle questions of power before any law is written."],"70":["The Collapse of Complex Societies","Joseph A. Tainter",1988,"VII","Societies solve problems by adding complexity until the returns to complexity turn negative. A theory of collapse with no villain, which makes it hard to dismiss."],"71":["VC","Tom Nicholas",2019,"VIII","The rigorous history, starting with nineteenth-century New Bedford whaling, whose return distribution looked much like venture’s."],"72":["Doing Capitalism in the Innovation Economy","William H. Janeway",2012,"VIII","Innovation as a three-player game among the state, speculative finance, and the market economy, by an economist who spent decades investing in technology at Warburg Pincus."],"73":["Technological Revolutions and Financial Capital","Carlota Perez",2002,"VIII","Each technological revolution runs through an installation phase financed by a bubble, a crash, and then a deployment period. The framework most people reach for when reading the current AI capital cycle."],"74":["Engines That Move Markets","Alasdair Nairn",2002,"VIII","The same revolutions from the investor’s side, from railways to the internet. Most investors in transformative technologies lost money even when the technology won."],"75":["Fortune’s Formula","William Poundstone",2005,"VIII","The Kelly criterion, from John Kelly at Bell Labs and Claude Shannon and Ed Thorp at MIT to casinos and Wall Street. Bet sizing when the edge is real and the variance is enormous."],"76":["The Innovator’s Dilemma","Clayton M. Christensen",1997,"VIII","Well-managed incumbents lose because they serve their best customers well. Widely cited and often misapplied; the original is more careful than its summaries."],"77":["7 Powers","Hamilton Helmer",2016,"VIII","Seven sources of durable advantage, and a clean separation between a technology mattering and a company capturing its value."],"78":["The Power Law","Sebastian Mallaby",2022,"VIII","Venture as a distinct form of finance built around outliers, from Arthur Rock and Fairchild forward."],"79":["High Output Management","Andrew S. Grove",1983,"VIII","A manager’s output is the output of the organization, and Intel’s methods for raising it."],"80":["Zero to One","Peter Thiel with Blake Masters",2014,"VIII","Definite optimism, secrets, and monopoly. Read here, after Girard, Knight, and Schumpeter, it reads as a compression of the tradition behind it."],"81":["Bad Blood","John Carreyrou",2018,"VIII","Directly after Thiel: a company whose secret was fabricated, and the narrative, board prestige, and missing diligence that kept it going."],"82":["Daedalus, or Science and the Future","J.B.S. Haldane",1923,"IX","A Cambridge lecture predicting ectogenesis and the deliberate engineering of human biology. An opening document of transhumanism and one of Huxley’s sources for Brave New World."],"83":["The World, the Flesh and the Devil","J.D. Bernal",1929,"IX","A young crystallographer imagines space habitats, now called Bernal spheres, and the redesign of the human body and mind. Much of the current frontier agenda, a century early."],"84":["The Abolition of Man","C.S. Lewis",1943,"IX","Each new power over nature turns out to be power some people hold over others, including over future generations. Haldane later attacked Lewis’s view of science in print, and Lewis drafted a reply."],"85":["The High Frontier","Gerard K. O’Neill",1976,"IX","A Princeton physicist’s engineering case for large rotating colonies built from lunar and asteroid material. Blue Origin’s stated long-term vision is built on it."],"86":["The Human Condition","Hannah Arendt",1958,"IX","Opens with Sputnik and the wish to escape the earthbound human condition, then asks what happens to action and meaning in a society of laborers without labor."],"87":["Engines of Creation","K. Eric Drexler",1986,"IX","Molecular manufacturing and the assembler. Much of the nanotech program has not arrived; its reasoning about exponential capability and its dangers carried straight into AI."],"88":["The Sovereign Individual","James Dale Davidson and William Rees-Mogg",1997,"IX","Predicted that digital commerce and encryption would loosen the nation-state’s hold on mobile capital and talent. Parts read as prophecy and parts as wishful thinking, and both are instructive."],"89":["Anti-Oedipus","Gilles Deleuze and Félix Guattari",1972,"IX","Capitalism as a machine that dissolves every fixed code, with a passage suggesting the way out is to go further into the process. Later accelerationists treat that passage as their starting point."],"90":["Fanged Noumena","Nick Land",2011,"IX","The Warwick and CCRU writings that recast acceleration as capital and technology assembling an intelligence of their own. e/acc descends from this, and the source is stranger and darker than the descendant."],"91":["Erewhon","Samuel Butler",1872,"IX","After all that futurism, a Victorian satire whose “Book of the Machines” argues that machines are evolving and should be destroyed before they surpass us. The AI-risk argument predates the computer."],"92":["Summa Technologiae","Stanisław Lem",1964,"IX","A novelist’s nonfiction forecast of virtual reality, artificial intelligence, and technological evolution. Not translated into English until 2013."],"93":["Mind Children","Hans Moravec",1988,"IX","Extrapolates computing power against estimates of brain capacity to forecast human-level machines, and contains what became known as Moravec’s paradox. The foundation Kurzweil built on."],"94":["The Singularity Is Nearer","Ray Kurzweil",2024,"IX","The exponential case restated nineteen years after The Singularity Is Near, with its central timelines unchanged."],"95":["The Scaling Era","Dwarkesh Patel with Gavin Leech",2025,"IX","The people building frontier models, in their own words, organized as a history of the scaling hypothesis. The present tense of the list."],"96":["The Technological Society","Jacques Ellul",1954,"X","Technique, the search for the most efficient method in every domain, becomes autonomous and sets its own ends. The most thorough critique of technology as such."],"97":["The Question Concerning Technology","Martin Heidegger",1954,"X","Modern technology reveals the world, people included, as standing-reserve: resources waiting to be ordered and optimized. Short, difficult, and the root of most serious critiques since."],"98":["The Imperative of Responsibility","Hans Jonas",1979,"X","Power on this scale demands an ethics of responsibility toward people not yet born, and a rule that gives the prophecy of doom more weight than the prophecy of bliss. The philosophical root of the precautionary principle."],"99":["If Anyone Builds It, Everyone Dies","Eliezer Yudkowsky and Nate Soares",2025,"X","Building superhuman AI with anything like current methods ends in human extinction, argued without hedging. The strongest version of the case against the whole program."],"100":["The Beginning of Infinity","David Deutsch",2011,"X","Problems are inevitable, problems are soluble, and knowledge can grow without bound. Placed last so it has to answer everything before it."]}</script>
+<script>
+(function(){
+  var root=document.documentElement;
+
+  /* Lead with the right app for this device */
+  var ua=navigator.userAgent||"";
+  var ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  var android=/Android/i.test(ua),mac=!ios&&/Macintosh/.test(ua);
+  var os=ios?"ios":android?"android":mac?"mac":"desktop";
+  root.setAttribute("data-os",os);
+  var order={ios:["apple","overcast","pocketcasts","castro"],android:["pocketcasts","antennapod"],
+             mac:["apple","pocketcasts"],desktop:["pocketcasts","apple"]}[os];
+  var all={};document.querySelectorAll("[data-app]").forEach(function(a){all[a.getAttribute("data-app")]=a;});
+  var slot=document.getElementById("primary"),row=document.getElementById("apps");
+  slot.innerHTML="";row.innerHTML="";
+  order.forEach(function(k,i){var a=all[k];if(!a)return;
+    if(i===0){a.className="pill pill-ink";a.textContent="Follow in "+a.getAttribute("data-name");slot.appendChild(a);}
+    else{a.className="pill";a.textContent=a.getAttribute("data-name");row.appendChild(a);}});
+
+  /* If an app link does nothing, the page stays in front: offer the manual route */
+  var hint=document.getElementById("hint"),timer=null;
+  function cancel(){if(timer){clearTimeout(timer);timer=null;}}
+  window.addEventListener("blur",cancel);
+  document.addEventListener("visibilitychange",function(){if(document.hidden)cancel();});
+  document.querySelectorAll("[data-app]").forEach(function(a){
+    if(/^https?:/.test(a.getAttribute("href")))return;
+    a.addEventListener("click",function(){cancel();
+      timer=setTimeout(function(){if(!document.hidden&&document.hasFocus())hint.hidden=false;},2200);});});
+
+  /* Copy the feed */
+  var copy=document.getElementById("copy"),code=document.getElementById("feed-url");
+  copy.addEventListener("click",function(){
+    function done(){copy.textContent="Copied";setTimeout(function(){copy.textContent="Copy";},1800);}
+    function fallback(){var r=document.createRange();r.selectNodeContents(code);var s=getSelection();
+      s.removeAllRanges();s.addRange(r);try{document.execCommand("copy");done();}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(code.textContent).then(done,fallback);
+    else fallback();});
+
+  /* Players */
+  function fmt(s){s=Math.max(0,Math.floor(s||0));var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+    return (h?h+":"+(m<10?"0":"")+m:m)+":"+(x<10?"0":"")+x;}
+  var current=null;
+  function setup(card){
+    var p=card.querySelector(".player");if(!p||p.getAttribute("data-ready"))return;p.setAttribute("data-ready","1");
+    var a=p.querySelector("audio"),play=p.querySelector(".play"),seek=p.querySelector(".seek"),
+        cur=p.querySelector(".cur"),rem=p.querySelector(".rem"),rate=p.querySelector(".rate");
+    var dur=+p.getAttribute("data-dur")||0,pending=null,loaded=false;
+    function load(){if(!loaded){a.src=p.getAttribute("data-src");loaded=true;}}
+    function D(){return a.duration&&isFinite(a.duration)?a.duration:dur;}
+    function paint(){var d=D(),t=pending!=null?pending:(a.currentTime||0);seek.max=Math.max(1,Math.round(d));seek.value=t;
+      cur.textContent=fmt(t);rem.textContent="−"+fmt(d-t);seek.style.setProperty("--p",(d?t/d*100:0)+"%");}
+    function seekTo(t){t=Math.max(0,Math.min(t,D()||t));if(a.readyState<1){pending=t;a.preload="metadata";load();}else a.currentTime=t;paint();}
+    function toggle(){if(a.paused){if(current&&current!==a)current.pause();current=a;load();a.play();}else a.pause();}
+    a.addEventListener("loadedmetadata",function(){if(pending!=null){a.currentTime=pending;pending=null;}paint();});
+    a.addEventListener("timeupdate",paint);
+    a.addEventListener("play",function(){p.classList.add("playing");play.setAttribute("aria-label","Pause");session(card,a);});
+    a.addEventListener("pause",function(){p.classList.remove("playing");play.setAttribute("aria-label","Play");});
+    play.addEventListener("click",toggle);
+    seek.addEventListener("input",function(){seekTo(+seek.value);});
+    p.querySelector(".back").addEventListener("click",function(){seekTo((pending!=null?pending:a.currentTime||0)-15);});
+    p.querySelector(".fwd").addEventListener("click",function(){seekTo((pending!=null?pending:a.currentTime||0)+30);});
+    var rates=[1,1.25,1.5,2,0.8];
+    rate.addEventListener("click",function(){var i=(rates.indexOf(a.playbackRate)+1)%rates.length;
+      a.playbackRate=rates[i];rate.textContent=rates[i]+"×";});
+    card.querySelectorAll("[data-t]").forEach(function(c){c.addEventListener("click",function(ev){
+      ev.preventDefault();seekTo(+c.getAttribute("data-t"));if(a.paused)toggle();});});
+    card._toggle=toggle;paint();
+  }
+  function session(card,a){
+    if(!("mediaSession" in navigator))return;
+    try{navigator.mediaSession.metadata=new MediaMetadata({title:card.getAttribute("data-title"),
+      artist:"A Genealogy of Technological Optimism",album:"Episode "+card.getAttribute("data-n"),
+      artwork:[{src:new URL("cover.jpg",location.href).href,sizes:"1000x1000",type:"image/jpeg"}]});
+      navigator.mediaSession.setActionHandler("seekbackward",function(){a.currentTime=Math.max(0,a.currentTime-15);});
+      navigator.mediaSession.setActionHandler("seekforward",function(){a.currentTime=a.currentTime+30;});}catch(e){}
+  }
+  document.querySelectorAll(".ep").forEach(setup);
+
+  var listen=document.getElementById("listen-here");
+  function syncListen(){var p=document.querySelector("#episode-list .player");
+    if(!p){listen.hidden=true;return;}var c=p.closest(".ep");listen.hidden=false;listen.href="#"+c.id;
+    listen.textContent="Or listen to episode "+c.getAttribute("data-n")+" here";}
+  syncListen();
+  listen.addEventListener("click",function(ev){var p=document.querySelector("#episode-list .player");if(!p)return;
+    var c=p.closest(".ep");ev.preventDefault();c.scrollIntoView({behavior:"smooth",block:"start"});if(c._toggle)c._toggle();});
+
+  /* Read the live feed when the browser allows it, so new episodes appear without a rebuild */
+  var BOOKS=JSON.parse(document.getElementById("books").textContent);
+  var list=document.getElementById("episode-list"),tpl=document.getElementById("ep-tpl");
+  function tag(el,n){var x=el.getElementsByTagName(n)[0];return x?x.textContent:"";}
+  function secs(v){if(!v)return 0;if(/^\d+$/.test(v))return +v;return v.split(":").reduce(function(t,x){return t*60+(+x||0);},0);}
+  function strip(h){var d=new DOMParser().parseFromString("<div>"+h+"</div>","text/html");return (d.body.textContent||"").trim();}
+  function mark(n){document.querySelectorAll('[data-n="'+n+'"]').forEach(function(el){
+    if(el.tagName==="I")el.className="on";
+    if(el.tagName==="LI"&&!el.classList.contains("out")){el.classList.add("out");
+      var b=document.createElement("a");b.className="listen";b.href="#ep-"+n;b.textContent="Listen";el.appendChild(b);}});}
+  function attach(card,url,dur){
+    if(card.querySelector(".player"))return;
+    var p=tpl.content.querySelector(".player").cloneNode(true);
+    p.setAttribute("data-src",url);p.setAttribute("data-dur",dur||0);
+    p.querySelector(".rem").textContent="−"+fmt(dur||0);
+    card.querySelector(".meta").after(p);
+    if(!card.querySelector(".dl")){var d=tpl.content.querySelector(".dl").cloneNode(true);
+      d.querySelector("a").href=url;card.querySelector(".summary").after(d);}
+    setup(card);
+  }
+  function make(n,desc,dur){
+    var b=BOOKS[n];if(!b)return null;var c=tpl.content.querySelector(".ep").cloneNode(true);
+    c.id="ep-"+n;c.setAttribute("data-n",n);c.setAttribute("data-act",b[3]);c.setAttribute("data-title",b[0]);
+    c.querySelector(".num").textContent=n;c.querySelector(".num-inline").textContent=n;
+    c.querySelector(".kact").textContent="Act "+b[3];c.querySelector("h3").textContent=b[0];
+    var meta=c.querySelector(".meta");meta.textContent=b[1];
+    [String(b[2])].concat(dur?[Math.floor(dur/60)+" min"+(dur%60?" "+dur%60+" sec":"")]:[]).forEach(function(t){
+      var s=document.createElement("span");s.className="dot";s.textContent=t;meta.appendChild(s);});
+    c.querySelector(".summary").textContent=desc||b[4];
+    c.querySelector(".player").remove();c.querySelector(".dl").remove();
+    return c;
+  }
+  if(window.fetch&&window.DOMParser){
+    fetch(root.getAttribute("data-feed"),{mode:"cors"}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(txt){
+      var x=new DOMParser().parseFromString(txt,"application/xml");
+      if(x.getElementsByTagName("parsererror").length)return;
+      var items=x.getElementsByTagName("item"),seen={};
+      for(var i=0;i<items.length;i++){
+        var it=items[i],title=tag(it,"title"),n=parseInt(tag(it,"itunes:episode"),10);
+        if(!n){var m=title.match(/^\s*(?:Episode\s*)?(\d{1,3})\b/i);n=m?+m[1]:0;}
+        if(!n||!BOOKS[n]||seen[n])continue;seen[n]=1;
+        var enc=it.getElementsByTagName("enclosure")[0],url=enc?enc.getAttribute("url"):"";
+        if(url)url=url.replace(/^http:\/\//,"https://");
+        var dur=secs(tag(it,"itunes:duration")),desc=strip(tag(it,"itunes:summary")||tag(it,"description"));
+        var card=document.getElementById("ep-"+n);
+        if(!card){card=make(n,desc,dur);if(!card)continue;list.appendChild(card);}
+        if(url)attach(card,url,dur);
+        mark(n);
+      }
+      var cards=[].slice.call(list.querySelectorAll(".ep")).sort(function(a,b){return b.getAttribute("data-n")-a.getAttribute("data-n");});
+      cards.forEach(function(c,i){list.appendChild(c);c.classList.toggle("is-latest",i===0);});
+      var count=document.querySelectorAll(".ticks i.on").length;
+      document.querySelectorAll("[data-released]").forEach(function(el){el.textContent=count;});
+      syncListen();
+    }).catch(function(){});
+  }
+})();
+</script>
+</body>
+</html>
