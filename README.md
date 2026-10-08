@@ -27,3 +27,26 @@ Created and hosted by Jon Slotkin.
 
 The page also reads the RSS feed in the visitor's browser when the feed host allows it,
 so new episodes can appear before the site is rebuilt.
+
+## Analytics
+
+The page reports to PostHog (US cloud) when `POSTHOG_KEY` in `build/build_site.py` is set.
+The key is public by design: it can send events, not read them.
+
+- **Automatic:** pageviews, time on page, location (city-level, from IP), device, referrer and
+  UTM tags, every click, heatmaps, rage and dead clicks, web vitals, JavaScript errors, and
+  session replays when replay is on in the PostHog project.
+- **Custom events:**
+  - Following: `follow_click` (by app), `follow_app_not_opened`, `feed_copied`,
+    `rss_link_click`, `other_apps_click`
+  - Listening: `episode_play` (with trigger: play button, pull quote, chapter, transcript),
+    `episode_listen` (seconds heard, share of episode heard), `episode_progress` (25/50/75/90%),
+    `episode_finished`, `playback_speed_change`, `audio_error`
+  - Navigation: `pull_quote_click`, `chapter_click`, `transcript_click`, `download`,
+    `syllabus_open`, `outbound_click`, `episode_section_open`, `earlier_episode_open`,
+    `act_open`, `act_listen_click`, `text_copied`, `section_viewed`
+  - Engagement: `page_engagement` (engaged seconds, deepest scroll)
+- The QR code carries `?utm_source=qr`. The page removes UTM tags from the address bar after
+  recording them.
+- Open the site with `?notrack` to stop counting that browser, and `?track` to undo it. Local
+  previews aren't counted unless opened with `?track`. PostHog drops automated browsers.

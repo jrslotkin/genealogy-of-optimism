@@ -39,6 +39,9 @@ EP_DIR = pathlib.Path(os.environ.get("EP_DIR", ROOT / "episodes"))
 EP_JSON = pathlib.Path(os.environ.get("EPISODES_JSON", ROOT / "episodes.json"))
 OUT = pathlib.Path(os.environ.get("SITE_OUT", ROOT.parent / "docs"))
 MONTH = "October 2026"
+# PostHog project key: public by design (it can send events, not read them). Empty = no analytics.
+POSTHOG_KEY = os.environ.get("POSTHOG_KEY", "").strip()
+POSTHOG_HOST = os.environ.get("POSTHOG_HOST", "https://us.i.posthog.com").strip().rstrip("/")
 HERO_CROP = 1392 / 1600          # top of the cover art, above the title banner
 HERO_H = round(1200 * HERO_CROP)
 
@@ -609,6 +612,141 @@ JS = r"""
 })();
 """
 
+# PostHog. Pageviews, time on page, geography, devices, referrers, every click, heatmaps and
+# session replays come from the library; the events below add what it can't infer: follows by
+# app, listening (seconds, coverage, milestones), downloads, chapters, folds and engaged time.
+# Open the site with ?notrack to stop counting your own browser, ?track to undo.
+ANALYTICS_JS = r"""
+(function(){
+  var KEY="__KEY__",HOST="__HOST__";
+  var sp=new URLSearchParams(location.search),store=null;
+  try{store=window.localStorage;}catch(e){}
+  function remember(on){try{if(on)store.setItem("goto-notrack","1");else store.removeItem("goto-notrack");}catch(e){}}
+  function toast(m){var d=document.createElement("div");d.textContent=m;d.setAttribute("role","status");
+    d.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9;max-width:calc(100% - 32px);"+
+      "background:#121212;color:#fff;font:400 14px/1.35 Geist,system-ui,sans-serif;padding:12px 18px;border-radius:999px;"+
+      "box-shadow:0 12px 32px -12px rgba(0,0,0,.45);text-align:center;transition:opacity .4s";
+    document.body.appendChild(d);setTimeout(function(){d.style.opacity="0";setTimeout(function(){d.remove();},450);},3200);}
+  function clean(){var q=new URLSearchParams(location.search);
+    Array.from(q.keys()).forEach(function(k){if(/^(utm_|track$|notrack$)/.test(k))q.delete(k);});
+    var s=q.toString();if(s!==location.search.slice(1))history.replaceState(history.state,"",location.pathname+(s?"?"+s:"")+location.hash);}
+  if(sp.has("notrack")){remember(true);toast("This browser is no longer counted.");}
+  else if(sp.has("track")){remember(false);if(!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))toast("This browser is counted again.");}
+  var off=false;try{off=!!store&&store.getItem("goto-notrack")==="1";}catch(e){}
+  if(/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)&&!sp.has("track"))off=true;
+  if(off||!KEY){clean();return;}
+
+  /* Queue until the library arrives, then hand everything over with its original time */
+  var ph=null,Q=[];
+  function opts(beacon,ts){var o={};if(beacon)o.transport="sendBeacon";if(ts)o.timestamp=ts;return o;}
+  function track(n,p,beacon){p=p||{};if(ph)ph.capture(n,p,opts(beacon));else if(Q.length<300)Q.push([n,p,beacon,new Date()]);}
+  var s=document.createElement("script");s.async=true;s.crossOrigin="anonymous";
+  s.src=HOST.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js";
+  s.onload=function(){var P=window.posthog;if(!P||typeof P.init!=="function")return;
+    P.init(KEY,{api_host:HOST,defaults:"2026-05-30",person_profiles:"always",
+      enable_heatmaps:true,capture_dead_clicks:true,capture_exceptions:true,
+      capture_performance:{web_vitals:true},session_recording:{maskAllInputs:true},
+      loaded:function(i){ph=i;Q.splice(0).forEach(function(x){i.capture(x[0],x[1],opts(x[2],x[3]));});setTimeout(clean,2500);}});};
+  document.head.appendChild(s);
+
+  function merge(a,b){for(var k in b)a[k]=b[k];return a;}
+  function ep(el){var c=el&&el.closest&&el.closest(".ep");return c?{episode:+c.getAttribute("data-n"),title:c.getAttribute("data-title")}:{};}
+  var NAMES={"note-h":"note","latest-h":"latest_episode","acts-h":"acts","earlier-h":"earlier_episodes","more-h":"other_apps"};
+  function secName(el){if(!el)return null;if(el.tagName==="HEADER")return "hero";if(el.tagName==="FOOTER")return "footer";
+    var h=el.querySelector("h2");return h&&NAMES[h.id]||null;}
+
+  /* Clicks */
+  var last={k:null,t:0,at:null},lastApp=null;
+  document.addEventListener("click",function(ev){
+    var el=ev.target.closest&&ev.target.closest("a,button");if(!el)return;
+    var href=el.getAttribute("href")||"";
+    if(el.hasAttribute("data-app")){lastApp=el.getAttribute("data-app");
+      track("follow_click",{app:lastApp,app_name:el.getAttribute("data-name"),
+        placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
+    if(el.id==="copy"){track("feed_copied",{});return;}
+    if(el.classList.contains("play")){last={k:"play_button",t:Date.now(),at:null};return;}
+    if(el.hasAttribute("data-t")){
+      var k=el.closest(".pull")?"pull_quote":el.closest(".chapters")?"chapter":el.closest(".transcript")?"transcript":"timestamp";
+      last={k:k,t:Date.now(),at:+el.getAttribute("data-t")};
+      var label=el.closest(".chapters")?(el.textContent||"").replace((el.querySelector(".ct")||{}).textContent||"","").trim():(el.textContent||"").trim();
+      track(k+"_click",merge(ep(el),{at_seconds:+el.getAttribute("data-t"),label:label.slice(0,140)}));return;}
+    if(el.hasAttribute("download")){var file=el.getAttribute("download")||decodeURIComponent(href.split("/").pop());
+      track("download",merge(ep(el),{file:file,kind:/\.zip$/i.test(file)?"all_episodes":"episode"}),true);return;}
+    if(/syllabus\.pdf$/.test(href)){track("syllabus_open",{placement:el.closest("footer")?"footer":"acts_header"},true);return;}
+    if(el.classList.contains("listen")){track("act_listen_click",{episode:+el.closest("li").getAttribute("data-n")});return;}
+    if(href==="#more"){track("other_apps_click",{placement:el.closest("#hint")?"app_did_not_open_hint":"fine_print"});return;}
+    if(/podcasts\/feed\//.test(href)){track("rss_link_click",{placement:el.closest("footer")?"footer":"other"},true);return;}
+    if(/^https?:/i.test(href)&&el.host!==location.host){
+      track("outbound_click",merge(ep(el),{url:el.href,domain:el.hostname.replace(/^www\./,""),
+        context:el.closest(".sources")?"episode_source":el.closest("footer,.hero-foot")?"host_profile":"other"}),true);}
+  },true);
+
+  /* An app link that opened nothing */
+  var hint=document.getElementById("hint");
+  if(hint&&window.MutationObserver)new MutationObserver(function(){if(!hint.hidden)track("follow_app_not_opened",{app:lastApp});})
+    .observe(hint,{attributes:true,attributeFilter:["hidden"]});
+
+  /* Folds, earlier episodes, acts */
+  document.addEventListener("toggle",function(ev){var d=ev.target;if(!d||d.tagName!=="DETAILS"||!d.open)return;
+    if(d.classList.contains("fold")){var sm=d.querySelector("summary");track("episode_section_open",merge(ep(d),{section:(sm&&sm.textContent||"").trim()}));}
+    else if(d.classList.contains("ep-row"))track("earlier_episode_open",{episode:+d.getAttribute("data-n"),title:d.getAttribute("data-title"),via:location.hash==="#"+d.id?"link":"click"});
+    else if(d.classList.contains("act"))track("act_open",{act:((d.querySelector(".ar")||{}).textContent||"").trim(),name:((d.querySelector(".an")||{}).textContent||"").trim()});
+  },true);
+
+  /* What people copy */
+  document.addEventListener("copy",function(){var sel=getSelection(),t=String(sel||"").trim();if(!t)return;
+    var n=sel.anchorNode;n=n&&(n.nodeType===1?n:n.parentElement);if(!n||n.closest("#feed-url"))return;
+    track("text_copied",merge(ep(n),{text:t.slice(0,280),length:t.length,section:secName(n.closest("section,header,footer"))}));});
+
+  /* How far down people get */
+  var t0=Date.now();
+  if("IntersectionObserver" in window){var seen={};
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;var n=secName(en.target);
+      if(!n||seen[n])return;seen[n]=1;io.unobserve(en.target);
+      track("section_viewed",{section:n,seconds_after_load:Math.round((Date.now()-t0)/1000)});});},{rootMargin:"0px 0px -25% 0px"});
+    document.querySelectorAll("section.sec").forEach(function(x){io.observe(x);});}
+
+  /* Engaged time: visible and touched in the last 30 seconds, or audio playing */
+  var active=0,sent=0,lastAct=Date.now(),maxScroll=0;
+  function poke(){lastAct=Date.now();}
+  ["pointerdown","pointermove","keydown","wheel","touchstart","scroll"].forEach(function(e){addEventListener(e,poke,{passive:true,capture:true});});
+  function scrolled(){var h=document.documentElement.scrollHeight-innerHeight,p=h>0?scrollY/h*100:100;if(p>maxScroll)maxScroll=Math.min(100,p);}
+  addEventListener("scroll",scrolled,{passive:true});scrolled();
+  function playing(){return [].some.call(document.querySelectorAll("audio"),function(a){return !a.paused;});}
+  setInterval(function(){if(!document.hidden&&(Date.now()-lastAct<30000||playing()))active++;},1000);
+  function engagement(reason){var d=active-sent;if(d<1)return;sent=active;
+    track("page_engagement",{active_seconds:d,active_seconds_total:active,seconds_since_load:Math.round((Date.now()-t0)/1000),
+      max_scroll_percent:Math.round(maxScroll),reason:reason},true);}
+
+  /* Listening: seconds heard, share of the episode heard, milestones */
+  var L={};
+  function st(a){var c=a.closest(".ep"),n=c?+c.getAttribute("data-n"):0;
+    return L[n]||(L[n]={n:n,title:c&&c.getAttribute("data-title"),a:a,heard:{},last:null,sec:0,sent:0,miles:{},plays:0,timer:null});}
+  function dur(a){var p=a.closest(".player");return a.duration&&isFinite(a.duration)?a.duration:+(p&&p.getAttribute("data-dur"))||0;}
+  function cov(s){var d=dur(s.a);return d?Math.min(100,Math.round(Object.keys(s.heard).length/Math.ceil(d/5)*100)):0;}
+  function flush(s,reason){var d=s.sec-s.sent;if(d<1)return;s.sent=s.sec;
+    track("episode_listen",{episode:s.n,title:s.title,seconds:Math.round(d),seconds_total:Math.round(s.sec),coverage_percent:cov(s),
+      position_seconds:Math.round(s.a.currentTime||0),playback_rate:s.a.playbackRate,reason:reason},reason==="hidden"||reason==="pagehide");}
+  function audio(type,fn){document.addEventListener(type,function(ev){if(ev.target&&ev.target.tagName==="AUDIO")fn(st(ev.target),ev.target);},true);}
+  audio("play",function(s,a){s.last=a.currentTime;s.plays++;var recent=Date.now()-last.t<2500;
+    track("episode_play",{episode:s.n,title:s.title,trigger:recent?last.k:"system",first_play:s.plays===1,
+      position_seconds:Math.round(recent&&last.at!=null?last.at:a.currentTime||0)});
+    clearInterval(s.timer);s.timer=setInterval(function(){flush(s,"interval");},60000);});
+  audio("timeupdate",function(s,a){if(a.paused)return;var t=a.currentTime;
+    if(s.last!=null){var d=t-s.last;if(d>0&&d<=3){s.sec+=d;for(var b=Math.floor(s.last/5);b<=Math.floor(t/5);b++)s.heard[b]=1;
+      var c=cov(s);[25,50,75,90].forEach(function(m){if(c>=m&&!s.miles[m]){s.miles[m]=1;track("episode_progress",{episode:s.n,title:s.title,percent:m});}});}}
+    s.last=t;});
+  audio("pause",function(s,a){clearInterval(s.timer);if(!a.ended)flush(s,"pause");});
+  audio("ended",function(s){clearInterval(s.timer);flush(s,"ended");track("episode_finished",{episode:s.n,title:s.title,coverage_percent:cov(s)});});
+  audio("ratechange",function(s,a){track("playback_speed_change",{episode:s.n,rate:a.playbackRate});});
+  audio("error",function(s,a){track("audio_error",{episode:s.n,code:a.error&&a.error.code,message:a.error&&a.error.message});});
+
+  function leaving(reason){engagement(reason);for(var n in L)flush(L[n],reason);}
+  document.addEventListener("visibilitychange",function(){if(document.hidden)leaving("hidden");});
+  addEventListener("pagehide",function(){leaving("pagehide");});
+})();
+"""
+
 
 def build_html(zip_info):
     acts = "".join(act_html(r, n, items) for r, n, _d, items in ACTS)
@@ -628,6 +766,8 @@ def build_html(zip_info):
   </section>
 """
     # Versioned so X, iMessage and Slack fetch a fresh preview when the cover art changes.
+    analytics = (f"\n<script>{ANALYTICS_JS.replace('__KEY__', POSTHOG_KEY).replace('__HOST__', POSTHOG_HOST)}</script>"
+                 if POSTHOG_KEY else "")
     og = f"{SITE_URL}/og.jpg?v={hashlib.sha1(COVER_SRC.read_bytes()).hexdigest()[:8]}"
     return f"""<!doctype html>
 <html lang="en">
@@ -670,7 +810,7 @@ def build_html(zip_info):
           <div class="apps" id="apps">{others}</div>
           <p class="fine">The show isn&rsquo;t in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app. <a href="#more">Other apps and RSS</a></p>
           <p class="hint" id="hint" hidden>Nothing opened? <a href="#more">Copy the feed</a> and add it by URL in your app.</p>
-          <div class="handoff">{qr_svg(SITE_URL + "/")}<p>On your phone? Scan to open this page there.</p></div>
+          <div class="handoff">{qr_svg(SITE_URL + ("/?utm_source=qr" if POSTHOG_KEY else "/"))}<p>On your phone? Scan to open this page there.</p></div>
         </div>
       </div>
     </div>
@@ -718,7 +858,7 @@ def build_html(zip_info):
     <nav><a href="syllabus.pdf" target="_blank" rel="noopener">Syllabus</a><a href="{e(FEED_URL)}">RSS</a><a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></nav>
   </footer>
 </div>
-<script>{JS}</script>
+<script>{JS}</script>{analytics}
 </body>
 </html>
 """
