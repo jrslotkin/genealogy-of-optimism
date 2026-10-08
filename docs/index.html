@@ -154,6 +154,8 @@ details summary::-webkit-details-marker{display:none}
 .pull figcaption{margin-top:16px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .pull figcaption a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--faint);padding-bottom:2px}
 .pull figcaption a:hover{border-color:var(--ink)}
+.pull blockquote a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.pull:has(blockquote a:hover) figcaption a,.pull:has(blockquote a:focus-visible) figcaption a{border-color:var(--ink)}
 .dl{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .dl a{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
 .dl a::after{content:" \2193"}
@@ -312,7 +314,7 @@ footer a:hover{color:var(--ink)}
             <p class="kicker"><span class="num-inline">2</span><span class="latest">Latest</span><span class="kact">Act I</span></p>
             <h3>The Philosophy of the Common Task</h3>
             <p class="meta">Nikolai Fedorov<span class="dot">1906</span><span class="dot">10 min 2 sec</span></p>
-            <figure class="pull"><blockquote>&ldquo;Death, Fedorov argues, is not a fact to be accepted or a mystery to be contemplated. It is the single root of every human problem, and every solution that leaves it untouched is a fraud.&rdquo;</blockquote><figcaption><a href="#" data-t="95">Hear it at 1:35</a></figcaption></figure>
+            <figure class="pull"><blockquote><a class="pq" href="#" data-t="95">&ldquo;Death, Fedorov argues, is not a fact to be accepted or a mystery to be contemplated. It is the single root of every human problem, and every solution that leaves it untouched is a fraud.&rdquo;</a></blockquote><figcaption><a href="#" data-t="95">Hear it at 1:35</a></figcaption></figure>
           <div class="player" data-src="audio/ep002.mp3" data-dur="602">
             <audio preload="none"></audio>
             <button class="play" type="button" aria-label="Play"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></svg></button>
@@ -391,7 +393,7 @@ footer a:hover{color:var(--ink)}
         <details class="ep ep-row" id="ep-1" data-n="1" data-title="The Phenomenon of Man">
           <summary class="row"><span class="gut num">1</span>
             <span class="body"><span class="rt"><span class="num-inline">1</span>The Phenomenon of Man</span><span class="meta">Pierre Teilhard de Chardin<span class="dot">1955</span><span class="dot">11 min 27 sec</span></span></span></summary>
-          <div class="row"><div class="gut"></div><div class="body"><figure class="pull"><blockquote>&ldquo;In 1995, Wired magazine declared that Teilhard had seen the Net coming half a century early, the globe clothing itself with a brain.&rdquo;</blockquote><figcaption><a href="#" data-t="484">Hear it at 8:04</a></figcaption></figure>
+          <div class="row"><div class="gut"></div><div class="body"><figure class="pull"><blockquote><a class="pq" href="#" data-t="484">&ldquo;In 1995, Wired magazine declared that Teilhard had seen the Net coming half a century early, the globe clothing itself with a brain.&rdquo;</a></blockquote><figcaption><a href="#" data-t="484">Hear it at 8:04</a></figcaption></figure>
           <div class="player" data-src="audio/ep001.mp3" data-dur="687">
             <audio preload="none"></audio>
             <button class="play" type="button" aria-label="Play"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></svg></button>
@@ -567,7 +569,7 @@ footer a:hover{color:var(--ink)}
       var k=el.closest(".pull")?"pull_quote":el.closest(".chapters")?"chapter":el.closest(".transcript")?"transcript":"timestamp";
       last={k:k,t:Date.now(),at:+el.getAttribute("data-t")};
       var label=el.closest(".chapters")?(el.textContent||"").replace((el.querySelector(".ct")||{}).textContent||"","").trim():(el.textContent||"").trim();
-      track(k+"_click",merge(ep(el),{at_seconds:+el.getAttribute("data-t"),label:label.slice(0,140)}));return;}
+      track(k+"_click",merge(ep(el),{at_seconds:+el.getAttribute("data-t"),label:label.slice(0,140),target:el.closest("blockquote")?"quote":"link"}));return;}
     if(el.hasAttribute("download")){var file=el.getAttribute("download")||decodeURIComponent(href.split("/").pop());
       track("download",merge(ep(el),{file:file,kind:/\.zip$/i.test(file)?"all_episodes":"episode"}),true);return;}
     if(/syllabus\.pdf$/.test(href)){track("syllabus_open",{placement:el.closest("footer")?"footer":"acts_header"},true);return;}

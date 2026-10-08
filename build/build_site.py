@@ -208,7 +208,10 @@ def episode_parts(ep):
         q = ep["pull"]
         cap = (f'<a href="#" data-t="{to_seconds(q["at"])}">Hear it at {clock(to_seconds(q["at"]))}</a>'
                if q.get("at") else "From the episode")
-        pull = (f'<figure class="pull"><blockquote>&ldquo;{e(smart(q["text"]))}&rdquo;</blockquote>'
+        # The quote itself plays from its moment (or from the start when no time is given).
+        at = to_seconds(q["at"]) if q.get("at") else 0
+        pull = (f'<figure class="pull"><blockquote><a class="pq" href="#" data-t="{at}">'
+                f'&ldquo;{e(smart(q["text"]))}&rdquo;</a></blockquote>'
                 f'<figcaption>{cap}</figcaption></figure>')
     inner = (f"{pull}{player_html(src, dur) if src else ''}"
              f'<p class="summary">{e(smart(ep.get("summary") or b["note"]))}</p>{dl}'
@@ -407,6 +410,8 @@ details summary::-webkit-details-marker{display:none}
 .pull figcaption{margin-top:16px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .pull figcaption a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--faint);padding-bottom:2px}
 .pull figcaption a:hover{border-color:var(--ink)}
+.pull blockquote a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.pull:has(blockquote a:hover) figcaption a,.pull:has(blockquote a:focus-visible) figcaption a{border-color:var(--ink)}
 .dl{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .dl a{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
 .dl a::after{content:" \\2193"}
@@ -669,7 +674,7 @@ ANALYTICS_JS = r"""
       var k=el.closest(".pull")?"pull_quote":el.closest(".chapters")?"chapter":el.closest(".transcript")?"transcript":"timestamp";
       last={k:k,t:Date.now(),at:+el.getAttribute("data-t")};
       var label=el.closest(".chapters")?(el.textContent||"").replace((el.querySelector(".ct")||{}).textContent||"","").trim():(el.textContent||"").trim();
-      track(k+"_click",merge(ep(el),{at_seconds:+el.getAttribute("data-t"),label:label.slice(0,140)}));return;}
+      track(k+"_click",merge(ep(el),{at_seconds:+el.getAttribute("data-t"),label:label.slice(0,140),target:el.closest("blockquote")?"quote":"link"}));return;}
     if(el.hasAttribute("download")){var file=el.getAttribute("download")||decodeURIComponent(href.split("/").pop());
       track("download",merge(ep(el),{file:file,kind:/\.zip$/i.test(file)?"all_episodes":"episode"}),true);return;}
     if(/syllabus\.pdf$/.test(href)){track("syllabus_open",{placement:el.closest("footer")?"footer":"acts_header"},true);return;}
