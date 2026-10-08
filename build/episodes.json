@@ -3,6 +3,10 @@
     "num": 1,
     "duration": 687,
     "summary": "A Jesuit paleontologist, silenced by his own Church, writes a cosmic history in wartime Beijing: evolution as one movement toward complexity, consciousness, and a final convergence he calls the Omega Point. The episode lays out the argument in Teilhard’s own terms, reconstructs the double attack from scientists and Rome, and follows its afterlife through the internet and transhumanism.",
+    "pull": {
+      "text": "In 1995, Wired magazine declared that Teilhard had seen the Net coming half a century early, the globe clothing itself with a brain.",
+      "at": "8:04"
+    },
     "audio_file": "ep001.mp3",
     "audio_url": "",
     "chapters": [
@@ -47,12 +51,89 @@
         "Close"
       ]
     ],
+    "key_ideas": [
+      "Teilhard's claim: the universe is a single process, cosmogenesis, moving toward greater complexity and, inseparably, greater consciousness. He calls this the law of complexity-consciousness, driven by a radial energy of inward centering that he concedes is not conserved.",
+      "One trajectory in three phases: geogenesis, biogenesis and noogenesis. With reflective minds a thinking layer, the noosphere, forms above the biosphere and converges on the Omega Point, which he identifies with the cosmic Christ.",
+      "He insisted the book be read \"purely and simply as a scientific treatise,\" and that sentence is why it was attacked from both sides: Medawar called it a bag of tricks, Simpson said its premises were religious, and the Holy Office issued a formal warning in 1962.",
+      "The strongest objection is Simpson's: assume the universe converges on a divine center and every increase in complexity looks like evidence for it. Radial energy has no physical correlate, and evolutionary biology rejected the built-in direction the system needs.",
+      "The afterlife kept the image and dropped the argument. The noosphere became shorthand for the internet, Tipler and the transhumanists borrowed the Omega Point, and Rome came partway back, while the eugenics and Piltdown questions remain part of any honest account."
+    ],
     "transcript_file": "ep001-transcript.txt",
-    "sources": [],
-    "pull": {
-      "text": "In 1995, Wired magazine declared that Teilhard had seen the Net coming half a century early, the globe clothing itself with a brain.",
-      "at": "8:04"
-    }
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Pierre Teilhard de Chardin, Le Phénomène humain (Paris: Éditions du Seuil, 1955). Written in China between 1938 and 1940 and published after his death; Teilhard's preface, dated March 1947, asks that the book be read \"purely and simply as a scientific treatise.\""
+      },
+      {
+        "text": "Pierre Teilhard de Chardin, The Phenomenon of Man, trans. Bernard Wall, with an introduction by Julian Huxley (London: Collins; New York: Harper & Brothers, 1959)."
+      },
+      {
+        "heading": "Reception"
+      },
+      {
+        "text": "P. B. Medawar, \"Critical Notice\" (review of The Phenomenon of Man), Mind 70, no. 277 (January 1961): 99–106. The review that calls the book \"a bag of tricks.\"",
+        "url": "https://doi.org/10.1093/mind/LXX.277.99"
+      },
+      {
+        "text": "George Gaylord Simpson, This View of Life: The World of an Evolutionist (New York: Harcourt, Brace & World, 1964).",
+        "url": "https://search.worldcat.org/oclc/230986"
+      },
+      {
+        "text": "Supreme Sacred Congregation of the Holy Office, Monitum on the writings of Fr. Pierre Teilhard de Chardin, 30 June 1962, Acta Apostolicae Sedis 54 (1962). The EWTN text includes the Holy See Press Office's 1981 statement reaffirming it.",
+        "url": "https://www.ewtn.com/catholicism/library/monitum-on-the-writings-of-fr-teilhard-de-chardin-sj-29451"
+      },
+      {
+        "text": "Jacques Monod, Le Hasard et la nécessité (Paris: Éditions du Seuil, 1970); English edition, Chance and Necessity, trans. Austryn Wainhouse (New York: Alfred A. Knopf, 1971).",
+        "url": "https://search.worldcat.org/oclc/209901"
+      },
+      {
+        "heading": "Hindsight and afterlife"
+      },
+      {
+        "text": "Jennifer Cobb Kreisberg, \"A Globe, Clothing Itself with a Brain,\" Wired 3.06 (June 1995).",
+        "url": "https://www.wired.com/1995/06/teilhard/"
+      },
+      {
+        "text": "Frank J. Tipler, The Physics of Immortality: Modern Cosmology, God and the Resurrection of the Dead (New York: Doubleday, 1994).",
+        "url": "https://www.publishersweekly.com/9780385467988"
+      },
+      {
+        "text": "Eric Steinhart, \"Teilhard de Chardin and Transhumanism,\" Journal of Evolution and Technology 20, no. 1 (December 2008): 1–22.",
+        "url": "https://jetpress.org/v20/steinhart.htm"
+      },
+      {
+        "text": "Benedict XVI, homily at Vespers in the Cathedral of Aosta, 24 July 2009, invoking \"the great vision of Teilhard de Chardin.\"",
+        "url": "https://www.vatican.va/content/benedict-xvi/en/homilies/2009/documents/hf_ben-xvi_hom_20090724_vespri-aosta.html"
+      },
+      {
+        "text": "Pope Francis, encyclical letter Laudato Si' (24 May 2015), paragraph 83, note 53, citing \"the contribution of Fr Teilhard de Chardin.\"",
+        "url": "https://www.vatican.va/content/francesco/en/encyclicals/documents/papa-francesco_20150524_enciclica-laudato-si.html"
+      },
+      {
+        "text": "Edward Pentin, \"Teilhard de Chardin's Ideas Find Resonance Inside the Vatican 70 Years After His Death,\" National Catholic Register, 8 April 2025, on L'Osservatore Romano's anniversary articles.",
+        "url": "https://ncregister.com/news/teilhard-de-chardin-s-ideas-find-resonance-inside-the-vatican-70-years-after-his-death"
+      },
+      {
+        "heading": "Disputes"
+      },
+      {
+        "text": "John P. Slattery, \"Dangerous Tendencies of Cosmic Theology: The Untold Legacy of Teilhard de Chardin,\" Philosophy and Theology 29, no. 1 (2017): 69–82.",
+        "url": "https://www.pdcnet.org/philtheol/content/philtheol_2017_0029_0001_0069_0082"
+      },
+      {
+        "text": "Stephen Jay Gould, \"The Piltdown Conspiracy,\" Natural History 89 (1980): 8–28. Reprinted in Hen's Teeth and Horse's Toes (New York: W. W. Norton, 1983)."
+      },
+      {
+        "text": "Isabelle De Groote et al., \"New Genetic and Morphological Evidence Suggests a Single Hoaxer Created 'Piltdown Man',\" Royal Society Open Science 3, no. 8 (2016): 160328.",
+        "url": "https://doi.org/10.1098/rsos.160328"
+      },
+      {
+        "text": "Quote Investigator, \"We Are Not Human Beings Having a Spiritual Experience. We Are Spiritual Beings Having a Human Experience\" (20 June 2019), tracing the line to Wayne W. Dyer's 1988 Volkswagen advertisement in Time, not to Teilhard.",
+        "url": "https://quoteinvestigator.com/2019/06/20/spiritual/"
+      }
+    ]
   },
   {
     "num": 2,

@@ -1,324 +1,38 @@
-"""Build the listener site for A Genealogy of Technological Optimism.
-
-  python3 build/build_site.py      # rebuilds docs/, which GitHub Pages publishes
-
-Episode data lives in build/episodes.json. Transcripts go in build/episodes/. Episode audio
-lives once, in docs/audio/ (named ep001.mp3, ep002.mp3, ...); a new file dropped in
-build/episodes/ is moved there on the next build.
-"""
-import hashlib
-import html
-import json
-import os
-import pathlib
-import re
-import shutil
-import sys
-import zipfile
-from urllib.parse import quote
-
-import segno
-from PIL import Image
-
-ROOT = pathlib.Path(__file__).parent
-sys.path.insert(0, str(ROOT))
-from content import ACTS  # noqa: E402
-
-TITLE = "A Genealogy of Technological Optimism"
-HOST = "Jon Slotkin"
-HOST_URL = "https://x.com/slotkinjr"
-FEED_URL = os.environ.get(
-    "FEED_URL",
-    "http://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97").strip()
-FEED_FETCH = os.environ.get("FEED_FETCH") or re.sub(r"^http://", "https://", FEED_URL)
-SITE_URL = os.environ.get("SITE_URL", "https://jrslotkin.github.io/genealogy-of-optimism").strip().rstrip("/")
-ASSETS = ROOT / "assets"
-COVER_SRC = pathlib.Path(os.environ.get("COVER", ASSETS / "cover.webp"))
-PDF_SRC = ASSETS / "syllabus.pdf"
-EP_DIR = pathlib.Path(os.environ.get("EP_DIR", ROOT / "episodes"))
-EP_JSON = pathlib.Path(os.environ.get("EPISODES_JSON", ROOT / "episodes.json"))
-OUT = pathlib.Path(os.environ.get("SITE_OUT", ROOT.parent / "docs"))
-# PostHog project key: public by design (it can send events, not read them). Empty = no analytics.
-POSTHOG_KEY = os.environ.get("POSTHOG_KEY", "phc_ypph9s3jp4qAFUDHHQiZigvV2NprDyDvFARyqNh62i3q").strip()
-POSTHOG_HOST = os.environ.get("POSTHOG_HOST", "https://us.i.posthog.com").strip().rstrip("/")
-HERO_CROP = 1392 / 1600          # top of the cover art, above the title banner
-HERO_H = round(1200 * HERO_CROP)
-READ_WPM = 230                   # reading speed used for "Read the episode · N min"
-
-DESCRIPTION = ("One hundred books in ten acts, ten minutes each: how the idea of technological "
-               "progress was built, and the strongest arguments against it.")
-NOTE = [
-    "An intellectual genealogy of technological optimism in 100 books, ordered as an argument "
-    "in ten acts. It starts with the theology the idea of progress grew out of and the psychology "
-    "of the people who act on it. It then moves through how knowledge grows, how markets and "
-    "institutions turn knowledge into growth, how innovation is built and financed, and the "
-    "attempt to engineer away every remaining constraint.",
-    "About three quarters of the books make the case. The other quarter are the strongest "
-    "arguments against it. Each critic sits next to the claims it attacks, and critiques of "
-    "technology as such are held for the end.",
-]
-
-
-def e(s):
-    return html.escape(str(s), quote=True)
-
-
-def smart(t):
-    """Typographer's quotes for episode text supplied with straight ones."""
-    t = re.sub(r'(^|[\s(\[{])"', lambda m: m.group(1) + "\u201c", str(t)).replace('"', "\u201d")
-    t = re.sub(r"(^|[\s(\[{])'", lambda m: m.group(1) + "\u2018", t).replace("'", "\u2019")
-    return t
-
-
-def main_title(t):
-    return t.split(": ", 1)[0]
-
-
-def to_seconds(v):
-    if isinstance(v, (int, float)):
-        return int(v)
-    total = 0
-    for p in str(v).strip().split(":"):
-        total = total * 60 + int(p)
-    return total
-
-
-def clock(sec):
-    sec = int(round(sec or 0))
-    h, m, s = sec // 3600, sec % 3600 // 60, sec % 60
-    return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
-
-
-def minutes(sec):
-    m, s = divmod(int(sec), 60)
-    return f"{m} min {s} sec" if s else f"{m} min"
-
-
-# ------------------------------------------------------------------ data
-BOOKS = {}
-for roman, act_name, _d, items in ACTS:
-    for num, title, year, author, note in items:
-        BOOKS[num] = dict(n=num, title=main_title(title), year=year, author=author,
-                          note=note, roman=roman, act=act_name)
-
-EPISODES = sorted(json.loads(EP_JSON.read_text()), key=lambda x: -x["num"])
-RELEASED = {ep["num"] for ep in EPISODES}
-LATEST = EPISODES[0]["num"] if EPISODES else 0
-
-bare = re.sub(r"^https?://", "", FEED_URL)
-APPS = {
-    "apple": ("Apple Podcasts", "podcast://" + bare),
-    "overcast": ("Overcast", "overcast://x-callback-url/add?url=" + quote(FEED_URL, safe="")),
-    "pocketcasts": ("Pocket Casts", "pktc://subscribe/" + bare),
-    "castro": ("Castro", "castro://subscribe/" + bare),
-    "antennapod": ("AntennaPod", "https://antennapod.org/deeplink/subscribe?url="
-                   + quote(FEED_URL, safe="") + "&title=" + quote(TITLE, safe="")),
-}
-
-
-def app_link(key, primary=False):
-    name, href = APPS[key]
-    ext = ' target="_blank" rel="noopener"' if href.startswith("https://") else ""
-    cls = "pill pill-ink" if primary else "pill"
-    label = f"Follow in {name}" if primary else name
-    return f'<a class="{cls}" data-app="{key}" data-name="{e(name)}" href="{e(href)}"{ext}>{e(label)}</a>'
-
-
-# ------------------------------------------------------------------ pieces
-ICONS = ('<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg>'
-         '<svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></svg>')
-
-
-def player_html(src, dur):
-    return f"""
-          <div class="player" data-src="{e(src)}" data-dur="{dur}">
-            <audio preload="none"></audio>
-            <button class="play" type="button" aria-label="Play">{ICONS}</button>
-            <div class="track">
-              <input class="seek" type="range" min="0" max="{dur or 1}" step="1" value="0" aria-label="Position">
-              <div class="times"><span class="cur">0:00</span><span class="rem">&minus;{clock(dur)}</span></div>
-            </div>
-            <div class="tools">
-              <button class="tool back" type="button" aria-label="Back 15 seconds">&minus;15</button>
-              <button class="tool fwd" type="button" aria-label="Forward 30 seconds">+30</button>
-              <button class="tool rate" type="button" aria-label="Playback speed">1&times;</button>
-            </div>
-          </div>"""
-
-
-def episode_audio(ep):
-    b = BOOKS[ep["num"]]
-    nice = f"{ep['num']:02d} {b['title']}.mp3"
-    dest = OUT / "audio" / f"ep{ep['num']:03d}.mp3"
-    if ep.get("audio_file") and (EP_DIR / ep["audio_file"]).exists():
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(EP_DIR / ep["audio_file"]), dest)
-    if dest.exists():
-        return f"audio/{dest.name}", nice, True, dest.stat().st_size / 1e6
-    if ep.get("audio_url"):
-        return ep["audio_url"], nice, False, None
-    return "", nice, False, None
-
-
-def transcript_paras(ep):
-    f = ep.get("transcript_file")
-    if not f or not (EP_DIR / f).exists():
-        return [], 0
-    paras, words = [], 0
-    for block in re.split(r"\n\s*\n", (EP_DIR / f).read_text(encoding="utf-8").strip()):
-        block = " ".join(line.strip() for line in block.splitlines())
-        m = re.match(r"^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s*[-–]?\s*(.*)$", block)
-        text = m.group(2) if m else block
-        words += len(text.split())
-        if m:
-            paras.append(f'<p><a class="ts" href="#" data-t="{to_seconds(m.group(1))}">{m.group(1)}</a>{e(smart(text))}</p>')
-        else:
-            paras.append(f"<p>{e(smart(text))}</p>")
-    return paras, max(1, round(words / READ_WPM))
-
-
-def transcript_html(ep):
-    paras, mins = transcript_paras(ep)
-    if not paras:
-        return ""
-    return (f'<details class="fold read-fold"><summary>Read the episode &middot; {mins} min</summary>'
-            f'<div class="transcript">{"".join(paras)}</div></details>')
-
-
-def ep_url(n):
-    return f"{SITE_URL}/ep/{n}/"
-
-
-def episode_parts(ep, root="", page=False):
-    b = BOOKS[ep["num"]]
-    dur = to_seconds(ep.get("duration") or 0)
-    src, nice, local, size = episode_audio(ep)
-    if local:
-        src = root + src
-    meta = f'{e(b["author"])}<span class="dot">{b["year"]}</span>' + (f'<span class="dot">{minutes(dur)}</span>' if dur else "")
-    dl = ""
-    if src:
-        size_txt = f'<span class="size">MP3, {size:.1f} MB</span>' if size else ""
-        note = "" if local else '<span class="size">On iPhone, touch and hold, then tap Download Linked File.</span>'
-        share = (f'<button class="share" type="button" data-url="{e(ep_url(ep["num"]))}" '
-                 f'data-title="{e(ep["num"])}. {e(b["title"])}">Share</button>')
-        page_link = "" if page else f'<a class="eplink" href="ep/{ep["num"]}/">Episode page</a>'
-        dl = (f'<p class="dl"><a class="dlink" href="{e(src)}" download="{e(nice)}">Download episode</a>{size_txt}{note}'
-              f'<span class="dl-more">{share}{page_link}</span></p>')
-    chapters = ""
-    if ep.get("chapters"):
-        rows = "".join(f'<li><a href="#" data-t="{to_seconds(t)}"><span class="ct">{clock(to_seconds(t))}</span>'
-                       f'<span class="cn">{e(smart(name))}</span></a></li>' for t, name in ep["chapters"])
-        chapters = f'<details class="fold"><summary>Chapters</summary><ol class="chapters">{rows}</ol></details>'
-    sources = ""
-    if ep.get("sources"):
-        def src_li(s):
-            if isinstance(s, dict) and s.get("heading"):
-                return f'<li class="src-h">{e(s["heading"])}</li>'
-            if isinstance(s, dict) and s.get("url"):
-                return f'<li><a href="{e(s["url"])}" target="_blank" rel="noopener">{e(smart(s["text"]))}</a></li>'
-            return f'<li>{e(smart(s if isinstance(s, str) else s.get("text", "")))}</li>'
-        sources = f'<details class="fold"><summary>Sources</summary><ul class="sources">{"".join(src_li(s) for s in ep["sources"])}</ul></details>'
-    ideas = ""
-    if ep.get("key_ideas"):
-        ideas = ('<details class="fold"><summary>Key ideas</summary><ul class="ideas">'
-                 + "".join(f"<li>{e(smart(i))}</li>" for i in ep["key_ideas"]) + "</ul></details>")
-    folds = chapters + ideas + ("" if page else transcript_html(ep)) + sources
-    pull = ""
-    if ep.get("pull"):
-        q = ep["pull"]
-        cap = (f'<a href="#" data-t="{to_seconds(q["at"])}">Hear it at {clock(to_seconds(q["at"]))}</a>'
-               if q.get("at") else "From the episode")
-        # The quote itself plays from its moment (or from the start when no time is given).
-        at = to_seconds(q["at"]) if q.get("at") else 0
-        pull = (f'<figure class="pull"><blockquote><a class="pq" href="#" data-t="{at}">'
-                f'&ldquo;{e(smart(q["text"]))}&rdquo;</a></blockquote>'
-                f'<figcaption>{cap}</figcaption></figure>')
-    inner = (f"{pull}{player_html(src, dur) if src else ''}"
-             f'<p class="summary">{e(smart(ep.get("summary") or b["note"]))}</p>{dl}'
-             f"{f'<div class=folds>{folds}</div>' if folds else ''}")
-    return b, meta, inner
-
-
-def episode_html(ep):
-    b, meta, inner = episode_parts(ep)
-    return f"""
-        <article class="ep row is-latest" id="ep-{ep['num']}" data-n="{ep['num']}" data-title="{e(b['title'])}">
-          <div class="gut num">{ep['num']}</div>
-          <div class="body">
-            <p class="kicker"><span class="num-inline">{ep['num']}</span><span class="latest">Latest</span><span class="kact">Act {b['roman']}</span></p>
-            <h3><a class="eplink" href="ep/{ep['num']}/">{e(b['title'])}</a></h3>
-            <p class="meta">{meta}</p>
-            {inner}
-          </div>
-        </article>"""
-
-
-def episode_row_html(ep):
-    b, meta, inner = episode_parts(ep)
-    return f"""
-        <details class="ep ep-row" id="ep-{ep['num']}" data-n="{ep['num']}" data-title="{e(b['title'])}">
-          <summary class="row"><span class="gut num">{ep['num']}</span>
-            <span class="body"><span class="num-inline">{ep['num']}</span><span class="rt">{e(b['title'])}</span><span class="meta">{meta}</span></span></summary>
-          <div class="row"><div class="gut"></div><div class="body">{inner}</div></div>
-        </details>"""
-
-
-def act_html(roman, name, entries):
-    a, z = entries[0][0], entries[-1][0]
-    def tick(n):
-        cls = "on new" if n == LATEST else "on" if n in RELEASED else ""
-        return f'<i data-n="{n}"{f" class={chr(34)}{cls}{chr(34)}" if cls else ""}></i>'
-    ticks = "".join(tick(b[0]) for b in entries)
-    books = []
-    for num, title, year, author, note in entries:
-        out = num in RELEASED
-        listen = f'<a class="listen" href="#ep-{num}">Listen</a>' if out else ""
-        books.append(f'<li data-n="{num}"{" class=out" if out else ""}><span class="bn">{num}</span>'
-                     f'<span class="bt">{e(main_title(title))}<span class="ba">{e(author)}<span class="dot">{year}</span></span></span>'
-                     f'{listen}<span class="bnote">{e(note)}</span></li>')
-    return f"""
-        <details class="act">
-          <summary><span class="ar">{roman}</span><span class="an">{e(name)}</span>
-            <span class="ticks" aria-hidden="true">{ticks}</span><span class="rg">{a}&ndash;{z}</span></summary>
-          <ol class="books">{''.join(books)}</ol>
-        </details>"""
-
-
-def qr_svg(url):
-    qr = segno.make(url, error="m")
-    size = qr.symbol_size(border=0)[0]
-    d = []
-    for y, row in enumerate(qr.matrix):
-        x = 0
-        while x < len(row):
-            if row[x]:
-                s0 = x
-                while x < len(row) and row[x]:
-                    x += 1
-                d.append(f"M{s0} {y}h{x - s0}v1h-{x - s0}z")
-            else:
-                x += 1
-    return (f'<svg viewBox="0 0 {size} {size}" role="img" aria-label="QR code for this page" '
-            f'shape-rendering="crispEdges"><path fill="currentColor" d="{"".join(d)}"/></svg>')
-
-
-FACES = """
-@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/newsreader.woff2) format("woff2");
+<!doctype html>
+<html lang="en" data-root="../../" data-page="episode">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>2. The Philosophy of the Common Task · A Genealogy of Technological Optimism</title>
+<meta name="description" content="A Moscow librarian, mistaken for a beggar, argues that humanity’s single moral duty is to defeat death and physically resurrect every ancestor through science. The episode lays out Fedorov’s common task in his own terms, traces its path from Dostoevsky’s circle to Tsiolkovsky’s rockets and the Soviet space program, then turns on it: Bulgakov’s theological objection, the question of the dead’s consent, and what a century of hindsight did to the project.">
+<link rel="canonical" href="https://jrslotkin.github.io/genealogy-of-optimism/ep/2/">
+<link rel="alternate" type="application/rss+xml" title="A Genealogy of Technological Optimism" href="http://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="A Genealogy of Technological Optimism">
+<meta property="og:title" content="2. The Philosophy of the Common Task">
+<meta property="og:description" content="A Moscow librarian, mistaken for a beggar, argues that humanity’s single moral duty is to defeat death and physically resurrect every ancestor through science. The episode lays out Fedorov’s common task in his own terms, traces its path from Dostoevsky’s circle to Tsiolkovsky’s rockets and the Soviet space program, then turns on it: Bulgakov’s theological objection, the question of the dead’s consent, and what a century of hindsight did to the project.">
+<meta property="og:url" content="https://jrslotkin.github.io/genealogy-of-optimism/ep/2/">
+<meta property="og:image" content="https://jrslotkin.github.io/genealogy-of-optimism/ep/2/og.jpg?v=03f55322">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2. The Philosophy of the Common Task">
+<meta name="twitter:description" content="A Moscow librarian, mistaken for a beggar, argues that humanity’s single moral duty is to defeat death and physically resurrect every ancestor through science. The episode lays out Fedorov’s common task in his own terms, traces its path from Dostoevsky’s circle to Tsiolkovsky’s rockets and the Soviet space program, then turns on it: Bulgakov’s theological objection, the question of the dead’s consent, and what a century of hindsight did to the project.">
+<meta name="twitter:image" content="https://jrslotkin.github.io/genealogy-of-optimism/ep/2/og.jpg?v=03f55322">
+<link rel="icon" type="image/png" sizes="64x64" href="../../favicon.png">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preload" href="../../fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url(../../fonts/newsreader.woff2) format("woff2");
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2122,U+2212}
-@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url(fonts/newsreader-ext.woff2) format("woff2");
+@font-face{font-family:Newsreader;font-style:normal;font-weight:200 800;font-display:swap;src:url(../../fonts/newsreader-ext.woff2) format("woff2");
   unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20CF,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:Newsreader;font-style:italic;font-weight:200 800;font-display:swap;src:url(fonts/newsreader-italic.woff2) format("woff2");
+@font-face{font-family:Newsreader;font-style:italic;font-weight:200 800;font-display:swap;src:url(../../fonts/newsreader-italic.woff2) format("woff2");
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2122,U+2212}
-@font-face{font-family:Geist;font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/geist.woff2) format("woff2")}
-"""
+@font-face{font-family:Geist;font-style:normal;font-weight:100 900;font-display:swap;src:url(../../fonts/geist.woff2) format("woff2")}
 
-
-def faces(root=""):
-    return FACES.replace("url(fonts/", f"url({root}fonts/")
-
-
-CSS = """
 /* Layout: the syllabus page, carried onto the screen. A narrow label gutter on the left,
    one reading measure beside it, hairlines between sections, and the cover art as the
    only colour on the page. */
@@ -411,7 +125,7 @@ details summary::-webkit-details-marker{display:none}
 .help summary,.fold summary{display:flex;justify-content:space-between;align-items:center;padding:14px 0;
   font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
 .help summary::after,.fold summary::after{content:"+";font:300 18px/1 var(--sans);letter-spacing:0;color:var(--muted)}
-.help[open] summary::after,.fold[open] summary::after{content:"\\2212"}
+.help[open] summary::after,.fold[open] summary::after{content:"\2212"}
 .steps{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:10px;font:400 14.5px/1.55 var(--sans);color:var(--muted)}
 .steps b{font-weight:500;color:var(--ink)}
 
@@ -420,7 +134,7 @@ details summary::-webkit-details-marker{display:none}
 .ep-row:last-child{border-bottom:1px solid var(--rule)}
 .ep-row > summary{align-items:baseline;padding:18px 0;position:relative}
 .ep-row > summary::after{content:"+";position:absolute;right:0;top:20px;font:300 18px/1 var(--sans);color:var(--muted)}
-.ep-row[open] > summary::after{content:"\\2212"}
+.ep-row[open] > summary::after{content:"\2212"}
 .ep-row .num{font-size:30px}
 .rt{display:block;font:400 22px/1.2 var(--serif);color:var(--ink);padding-right:28px}
 .rt .num-inline{margin-right:10px;color:var(--muted)}
@@ -448,13 +162,13 @@ details summary::-webkit-details-marker{display:none}
 .pull:has(blockquote a:hover) figcaption a,.pull:has(blockquote a:focus-visible) figcaption a{border-color:var(--ink)}
 .dl{margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .dl .dlink{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
-.dl .dlink::after{content:" \\2193"}
+.dl .dlink::after{content:" \2193"}
 .dl .dlink:hover{text-decoration-color:var(--ink)}
 .size{font:400 13px/1.4 var(--sans);color:var(--muted)}
 .dl-more{display:inline-flex;gap:18px;margin-left:auto}
 .share,.dl .eplink{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
 .share:hover,.dl .eplink:hover{text-decoration-color:var(--ink)}
-.dl .eplink::after{content:" \\2192"}
+.dl .eplink::after{content:" \2192"}
 .ep h3 .eplink{color:inherit;text-decoration:none}
 .ep h3 .eplink:hover{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;text-decoration-color:var(--faint)}
 .folds{margin-top:26px;border-bottom:1px solid var(--rule)}
@@ -601,9 +315,61 @@ footer a:hover{color:var(--ink)}
   .tools{grid-column:1 / -1;justify-content:space-between;border-top:1px solid var(--rule);padding-top:8px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
-"""
+</style>
+</head>
+<body>
+<div class="page ep-page">
+  <nav class="crumb" aria-label="Series"><a href="../../">A Genealogy of Technological Optimism</a><span>Episode 2 of 100</span></nav>
 
-JS = r"""
+  <article class="ep row is-page is-latest" id="ep-2" data-n="2" data-title="The Philosophy of the Common Task">
+    <div class="gut num">2</div>
+    <div class="body">
+      <p class="kicker"><span class="num-inline">2</span><span class="latest">Latest</span><span class="kact">Act I &middot; Why should history go anywhere?</span></p>
+      <h1>The Philosophy of the Common Task</h1>
+      <p class="meta">Nikolai Fedorov<span class="dot">1906</span><span class="dot">10 min 2 sec</span></p>
+      <figure class="pull"><blockquote><a class="pq" href="#" data-t="95">&ldquo;Death, Fedorov argues, is not a fact to be accepted or a mystery to be contemplated. It is the single root of every human problem, and every solution that leaves it untouched is a fraud.&rdquo;</a></blockquote><figcaption><a href="#" data-t="95">Hear it at 1:35</a></figcaption></figure>
+          <div class="player" data-src="../../audio/ep002.mp3" data-dur="602">
+            <audio preload="none"></audio>
+            <button class="play" type="button" aria-label="Play"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></svg></button>
+            <div class="track">
+              <input class="seek" type="range" min="0" max="602" step="1" value="0" aria-label="Position">
+              <div class="times"><span class="cur">0:00</span><span class="rem">&minus;10:02</span></div>
+            </div>
+            <div class="tools">
+              <button class="tool back" type="button" aria-label="Back 15 seconds">&minus;15</button>
+              <button class="tool fwd" type="button" aria-label="Forward 30 seconds">+30</button>
+              <button class="tool rate" type="button" aria-label="Playback speed">1&times;</button>
+            </div>
+          </div><p class="summary">A Moscow librarian, mistaken for a beggar, argues that humanity’s single moral duty is to defeat death and physically resurrect every ancestor through science. The episode lays out Fedorov’s common task in his own terms, traces its path from Dostoevsky’s circle to Tsiolkovsky’s rockets and the Soviet space program, then turns on it: Bulgakov’s theological objection, the question of the dead’s consent, and what a century of hindsight did to the project.</p><p class="dl"><a class="dlink" href="../../audio/ep002.mp3" download="02 The Philosophy of the Common Task.mp3">Download episode</a><span class="size">MP3, 5.0 MB</span><span class="dl-more"><button class="share" type="button" data-url="https://jrslotkin.github.io/genealogy-of-optimism/ep/2/" data-title="2. The Philosophy of the Common Task">Share</button></span></p><div class=folds><details class="fold"><summary>Chapters</summary><ol class="chapters"><li><a href="#" data-t="0"><span class="ct">0:00</span><span class="cn">Opening: the librarian in the reading room</span></a></li><li><a href="#" data-t="29"><span class="ct">0:29</span><span class="cn">This is A Genealogy of Technological Optimism</span></a></li><li><a href="#" data-t="37"><span class="ct">0:37</span><span class="cn">The man: who wrote it, and under what pressure</span></a></li><li><a href="#" data-t="93"><span class="ct">1:33</span><span class="cn">The claim: death as the single root</span></a></li><li><a href="#" data-t="156"><span class="ct">2:36</span><span class="cn">Sonship and the common task</span></a></li><li><a href="#" data-t="234"><span class="ct">3:54</span><span class="cn">The mechanics: particles, rockets, new worlds</span></a></li><li><a href="#" data-t="300"><span class="ct">5:00</span><span class="cn">Reception: Dostoevsky, Solovyov, the Soviets</span></a></li><li><a href="#" data-t="353"><span class="ct">5:53</span><span class="cn">The turn: the strongest objections</span></a></li><li><a href="#" data-t="438"><span class="ct">7:18</span><span class="cn">Hindsight: what landed</span></a></li><li><a href="#" data-t="513"><span class="ct">8:33</span><span class="cn">Hindsight: what breaks</span></a></li><li><a href="#" data-t="563"><span class="ct">9:23</span><span class="cn">Close</span></a></li></ol></details><details class="fold"><summary>Key ideas</summary><ul class="ideas"><li>Fedorov’s claim: death is the single root of every human problem, and humanity’s common task is the physical resurrection of all the dead, achieved by human scientific action, not divine miracle.</li><li>The machinery of the argument: non-kindred relations, sonship as well as brotherhood, supramoralism, the museum as the institution of memory, and the regulation of nature, including space travel to recover the ancestors’ particles and house the resurrected.</li><li>The book was never published in Fedorov’s lifetime; two disciples assembled it from notes, drafts, and essays into posthumous volumes in 1906 and 1913. Its first readers included Dostoevsky, Tolstoy, and Solovyov.</li><li>The strongest objection is Bulgakov’s: the project never answers what life and death are, so reassembled matter cannot restore the person, and no laboratory can reach what is more than matter.</li><li>Where it lands: the engineering failed, but the provocation stands. Tsiolkovsky carried the space-travel logic into rocketry, transhumanism and cryonics took up the lineage, and every theory of progress still has to answer for the dead it writes off.</li></ul></details><details class="fold"><summary>Sources</summary><ul class="sources"><li class="src-h">The book</li><li>Nikolai Fedorov, The Philosophy of the Common Task, edited by N. P. Peterson and V. A. Kozhevnikov, vol. 1 (Vernyi, 1906); vol. 2 (Moscow, 1913). A posthumous collection of notes, drafts, and essays; Fedorov published almost nothing in his lifetime.</li><li>English translation: Elisabeth Koutaissoff and Marilyn Minto, trans., What Was Man Created For? The Philosophy of the Common Task (Lausanne: L’Age d’Homme; Belmont, MA: Honeyglen Publishing, 1990). Research for this episode drew on the English translation and the freely available text at regels.org.</li><li class="src-h">Expert sources</li><li>George M. Young, Nikolai F. Fedorov: An Introduction (Belmont, MA: Norland Publishing, 1979).</li><li>Stephen Lukashevich, N. F. Fedorov (1828-1903): A Study in Russian Eupsychian and Utopian Thought (Newark: University of Delaware Press, 1977).</li><li>Andrzej Walicki, A History of Russian Thought from the Enlightenment to Marxism (Stanford: Stanford University Press, 1979).</li><li><a href="https://sarahjyoung.com/site/2013/03/05/russian-thought-lecture-9-nikolai-fedorov-and-the-utopia-of-the-resurrected/" target="_blank" rel="noopener">Sarah J. Young, “Russian thought lecture 9: Nikolai Fedorov and the utopia of the resurrected,” lecture notes, UCL School of Slavonic and East European Studies, 2013.</a></li><li>Nikolai Berdyaev, “The Religion of Resusciative Resurrection: The Philosophy of the Common Task of N. F. Fedorov” (1915).</li><li>Sergei Bulgakov, Unfading Light (1917), chapter critiquing Fedorov’s common task.</li><li><a href="https://archiv.hkw.de/en/programm/projekte/veranstaltung/p_135477.php" target="_blank" rel="noopener">Michael Hagemeister, on Fedorov’s project of universal salvation and Russian cosmism, Haus der Kulturen der Welt.</a></li><li class="src-h">Further reading</li><li>Nader Elhefnawy, “Resurrecting Nikolai Fedorov,” The Space Review, 2006.</li><li>Brian Harvey, Russian Planetary Exploration: History, Development, Legacy and Prospects (Chichester: Springer/Praxis, 2007).</li><li>Frank J. Tipler, The Physics of Immortality: Modern Cosmology, God and the Resurrection of the Dead (New York: Doubleday, 1994).</li><li><a href="https://www.the-berliner.com/politics/interview-with-anton-vidokle/" target="_blank" rel="noopener">Anton Vidokle, interview on Russian cosmism, The Berliner.</a></li><li><a href="https://en.wikipedia.org/wiki/Nikolai_Fyodorov_(philosopher)" target="_blank" rel="noopener">“Nikolai Fyodorov (philosopher).”</a></li></ul></details></div>
+    </div>
+  </article>
+
+  <section class="sec read" aria-labelledby="read-h" data-for="ep-2">
+    <div class="sec-head"><h2 id="read-h">Read the episode</h2><span></span><span class="label">7 min read</span></div>
+    <div class="row"><div class="gut"></div><div class="body"><div class="transcript"><p><a class="ts" href="#" data-t="0">0:00</a>In the reading room of Moscow’s Rumyantsev Museum, late in the nineteenth century, there was a librarian whom strangers mistook for a beggar. His coat was a rag. He ate hard rolls and drank tea, gave away his salary to students, and walked everywhere, even in winter. He had read everything, and he believed every book in the building was evidence for a single charge against humanity: that we have accepted death.</p><p><a class="ts" href="#" data-t="29">0:29</a>This is A Genealogy of Technological Optimism, episode two of one hundred. We’re in Act One: Why should history go anywhere?</p><p><a class="ts" href="#" data-t="37">0:37</a>His name was Nikolai Fedorov, born in eighteen twenty-nine, the illegitimate son of a Russian prince and a peasant woman. He taught in provincial schools and became an assistant librarian, where he stayed for twenty-five years. Readers received not only the books they requested but everything else he thought necessary. The young Konstantin Tsiolkovsky studied under his direction for three years. Tolstoy admired his asceticism. Dostoevsky praised his logic. He was known, to those who knew him, as the Socrates of Moscow. He published almost nothing in his lifetime, partly from opposition to copyright, and partly because he saw writing as a prelude to action. When he died in nineteen oh three, two disciples gathered his notes, drafts, and essays into two volumes. The first appeared in nineteen oh six under the title The Philosophy of the Common Task.</p><p><a class="ts" href="#" data-t="93">1:33</a>The claim is as stark as any in philosophy. Death, Fedorov argues, is not a fact to be accepted or a mystery to be contemplated. It is the single root of every human problem, and every solution that leaves it untouched is a fraud. War, poverty, disease, the whole catalogue of suffering: all of it flows from mortality, and all of it ends when mortality ends. The task he sets is the physical resurrection of everyone who has ever lived, achieved not by God at the end of time but by human beings, through science. This is what he means by the common task, and it is not a metaphor. In a letter to one of Fedorov’s followers in eighteen seventy-eight, Dostoevsky asked the question: is this meant literally, will the dead be raised, quote, not only in our minds, not allegorically, but in fact, in person, actually, in bodies. The answer, from Fedorov’s writings, is an emphatic yes.</p><p><a class="ts" href="#" data-t="156">2:36</a>To understand what he is proposing, you need his moral psychology. We receive life from our fathers, Fedorov says, and we repay the debt by forgetting them. Modern life is built on what he calls non-kindred relations: the living alienated from each other, and all of the living alienated from the dead. Progress itself, in his account, is an accusation. It makes ancestors into the accused and descendants into judges, sacrificing the fathers for the comfort of the sons. Against this he sets sonship as well as brotherhood: we owe our existence to those who came before, and the debt can only be repaid by giving life back. Christianity, in his reading, is not a set of beliefs about the afterlife. It is a project. Christ showed what was to be done, in the raising of Lazarus, but not how. The how is ours to discover. This is why he called his philosophy supramoralism: morality raised to the level of a cosmic engineering project. The museum becomes in his writing the central institution of the future, because the museum keeps humanity’s memory of the dead, and memory is the first step toward restoration.</p><p><a class="ts" href="#" data-t="234">3:54</a>The mechanics are where the philosophy turns strange, and prophetic. Death is disintegration, the scattering of the particles that made up a person. But those particles cannot leave finite space, so they can in principle be found, gathered, and reassembled. The catch is that the Earth is too small a workshop. To recover the dust of the ancestors, Fedorov writes, research teams will have to travel to the moon, the planets, and the distant points of the universe, and the resurrected will need those worlds to live on, their bodies perhaps rebuilt to survive conditions no human body could now endure. Space travel is therefore not an adventure but a moral necessity, built into the logic of the project. Along the way he sketches a program that reads like a checklist from a later century: regulation of the weather, solar energy in place of fossil fuels, the Earth managed as an ecosystem rather than exploited as a mine, and failing human organs replaced with artificial ones.</p><p><a class="ts" href="#" data-t="300">5:00</a>In his own lifetime almost no one read him, because there was almost nothing to read. His influence traveled by conversation, in that museum reading room. Dostoevsky wrote in his Writer’s Diary that he had rarely read anything more logical. The philosopher Vladimir Solovyov wrote to Fedorov in eighteen eighty-one that he accepted the project unconditionally, calling him teacher and spiritual father. Tolstoy, who could never live up to his own ascetic ideals, revered a man who did. After Fedorov’s death the disciples’ volumes found a real audience. Fedorovism became a force in the intellectual ferment of pre-revolutionary Russia and the early Soviet years. Stalin’s purges of the nineteen thirties suppressed it, and in the West it barely registered. Frederick Copleston’s four-hundred-and-forty-five-page history of Russian philosophy mentions Fedorov twice, both times in footnotes.</p><p><a class="ts" href="#" data-t="353">5:53</a>Now the turn, judged first by what Fedorov and his first readers could know. The strongest objection available in his own century was theological, put most sharply by the Orthodox theologian Sergei Bulgakov. In Christian doctrine, resurrection is God’s work, promised at the end of time. Fedorov makes it man’s work, scheduled for the foreseeable future. Bulgakov’s charge is that the project never answers its own first question: what is life, and what is death. If a person is only matter, then reassembling the particles cannot restore the person, because the continuity that made them who they were is gone. If a person is more than matter, then no laboratory can reach what needs to be raised. Either way, the method cannot do what the promise requires. A second objection needs no theology. Fedorov never asks whether the dead want to come back. He assumes their consent, but the project is a rescue operation mounted on behalf of people who never asked to be rescued. And a third: the common task demands the whole of humanity united in a single project, directed, in Fedorov’s own writings, by the Russian Czar. A plan that requires universal agreement and a single command has a failure mode, and the twentieth century supplied it more than once.</p><p><a class="ts" href="#" data-t="438">7:18</a>With a century of hindsight, the picture changes, and not only against him. Start with what landed. The teenager who studied in his reading room, Tsiolkovsky, became the theorist of rocket flight, and the Soviet space program that put Sputnik overhead in nineteen fifty-seven grew in soil Fedorov had tilled. The historian Brian Harvey has shown how deep that influence ran: for Soviet citizens, Sputnik was less a shock than the realization of an old idea. The artificial organs, the solar energy, the managed Earth: all mainstream now, all proposed by a librarian in the eighteen eighties. The stranger afterlife is in the life-extension movement. Russian transhumanists founded their movement in two thousand three in his lineage, and the country’s first cryonics company, KrioRus, began freezing bodies in two thousand five on the wager that future science will do what Fedorov said it must. The physicist Frank Tipler, working independently, arrived at a cosmology ending with the resurrection of everyone who ever lived, simulated rather than reassembled. Fedorov would have recognized the ambition and quarreled with the method, which is to say he would have recognized it.</p><p><a class="ts" href="#" data-t="513">8:33</a>But hindsight also sharpens the objections. The historian Michael Hagemeister has argued that Russian cosmism, the movement Fedorov supposedly founded, is partly a retrospective construction, assembled in the late Soviet period to serve a nationalist story about Russian identity. If he is right, then Fedorov’s influence is real but messier than the legend: less a school than a rumor that kept finding new carriers. And the deepest problem remains the one Bulgakov named. A century of biology has not made the reassembly of persons from scattered particles more plausible. What survives, then, is not the engineering. It is the moral provocation at the center: that every theory of progress writes off the dead, and that a progress worth the name would have to answer to them.</p><p><a class="ts" href="#" data-t="563">9:23</a>The only portrait of Fedorov was drawn in secret, by Leonid Pasternak, in the library, because the sitter would never have agreed to pose. A thin man in a ragged coat, surrounded by books, looking up. The scholar George Young, who spent years studying him, wrote that what we should do with our Godlike power is a question that someone is going to have to answer, and that Fedorov’s answer may not be the best proposed, but it is the most thorough and the deepest attempt at one.</p></div></div></div>
+  </section>
+  <section class="sec follow" aria-labelledby="follow-h">
+    <div class="sec-head"><h2 id="follow-h">Follow the series</h2><span></span><span class="label">2 of 100 released</span></div>
+    <div class="row"><div class="gut"></div><div class="body">
+      <p class="follow-lede">One hundred books in ten acts, ten minutes each: how the idea of technological progress was built, and the strongest arguments against it.</p>
+      <div class="cta">
+        <div id="primary"><a class="pill pill-ink" data-app="apple" data-name="Apple Podcasts" href="podcast://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">Follow in Apple Podcasts</a></div>
+        <div class="apps" id="apps"><a class="pill" data-app="overcast" data-name="Overcast" href="overcast://x-callback-url/add?url=http%3A%2F%2Fmuse.ai%2Fpodcasts%2Ffeed%2F1259445163926232%2F56841503-f373-44e6-99b5-326cfad9be97">Overcast</a><a class="pill" data-app="pocketcasts" data-name="Pocket Casts" href="pktc://subscribe/muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">Pocket Casts</a><a class="pill" data-app="castro" data-name="Castro" href="castro://subscribe/muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">Castro</a><a class="pill" data-app="antennapod" data-name="AntennaPod" href="https://antennapod.org/deeplink/subscribe?url=http%3A%2F%2Fmuse.ai%2Fpodcasts%2Ffeed%2F1259445163926232%2F56841503-f373-44e6-99b5-326cfad9be97&amp;title=A%20Genealogy%20of%20Technological%20Optimism" target="_blank" rel="noopener">AntennaPod</a></div>
+        <p class="fine">The show isn&rsquo;t in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app. <a href="../../#more">Other apps and RSS</a></p>
+        <p class="hint" id="hint" hidden>Nothing opened? <a href="../../#more">Copy the feed</a> and add it by URL in your app.</p>
+      </div>
+      <a class="textlink" href="../../">All ten acts and every episode</a>
+    </div></div>
+  </section>
+
+  <nav class="epnav" aria-label="More episodes"><a href="../../ep/1/" rel="prev"><span class="label">Previous episode</span><span class="t">1. The Phenomenon of Man</span></a><div class="soon"><span class="label">Coming next</span><span class="t">3. New Atlantis</span></div></nav>
+
+  <footer>
+    <span>A Genealogy of Technological Optimism &middot; Created and hosted by <a href="https://x.com/slotkinjr" target="_blank" rel="noopener">Jon Slotkin</a></span>
+    <nav><a href="../../">Home</a><a href="../../syllabus.pdf" target="_blank" rel="noopener">Syllabus</a><a href="http://muse.ai/podcasts/feed/1259445163926232/56841503-f373-44e6-99b5-326cfad9be97">RSS</a></nav>
+  </footer>
+</div>
+<script>
 (function(){
   var root=document.documentElement;
 
@@ -700,15 +466,10 @@ JS = r"""
     var el=document.getElementById(id);if(el&&el.tagName==="DETAILS")el.open=true;}
   window.addEventListener("hashchange",openHash);openHash();
 })();
-"""
-
-# PostHog. Pageviews, time on page, geography, devices, referrers, every click, heatmaps and
-# session replays come from the library; the events below add what it can't infer: follows by
-# app, listening (seconds, coverage, milestones), downloads, chapters, folds and engaged time.
-# Open the site with ?notrack to stop counting your own browser, ?track to undo.
-ANALYTICS_JS = r"""
+</script>
+<script>
 (function(){
-  var KEY="__KEY__",HOST="__HOST__";
+  var KEY="phc_ypph9s3jp4qAFUDHHQiZigvV2NprDyDvFARyqNh62i3q",HOST="https://us.i.posthog.com";
   var sp=new URLSearchParams(location.search),store=null;
   try{store=window.localStorage;}catch(e){}
   function remember(on){try{if(on)store.setItem("goto-notrack","1");else store.removeItem("goto-notrack");}catch(e){}}
@@ -842,352 +603,6 @@ ANALYTICS_JS = r"""
   document.addEventListener("visibilitychange",function(){if(document.hidden)leaving("hidden");});
   addEventListener("pagehide",function(){leaving("pagehide");});
 })();
-"""
-
-
-def analytics_tag():
-    if not POSTHOG_KEY:
-        return ""
-    return f"\n<script>{ANALYTICS_JS.replace('__KEY__', POSTHOG_KEY).replace('__HOST__', POSTHOG_HOST)}</script>"
-
-
-def build_html(zip_info):
-    acts = "".join(act_html(r, n, items) for r, n, _d, items in ACTS)
-    released = len(RELEASED)
-    latest_n = EPISODES[0]["num"]
-    latest_html = episode_html(EPISODES[0])
-    others = "".join(app_link(k) for k in ["overcast", "pocketcasts", "castro", "antennapod"])
-    earlier_html = ""
-    if len(EPISODES) > 1:
-        dl_all = (f'<a class="label head-link" href="audio/{e(zip_info[0])}" download>Download all</a>'
-                  if zip_info else '<span></span>')
-        rows = "".join(episode_row_html(ep) for ep in EPISODES[1:])
-        earlier_html = f"""
-  <section class="sec" aria-labelledby="earlier-h">
-    <div class="sec-head"><h2 id="earlier-h">Earlier episodes</h2><span></span>{dl_all}</div>
-    <div class="earlier">{rows}</div>
-  </section>
-"""
-    # Versioned so X, iMessage and Slack fetch a fresh preview when the cover art changes.
-    analytics = analytics_tag()
-    og = f"{SITE_URL}/og.jpg?v={hashlib.sha1(COVER_SRC.read_bytes()).hexdigest()[:8]}"
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{e(TITLE)}</title>
-<meta name="description" content="{e(DESCRIPTION)}">
-<link rel="canonical" href="{e(SITE_URL)}/">
-<link rel="alternate" type="application/rss+xml" title="{e(TITLE)}" href="{e(FEED_URL)}">
-<meta name="theme-color" content="#FFFFFF">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="{e(TITLE)}">
-<meta property="og:title" content="{e(TITLE)}">
-<meta property="og:description" content="{e(DESCRIPTION)}">
-<meta property="og:url" content="{e(SITE_URL)}/">
-<meta property="og:image" content="{e(og)}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{e(TITLE)}">
-<meta name="twitter:description" content="{e(DESCRIPTION)}">
-<meta name="twitter:image" content="{e(og)}">
-<link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preload" href="fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
-<style>{faces()}{CSS}</style>
-</head>
-<body>
-<div class="page">
-
-  <header class="hero">
-    <div class="hero-text">
-      <p class="label">A podcast &middot; One hundred books, 1626 to 2025</p>
-      <div class="hero-main">
-        <h1>A Genealogy of Technological Optimism</h1>
-        <div class="cta">
-          <div id="primary">{app_link("apple", True)}</div>
-          <div class="apps" id="apps">{others}</div>
-          <p class="fine">The show isn&rsquo;t in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app. <a href="#more">Other apps and RSS</a></p>
-          <p class="hint" id="hint" hidden>Nothing opened? <a href="#more">Copy the feed</a> and add it by URL in your app.</p>
-          <div class="handoff">{qr_svg(SITE_URL + ("/?utm_source=qr" if POSTHOG_KEY else "/"))}<p>On your phone? Scan to open this page there.</p></div>
-        </div>
-      </div>
-    </div>
-    <figure class="cover"><img src="hero.jpg" width="1200" height="{HERO_H}" alt="A lone figure on a ridge beneath a rising sun whose rays run down into a rocket on its launch pad, power lines, a data center and a cooling tower."></figure>
-    <div class="hero-foot">
-      <span>Created and hosted by <a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></span>
-      <span class="n">{released} of 100 released</span>
-    </div>
-  </header>
-
-  <section class="sec note" aria-labelledby="note-h">
-    <div class="sec-head"><h2 id="note-h">The series</h2><span></span><span></span></div>
-    <div class="row"><div class="gut"></div><div class="body">
-      {''.join(f'<p>{e(p)}</p>' for p in NOTE)}
-    </div></div>
-  </section>
-
-  <section class="sec" aria-labelledby="latest-h">
-    <div class="sec-head"><h2 id="latest-h">Latest episode</h2><span></span><span class="label">Episode {latest_n} of 100</span></div>
-    {latest_html}
-  </section>
-
-  <section class="sec" aria-labelledby="acts-h">
-    <div class="sec-head"><h2 id="acts-h">The ten acts</h2><span></span><a class="label head-link" href="syllabus.pdf" target="_blank" rel="noopener">Syllabus (PDF)</a></div>
-    <div class="row"><div class="gut"></div><div class="acts">{acts}</div></div>
-  </section>
-{earlier_html}
-  <section class="sec more" id="more" aria-labelledby="more-h">
-    <div class="sec-head"><h2 id="more-h">Other apps and RSS</h2><span></span><span class="label">Free, in any podcast app</span></div>
-    <div class="row"><div class="gut"></div><div class="body">
-      <div class="feed"><span class="label">RSS</span><code id="feed-url">{e(FEED_URL)}</code><button class="copy" id="copy" type="button">Copy</button></div>
-      <ul class="steps">
-        <li><b>Apple Podcasts.</b> Library, then the &hellip; menu, then Follow a Show by URL. Paste the feed.</li>
-        <li><b>Overcast.</b> Tap +, then Add URL. Paste the feed.</li>
-        <li><b>Pocket Casts.</b> Discover, paste the feed into search, then Subscribe.</li>
-        <li><b>YouTube Music.</b> Library, Podcasts, Add podcast, then Add a podcast by RSS feed.</li>
-        <li><b>Podcast Addict.</b> Tap +, then Add RSS feed. Paste the feed and tap Add.</li>
-        <li><b>Spotify</b> can&rsquo;t add shows by feed URL. Any app above works.</li>
-      </ul>
-    </div></div>
-  </section>
-
-  <footer>
-    <span>{e(TITLE)} &middot; Updated with Episode {latest_n}</span>
-    <nav><a href="syllabus.pdf" target="_blank" rel="noopener">Syllabus</a><a href="{e(FEED_URL)}">RSS</a><a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></nav>
-  </footer>
-</div>
-<script>{JS}</script>{analytics}
+</script>
 </body>
 </html>
-"""
-
-
-def og_version(*parts):
-    h = hashlib.sha1(COVER_SRC.read_bytes())
-    for p in parts:
-        h.update(str(p).encode())
-    return h.hexdigest()[:8]
-
-
-def build_episode_page(ep):
-    n, b = ep["num"], BOOKS[ep["num"]]
-    R = "../../"
-    _b, meta, inner = episode_parts(ep, root=R, page=True)
-    paras, mins = transcript_paras(ep)
-    act_name = next(name for roman, name, _d, _i in ACTS if roman == b["roman"])
-    latest = n == LATEST
-    url = ep_url(n)
-    quote = (ep.get("pull") or {}).get("text", "")
-    og = f"{url}og.jpg?v={og_version(quote, b['title'])}"
-    title = f"{n}. {b['title']} · {TITLE}"
-    desc = smart(ep.get("summary") or b["note"])
-    others = "".join(app_link(k) for k in ["overcast", "pocketcasts", "castro", "antennapod"])
-    read = ""
-    if paras:
-        read = f"""
-  <section class="sec read" aria-labelledby="read-h" data-for="ep-{n}">
-    <div class="sec-head"><h2 id="read-h">Read the episode</h2><span></span><span class="label">{mins} min read</span></div>
-    <div class="row"><div class="gut"></div><div class="body"><div class="transcript">{"".join(paras)}</div></div></div>
-  </section>"""
-    def nav_item(k, rel, label):
-        if k in RELEASED:
-            return (f'<a href="{R}ep/{k}/" rel="{rel}"><span class="label">{label}</span>'
-                    f'<span class="t">{k}. {e(BOOKS[k]["title"])}</span></a>')
-        if rel == "next" and k <= 100:
-            return (f'<div class="soon"><span class="label">Coming next</span>'
-                    f'<span class="t">{k}. {e(BOOKS[k]["title"])}</span></div>')
-        return "<span></span>"
-    nav = f'<nav class="epnav" aria-label="More episodes">{nav_item(n - 1, "prev", "Previous episode")}{nav_item(n + 1, "next", "Next episode")}</nav>'
-    return f"""<!doctype html>
-<html lang="en" data-root="{R}" data-page="episode">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{e(title)}</title>
-<meta name="description" content="{e(desc)}">
-<link rel="canonical" href="{e(url)}">
-<link rel="alternate" type="application/rss+xml" title="{e(TITLE)}" href="{e(FEED_URL)}">
-<meta name="theme-color" content="#FFFFFF">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="{e(TITLE)}">
-<meta property="og:title" content="{e(f'{n}. {b["title"]}')}">
-<meta property="og:description" content="{e(desc)}">
-<meta property="og:url" content="{e(url)}">
-<meta property="og:image" content="{e(og)}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{e(f'{n}. {b["title"]}')}">
-<meta name="twitter:description" content="{e(desc)}">
-<meta name="twitter:image" content="{e(og)}">
-<link rel="icon" type="image/png" sizes="64x64" href="{R}favicon.png">
-<link rel="apple-touch-icon" href="{R}apple-touch-icon.png">
-<link rel="preload" href="{R}fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{R}fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
-<style>{faces(R)}{CSS}</style>
-</head>
-<body>
-<div class="page ep-page">
-  <nav class="crumb" aria-label="Series"><a href="{R}">{e(TITLE)}</a><span>Episode {n} of 100</span></nav>
-
-  <article class="ep row is-page{' is-latest' if latest else ''}" id="ep-{n}" data-n="{n}" data-title="{e(b['title'])}">
-    <div class="gut num">{n}</div>
-    <div class="body">
-      <p class="kicker"><span class="num-inline">{n}</span><span class="latest">Latest</span><span class="kact">Act {b['roman']} &middot; {e(act_name)}</span></p>
-      <h1>{e(b['title'])}</h1>
-      <p class="meta">{meta}</p>
-      {inner}
-    </div>
-  </article>
-{read}
-  <section class="sec follow" aria-labelledby="follow-h">
-    <div class="sec-head"><h2 id="follow-h">Follow the series</h2><span></span><span class="label">{len(RELEASED)} of 100 released</span></div>
-    <div class="row"><div class="gut"></div><div class="body">
-      <p class="follow-lede">{e(DESCRIPTION)}</p>
-      <div class="cta">
-        <div id="primary">{app_link("apple", True)}</div>
-        <div class="apps" id="apps">{others}</div>
-        <p class="fine">The show isn&rsquo;t in podcast directories, so search won&rsquo;t find it. These buttons add its feed straight to your app. <a href="{R}#more">Other apps and RSS</a></p>
-        <p class="hint" id="hint" hidden>Nothing opened? <a href="{R}#more">Copy the feed</a> and add it by URL in your app.</p>
-      </div>
-      <a class="textlink" href="{R}">All ten acts and every episode</a>
-    </div></div>
-  </section>
-
-  {nav}
-
-  <footer>
-    <span>{e(TITLE)} &middot; Created and hosted by <a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></span>
-    <nav><a href="{R}">Home</a><a href="{R}syllabus.pdf" target="_blank" rel="noopener">Syllabus</a><a href="{e(FEED_URL)}">RSS</a></nav>
-  </footer>
-</div>
-<script>{JS}</script>{analytics_tag()}
-</body>
-</html>
-"""
-
-
-def build_episode_ogs(eps):
-    from playwright.sync_api import sync_playwright
-    with sync_playwright() as p:
-        b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": 1200, "height": 630})
-        for ep in eps:
-            n, bk = ep["num"], BOOKS[ep["num"]]
-            q = smart((ep.get("pull") or {}).get("text") or bk["note"])
-            size = 64 if len(q) <= 110 else 56 if len(q) <= 170 else 50 if len(q) <= 230 else 44
-            dur = to_seconds(ep.get("duration") or 0)
-            tmp = OUT / "_og_ep.html"
-            tmp.write_text(f"""<!doctype html><meta charset="utf-8"><style>{faces()}
-html,body{{margin:0;width:1200px;height:630px;background:#fff;color:#121212}}
-.w{{box-sizing:border-box;width:1200px;height:630px;padding:54px 72px 50px;display:flex;flex-direction:column}}
-.top{{display:flex;justify-content:space-between;font:400 15px/1 Geist;letter-spacing:.16em;text-transform:uppercase;color:#6E6E69}}
-.q{{flex:1;display:flex;align-items:center}}
-blockquote{{margin:0;padding-left:.38em;font:italic 330 {size}px/1.2 Newsreader;letter-spacing:-.01em;text-indent:-.38em;color:#121212}}
-.bot{{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:22px;border-top:1px solid #E4E4E1;padding-top:20px}}
-.bot img{{width:64px;height:64px;border-radius:3px;display:block}}
-.t{{font:400 28px/1.15 Newsreader}}
-.m{{margin-top:6px;font:400 16px/1.2 Geist;color:#6E6E69}}
-.go{{font:500 16px/1 Geist;color:#121212;border-bottom:1px solid #C9C9C5;padding-bottom:3px}}
-</style><div class="w"><div class="top"><span>{e(TITLE)}</span><span>Episode {n} of 100</span></div>
-<div class="q"><blockquote>&ldquo;{e(q)}&rdquo;</blockquote></div>
-<div class="bot"><img src="cover.jpg"><div><div class="t">{e(bk['title'])}</div>
-<div class="m">{e(bk['author'])} &middot; {bk['year']}{f' &middot; {round(dur / 60)} min' if dur else ''}</div></div><span class="go">Listen</span></div></div>""")
-            pg.goto(tmp.as_uri())
-            pg.evaluate("document.fonts.ready")
-            pg.wait_for_timeout(250)
-            d = OUT / "ep" / str(n)
-            d.mkdir(parents=True, exist_ok=True)
-            pg.screenshot(path=str(d / "og.png"))
-            Image.open(d / "og.png").convert("RGB").save(d / "og.jpg", quality=90, optimize=True)
-            (d / "og.png").unlink()
-            tmp.unlink()
-        b.close()
-
-
-def build_assets():
-    fonts = OUT / "fonts"
-    fonts.mkdir(parents=True, exist_ok=True)
-    for f in (ASSETS / "fonts").glob("*.woff2"):
-        shutil.copy(f, fonts / f.name)
-
-    cover = Image.open(COVER_SRC).convert("RGB")
-    cover.resize((1000, 1000), Image.LANCZOS).save(OUT / "cover.jpg", quality=86, optimize=True, progressive=True)
-    # The page shows the artwork without its baked-in title banner; the type does that job.
-    art = cover.crop((0, 0, cover.size[0], int(cover.size[1] * HERO_CROP)))
-    art.resize((1200, round(1200 * art.size[1] / art.size[0])), Image.LANCZOS).save(
-        OUT / "hero.jpg", quality=86, optimize=True, progressive=True)
-    w = cover.size[0]
-    sun = cover.crop((int(w * .25), int(w * .025), int(w * .75), int(w * .525)))
-    sun.resize((180, 180), Image.LANCZOS).save(OUT / "apple-touch-icon.png", optimize=True)
-    sun.resize((64, 64), Image.LANCZOS).save(OUT / "favicon.png", optimize=True)
-    if PDF_SRC.exists():
-        shutil.copy(PDF_SRC, OUT / "syllabus.pdf")
-    (OUT / ".nojekyll").write_text("")
-
-
-def build_zip():
-    local = sorted((OUT / "audio").glob("ep*.mp3")) if (OUT / "audio").exists() else []
-    if len(local) < 2:
-        return None
-    nums = [int(p.stem[2:]) for p in local]
-    name = f"Genealogy-of-Technological-Optimism-episodes-{min(nums)}-{max(nums)}.zip"
-    with zipfile.ZipFile(OUT / "audio" / name, "w", zipfile.ZIP_STORED) as z:
-        for p, n in zip(local, nums):
-            z.write(p, f"{n:02d} {BOOKS[n]['title']}.mp3")
-    return name, (OUT / "audio" / name).stat().st_size / 1e6
-
-
-def build_og():
-    from playwright.sync_api import sync_playwright
-    tmp = OUT / "_og.html"
-    tmp.write_text(f"""<!doctype html><meta charset="utf-8"><style>{FACES}
-html,body{{margin:0;width:1200px;height:630px;background:#fff;color:#121212}}
-.wrap{{display:grid;grid-template-columns:1fr 470px;gap:64px;padding:0 72px;align-items:center;height:630px}}
-img{{width:470px;height:470px;display:block;border-radius:4px;box-shadow:0 30px 60px -30px rgba(0,0,0,.4)}}
-.t{{display:flex;flex-direction:column;justify-content:space-between;height:470px}}
-.e{{font:400 15px/1 Geist;letter-spacing:.16em;text-transform:uppercase;color:#6E6E69}}
-h1{{font:330 64px/1 Newsreader;letter-spacing:-.024em;margin:0}}
-.s{{margin:18px 0 0;font:400 italic 26px/1.4 Newsreader;color:#6E6E69}}
-.f{{border-top:1px solid #E4E4E1;padding-top:14px;font:400 17px/1 Geist;color:#6E6E69}}
-</style><div class="wrap"><div class="t"><div class="e">A podcast</div>
-<div><h1>A Genealogy of Technological Optimism</h1><p class="s">One hundred books in ten acts.</p></div>
-<div class="f">Created and hosted by Jon Slotkin</div></div><img src="cover.jpg"></div>""")
-    with sync_playwright() as p:
-        b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": 1200, "height": 630})
-        pg.goto(tmp.as_uri())
-        pg.evaluate("document.fonts.ready")
-        pg.wait_for_timeout(300)
-        pg.screenshot(path=str(OUT / "og.png"))
-        b.close()
-    Image.open(OUT / "og.png").convert("RGB").save(OUT / "og.jpg", quality=90, optimize=True)
-    (OUT / "og.png").unlink()
-    tmp.unlink()
-
-
-if __name__ == "__main__":
-    OUT.mkdir(parents=True, exist_ok=True)
-    for item in OUT.iterdir():          # keep published audio; rebuild everything else
-        if item.name == "audio":
-            for z in item.glob("*.zip"):
-                z.unlink()
-            continue
-        shutil.rmtree(item) if item.is_dir() else item.unlink()
-    build_assets()
-    doc = build_html(None)
-    zi = build_zip()
-    if zi:
-        doc = build_html(zi)
-    (OUT / "index.html").write_text(doc, encoding="utf-8")
-    for ep in EPISODES:
-        d = OUT / "ep" / str(ep["num"])
-        d.mkdir(parents=True, exist_ok=True)
-        (d / "index.html").write_text(build_episode_page(ep), encoding="utf-8")
-    build_og()
-    build_episode_ogs(EPISODES)
-    print("built", OUT, "| site:", SITE_URL, "| episodes:", sorted(RELEASED))
