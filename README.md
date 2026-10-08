@@ -14,6 +14,8 @@ Created and hosted by Jon Slotkin.
     summary, chapters, transcript file, sources)
   - `build/assets/`: cover art, syllabus PDF and fonts
 - Episode audio is stored once, in `docs/audio/ep001.mp3`, `ep002.mp3`, and so on.
+- Every released episode also gets its own page at `docs/ep/N/` with a share card
+  (`docs/ep/N/og.jpg`) built from its pull quote.
 
 ## Adding an episode
 
