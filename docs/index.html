@@ -165,6 +165,9 @@ details summary::-webkit-details-marker{display:none}
 .dl .dlink::after{content:" \2193"}
 .dl .dlink:hover{text-decoration-color:var(--ink)}
 .size{font:400 13px/1.4 var(--sans);color:var(--muted)}
+.player-note{margin:12px 0 0;font:400 14px/1.5 var(--sans);color:var(--ink)}
+.player-note a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.player-note a:hover{text-decoration-color:var(--ink)}
 .dl-more{display:inline-flex;gap:18px;margin-left:auto}
 .share,.dl .eplink{font:500 14.5px/1.4 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:4px}
 .share:hover,.dl .eplink:hover{text-decoration-color:var(--ink)}
@@ -483,6 +486,11 @@ footer a:hover{color:var(--ink)}
   var android=/Android/i.test(ua),mac=!ios&&/Macintosh/.test(ua);
   var os=ios?"ios":android?"android":mac?"mac":"desktop";
   root.setAttribute("data-os",os);
+  /* Built-in browsers inside social apps (LinkedIn, X, ...) can cut audio and block app links */
+  var INAPP=/LinkedInApp/i.test(ua)?"LinkedIn":/Twitter/i.test(ua)?"X":/Instagram/i.test(ua)?"Instagram":
+    /FBAN|FBAV|FB_IAB/i.test(ua)?"Facebook":/BytedanceWebview|musical_ly|TikTok/i.test(ua)?"TikTok":
+    /Snapchat/i.test(ua)?"Snapchat":/\bLine\//.test(ua)?"LINE":/GSA\//.test(ua)?"Google":"";
+  if(INAPP)root.setAttribute("data-inapp",INAPP);
   var order={ios:["apple","overcast","pocketcasts","castro"],android:["pocketcasts","antennapod"],
              mac:["apple","pocketcasts"],desktop:["pocketcasts","apple"]}[os];
   var all={};document.querySelectorAll("[data-app]").forEach(function(a){all[a.getAttribute("data-app")]=a;});
@@ -526,11 +534,31 @@ footer a:hover{color:var(--ink)}
     function paint(){var d=D(),t=pending!=null?pending:(a.currentTime||0);seek.max=Math.max(1,Math.round(d));seek.value=t;
       cur.textContent=fmt(t);rem.textContent="−"+fmt(d-t);seek.style.setProperty("--p",(d?t/d*100:0)+"%");}
     function seekTo(t){t=Math.max(0,Math.min(t,D()||t));if(a.readyState<1){pending=t;a.preload="metadata";load();}else a.currentTime=t;paint();}
-    function toggle(){if(a.paused){if(current&&current!==a)current.pause();current=a;load();a.play();}else a.pause();}
+    var playedAt=0,spont=0;
+    function issue(kind,extra){var d={kind:kind,count:spont,position:Math.round(a.currentTime||0),ready_state:a.readyState,network_state:a.networkState};
+      for(var k in extra)d[k]=extra[k];card.dispatchEvent(new CustomEvent("player:issue",{bubbles:true,detail:d}));}
+    function start(){var r=a.play();if(r&&r.catch)r.catch(function(err){issue("rejected",{error_name:err&&err.name,error_message:err&&String(err.message).slice(0,120)});note();});}
+    function toggle(){if(a.paused){if(current&&current!==a){current.__intent=Date.now();current.pause();}current=a;load();playedAt=Date.now();spont=0;start();}
+      else{a.__intent=Date.now();a.pause();}}
+    function note(){if(card.querySelector(".player-note"))return;
+      var n=document.createElement("p");n.className="player-note";n.setAttribute("role","status");
+      var href=location.href.split("#")[0],out="";
+      if(INAPP&&os==="ios")out='<a class="open-out" href="'+href.replace(/^https:/,"x-safari-https:")+'">Open in Safari</a>';
+      else if(INAPP&&os==="android")out='<a class="open-out" href="intent://'+href.replace(/^https?:\/\//,"")+'#Intent;scheme=https;end">Open in your browser</a>';
+      var follow='<a class="note-follow" href="#primary">follow in your podcast app</a>';
+      n.innerHTML=INAPP?(INAPP+"&rsquo;s built-in browser keeps stopping the audio. "+(out?out+" or "+follow:"Open this page in your browser, or "+follow)+"."):
+        ("Playback keeps stopping. Tap play to try again, or "+follow+".");
+      p.parentNode.insertBefore(n,p.nextSibling);}
     a.addEventListener("loadedmetadata",function(){if(pending!=null){a.currentTime=pending;pending=null;}paint();});
     a.addEventListener("timeupdate",paint);
     a.addEventListener("play",function(){p.classList.add("playing");play.setAttribute("aria-label","Pause");session(card,a);});
-    a.addEventListener("pause",function(){p.classList.remove("playing");play.setAttribute("aria-label","Play");});
+    a.addEventListener("pause",function(){p.classList.remove("playing");play.setAttribute("aria-label","Play");
+      /* A pause nobody asked for, while the page is in front: the browser stopped us */
+      if(a.ended||document.hidden||Date.now()-(a.__intent||0)<800)return;
+      var quick=Date.now()-playedAt<6000;spont++;issue("interrupted",{since_play_ms:Date.now()-playedAt});
+      if(INAPP&&quick&&spont===1)start();          /* one quiet retry, only where we've seen the cut-off */
+      else if(quick&&(INAPP||spont>1))note();});
+    a.addEventListener("error",function(){issue("error",{error_code:a.error&&a.error.code});note();});
     play.addEventListener("click",toggle);
     seek.addEventListener("input",function(){seekTo(+seek.value);});
     p.querySelector(".back").addEventListener("click",function(){seekTo((pending!=null?pending:a.currentTime||0)-15);});
@@ -549,6 +577,8 @@ footer a:hover{color:var(--ink)}
     try{navigator.mediaSession.metadata=new MediaMetadata({title:card.getAttribute("data-title"),
       artist:"A Genealogy of Technological Optimism",album:"Episode "+card.getAttribute("data-n"),
       artwork:[{src:new URL(ROOT+"cover.jpg",location.href).href,sizes:"1000x1000",type:"image/jpeg"}]});
+      navigator.mediaSession.setActionHandler("pause",function(){a.__intent=Date.now();a.pause();});
+      navigator.mediaSession.setActionHandler("play",function(){a.play();});
       navigator.mediaSession.setActionHandler("seekbackward",function(){a.currentTime=Math.max(0,a.currentTime-15);});
       navigator.mediaSession.setActionHandler("seekforward",function(){a.currentTime=a.currentTime+30;});}catch(e){}
   }
@@ -601,7 +631,7 @@ footer a:hover{color:var(--ink)}
     P.init(KEY,{api_host:HOST,defaults:"2026-05-30",person_profiles:"always",
       enable_heatmaps:true,capture_dead_clicks:true,capture_exceptions:true,
       capture_performance:{web_vitals:true},session_recording:{maskAllInputs:true},
-      loaded:function(i){ph=i;Q.splice(0).forEach(function(x){i.capture(x[0],x[1],opts(x[2],x[3]));});setTimeout(clean,2500);}});};
+      loaded:function(i){ph=i;i.register({in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"});Q.splice(0).forEach(function(x){i.capture(x[0],x[1],opts(x[2],x[3]));});setTimeout(clean,2500);}});};
   document.head.appendChild(s);
 
   function merge(a,b){for(var k in b)a[k]=b[k];return a;}
@@ -622,6 +652,8 @@ footer a:hover{color:var(--ink)}
       track("follow_click",{app:lastApp,app_name:el.getAttribute("data-name"),
         placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
     if(el.id==="copy"){track("feed_copied",{});return;}
+    if(el.classList.contains("open-out")){track("open_in_browser_click",merge(ep(el),{in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"}),true);return;}
+    if(el.classList.contains("note-follow")){track("player_note_follow_click",ep(el));return;}
     if(el.classList.contains("share")){track("share_click",merge(ep(el),{method:navigator.share?"share_sheet":"copy_link",
       page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}
     if(el.classList.contains("eplink")){track("episode_page_click",merge(ep(el),{from:el.closest("h3")?"title":"link"}),true);return;}
@@ -702,6 +734,10 @@ footer a:hover{color:var(--ink)}
   audio("ended",function(s){clearInterval(s.timer);flush(s,"ended");track("episode_finished",{episode:s.n,title:s.title,coverage_percent:cov(s)});});
   audio("ratechange",function(s,a){track("playback_speed_change",{episode:s.n,rate:a.playbackRate});});
   audio("error",function(s,a){track("audio_error",{episode:s.n,code:a.error&&a.error.code,message:a.error&&a.error.message});});
+
+  document.addEventListener("player:issue",function(ev){var d=ev.detail||{},c=ev.target;
+    track("audio_interrupted",merge({episode:c&&+c.getAttribute("data-n"),title:c&&c.getAttribute("data-title"),
+      in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"},d),true);});
 
   function leaving(reason){engagement(reason);for(var n in L)flush(L[n],reason);}
   document.addEventListener("visibilitychange",function(){if(document.hidden)leaving("hidden");});
