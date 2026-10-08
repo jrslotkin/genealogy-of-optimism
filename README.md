@@ -46,8 +46,10 @@ The key is public by design: it can send events, not read them.
     `episode_finished`, `playback_speed_change`, `audio_error`
   - Navigation: `pull_quote_click`, `chapter_click`, `transcript_click`, `download`,
     `syllabus_open`, `outbound_click`, `episode_section_open`, `earlier_episode_open`,
-    `act_open`, `act_listen_click`, `text_copied`, `section_viewed`
+    `act_open`, `act_listen_click`, `book_link_open`, `text_copied`, `section_viewed`
   - Engagement: `page_engagement` (engaged seconds, deepest scroll)
+- Every book on the page has an anchor (`#book-N`) that opens its act and marks the book. The
+  syllabus PDF links each title there with `?utm_source=pdf`, so PDF readers show up as their own source.
 - The QR code carries `?utm_source=qr`. The page removes UTM tags from the address bar after
   recording them.
 - Open the site with `?notrack` to stop counting that browser, and `?track` to undo it. Local

@@ -283,7 +283,7 @@ def act_html(roman, name, entries):
     for num, title, year, author, note in entries:
         out = num in RELEASED
         listen = f'<a class="listen" href="#ep-{num}">Listen</a>' if out else ""
-        books.append(f'<li data-n="{num}"{" class=out" if out else ""}><span class="bn">{num}</span>'
+        books.append(f'<li id="book-{num}" data-n="{num}"{" class=out" if out else ""}><span class="bn">{num}</span>'
                      f'<span class="bt">{e(main_title(title))}<span class="ba">{e(author)}<span class="dot">{year}</span></span></span>'
                      f'{listen}<span class="bnote">{e(note)}</span></li>')
     return f"""
@@ -535,7 +535,9 @@ details summary::-webkit-details-marker{display:none}
 .ticks i.new{background:var(--signal)}
 .act[open] .ar{color:var(--ink)}
 .books{list-style:none;margin:0;padding:4px 0 26px 60px;display:grid;gap:20px}
-.books li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:baseline}
+.books li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:baseline;scroll-margin:96px 0;border-radius:2px}
+.books li.here{animation:here 2.6s ease-out}
+@keyframes here{0%,35%{background:#F1EFEA;box-shadow:0 0 0 12px #F1EFEA}100%{background:rgba(241,239,234,0);box-shadow:0 0 0 12px rgba(241,239,234,0)}}
 .bn{font:400 12px/1 var(--sans);color:var(--muted);font-variant-numeric:tabular-nums}
 .bt{display:grid;gap:3px;font:400 16.5px/1.35 var(--serif);color:var(--ink)}
 .ba{font:400 13px/1.4 var(--sans);color:var(--muted)}
@@ -740,7 +742,13 @@ JS = r"""
 
   /* Open an earlier episode when a link points at it */
   function openHash(){var id=decodeURIComponent(location.hash.slice(1));if(!id)return;
-    var el=document.getElementById(id);if(el&&el.tagName==="DETAILS")el.open=true;}
+    var el=document.getElementById(id);if(!el)return;
+    if(el.tagName==="DETAILS"){el.open=true;return;}
+    /* A book link (the syllabus PDF links every title here): open its act, bring it into view, mark it briefly */
+    var act=el.closest&&el.closest("details.act");if(!act)return;
+    act.open=true;
+    requestAnimationFrame(function(){el.scrollIntoView({block:"center"});
+      el.classList.remove("here");void el.offsetWidth;el.classList.add("here");});}
   window.addEventListener("hashchange",openHash);openHash();
 })();
 """
@@ -833,8 +841,14 @@ ANALYTICS_JS = r"""
   document.addEventListener("toggle",function(ev){var d=ev.target;if(!d||d.tagName!=="DETAILS"||!d.open)return;
     if(d.classList.contains("fold")){var sm=d.querySelector("summary");track("episode_section_open",merge(ep(d),{section:(sm&&sm.textContent||"").trim()}));}
     else if(d.classList.contains("ep-row"))track("earlier_episode_open",{episode:+d.getAttribute("data-n"),title:d.getAttribute("data-title"),via:location.hash==="#"+d.id?"link":"click"});
-    else if(d.classList.contains("act"))track("act_open",{act:((d.querySelector(".ar")||{}).textContent||"").trim(),name:((d.querySelector(".an")||{}).textContent||"").trim()});
+    else if(d.classList.contains("act"))track("act_open",{act:((d.querySelector(".ar")||{}).textContent||"").trim(),name:((d.querySelector(".an")||{}).textContent||"").trim(),
+      via:/^#book-\d+$/.test(location.hash)&&d.querySelector(location.hash)?"link":"click"});
   },true);
+
+  /* Arrivals at a single book, mostly from the titles in the syllabus PDF */
+  function bookLink(){var m=location.hash.match(/^#book-(\d+)$/);if(!m)return;var li=document.getElementById("book-"+m[1]);if(!li)return;
+    var bt=li.querySelector(".bt");track("book_link_open",{book:+m[1],title:bt&&bt.firstChild?bt.firstChild.textContent:"",released:li.classList.contains("out")});}
+  bookLink();window.addEventListener("hashchange",bookLink);
 
   /* What people copy */
   document.addEventListener("copy",function(){var sel=getSelection(),t=String(sel||"").trim();if(!t)return;
