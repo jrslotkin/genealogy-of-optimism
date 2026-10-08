@@ -827,7 +827,7 @@ def build_html(zip_info):
   </header>
 
   <section class="sec note" aria-labelledby="note-h">
-    <div class="sec-head"><h2 id="note-h">Note</h2><span></span><span></span></div>
+    <div class="sec-head"><h2 id="note-h">The series</h2><span></span><span></span></div>
     <div class="row"><div class="gut"></div><div class="body">
       {''.join(f'<p>{e(p)}</p>' for p in NOTE)}
     </div></div>
