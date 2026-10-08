@@ -165,6 +165,10 @@ details summary::-webkit-details-marker{display:none}
 .dl .dlink::after{content:" \2193"}
 .dl .dlink:hover{text-decoration-color:var(--ink)}
 .size{font:400 13px/1.4 var(--sans);color:var(--muted)}
+.start-here{margin:12px 0 0;font:400 14px/1.5 var(--sans);color:var(--muted)}
+.start-link{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.start-link::after{content:" \2192"}
+.start-link:hover{text-decoration-color:var(--ink)}
 .player-note{margin:12px 0 0;font:400 14px/1.5 var(--sans);color:var(--ink)}
 .player-note a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 .player-note a:hover{text-decoration-color:var(--ink)}
@@ -360,6 +364,7 @@ footer a:hover{color:var(--ink)}
             <p class="kicker"><span class="num-inline">2</span><span class="latest">Latest</span><span class="kact">Act I</span></p>
             <h3><a class="eplink" href="ep/2/">The Philosophy of the Common Task</a></h3>
             <p class="meta">Nikolai Fedorov<span class="dot">1906</span><span class="dot">10 min 2 sec</span></p>
+            <p class="start-here">New to the series? <a class="start-link" href="ep/1/">Start with Episode 1, The Phenomenon of Man</a></p>
             <figure class="pull"><blockquote><a class="pq" href="#" data-t="95">&ldquo;Death, Fedorov argues, is not a fact to be accepted or a mystery to be contemplated. It is the single root of every human problem, and every solution that leaves it untouched is a fraud.&rdquo;</a></blockquote><figcaption><a href="#" data-t="95">Hear it at 1:35</a></figcaption></figure>
           <div class="player" data-src="audio/ep002.mp3" data-dur="602">
             <audio preload="none"></audio>
@@ -653,6 +658,7 @@ footer a:hover{color:var(--ink)}
         placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
     if(el.id==="copy"){track("feed_copied",{});return;}
     if(el.classList.contains("open-out")){track("open_in_browser_click",merge(ep(el),{in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"}),true);return;}
+    if(el.classList.contains("start-link")){track("start_here_click",merge(ep(el),{page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}
     if(el.classList.contains("note-follow")){track("player_note_follow_click",ep(el));return;}
     if(el.classList.contains("share")){track("share_click",merge(ep(el),{method:navigator.share?"share_sheet":"copy_link",
       page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}

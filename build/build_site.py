@@ -185,6 +185,14 @@ def transcript_html(ep):
             f'<div class="transcript">{"".join(paras)}</div></details>')
 
 
+def start_here(n, root=""):
+    """For anyone arriving mid-series: the argument starts at Episode 1."""
+    if n <= 1 or 1 not in RELEASED:
+        return ""
+    return (f'<p class="start-here">New to the series? <a class="start-link" href="{root}ep/1/">'
+            f'Start with Episode 1, {e(BOOKS[1]["title"])}</a></p>')
+
+
 def ep_url(n):
     return f"{SITE_URL}/ep/{n}/"
 
@@ -249,6 +257,7 @@ def episode_html(ep):
             <p class="kicker"><span class="num-inline">{ep['num']}</span><span class="latest">Latest</span><span class="kact">Act {b['roman']}</span></p>
             <h3><a class="eplink" href="ep/{ep['num']}/">{e(b['title'])}</a></h3>
             <p class="meta">{meta}</p>
+            {start_here(ep['num'])}
             {inner}
           </div>
         </article>"""
@@ -451,6 +460,10 @@ details summary::-webkit-details-marker{display:none}
 .dl .dlink::after{content:" \\2193"}
 .dl .dlink:hover{text-decoration-color:var(--ink)}
 .size{font:400 13px/1.4 var(--sans);color:var(--muted)}
+.start-here{margin:12px 0 0;font:400 14px/1.5 var(--sans);color:var(--muted)}
+.start-link{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.start-link::after{content:" \\2192"}
+.start-link:hover{text-decoration-color:var(--ink)}
 .player-note{margin:12px 0 0;font:400 14px/1.5 var(--sans);color:var(--ink)}
 .player-note a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 .player-note a:hover{text-decoration-color:var(--ink)}
@@ -788,6 +801,7 @@ ANALYTICS_JS = r"""
         placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
     if(el.id==="copy"){track("feed_copied",{});return;}
     if(el.classList.contains("open-out")){track("open_in_browser_click",merge(ep(el),{in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"}),true);return;}
+    if(el.classList.contains("start-link")){track("start_here_click",merge(ep(el),{page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}
     if(el.classList.contains("note-follow")){track("player_note_follow_click",ep(el));return;}
     if(el.classList.contains("share")){track("share_click",merge(ep(el),{method:navigator.share?"share_sheet":"copy_link",
       page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}
@@ -1076,6 +1090,7 @@ def build_episode_page(ep):
       <p class="kicker"><span class="num-inline">{n}</span><span class="latest">Latest</span><span class="kact">Act {b['roman']} &middot; {e(act_name)}</span></p>
       <h1>{e(b['title'])}</h1>
       <p class="meta">{meta}</p>
+      {start_here(n, R)}
       {inner}
     </div>
   </article>
