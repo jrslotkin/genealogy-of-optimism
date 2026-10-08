@@ -59,6 +59,13 @@ def e(s):
     return html.escape(str(s), quote=True)
 
 
+def smart(t):
+    """Typographer's quotes for episode text supplied with straight ones."""
+    t = re.sub(r'(^|[\s(\[{])"', lambda m: m.group(1) + "\u201c", str(t)).replace('"', "\u201d")
+    t = re.sub(r"(^|[\s(\[{])'", lambda m: m.group(1) + "\u2018", t).replace("'", "\u2019")
+    return t
+
+
 def main_title(t):
     return t.split(": ", 1)[0]
 
@@ -157,9 +164,9 @@ def transcript_html(ep):
         block = " ".join(line.strip() for line in block.splitlines())
         m = re.match(r"^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s*[-–]?\s*(.*)$", block)
         if m:
-            paras.append(f'<p><a class="ts" href="#" data-t="{to_seconds(m.group(1))}">{m.group(1)}</a>{e(m.group(2))}</p>')
+            paras.append(f'<p><a class="ts" href="#" data-t="{to_seconds(m.group(1))}">{m.group(1)}</a>{e(smart(m.group(2)))}</p>')
         else:
-            paras.append(f"<p>{e(block)}</p>")
+            paras.append(f"<p>{e(smart(block))}</p>")
     return f'<details class="fold"><summary>Transcript</summary><div class="transcript">{"".join(paras)}</div></details>'
 
 
@@ -176,25 +183,31 @@ def episode_parts(ep):
     chapters = ""
     if ep.get("chapters"):
         rows = "".join(f'<li><a href="#" data-t="{to_seconds(t)}"><span class="ct">{clock(to_seconds(t))}</span>'
-                       f'<span class="cn">{e(name)}</span></a></li>' for t, name in ep["chapters"])
+                       f'<span class="cn">{e(smart(name))}</span></a></li>' for t, name in ep["chapters"])
         chapters = f'<details class="fold"><summary>Chapters</summary><ol class="chapters">{rows}</ol></details>'
     sources = ""
     if ep.get("sources"):
         def src_li(s):
+            if isinstance(s, dict) and s.get("heading"):
+                return f'<li class="src-h">{e(s["heading"])}</li>'
             if isinstance(s, dict) and s.get("url"):
-                return f'<li><a href="{e(s["url"])}" target="_blank" rel="noopener">{e(s["text"])}</a></li>'
-            return f'<li>{e(s if isinstance(s, str) else s.get("text", ""))}</li>'
+                return f'<li><a href="{e(s["url"])}" target="_blank" rel="noopener">{e(smart(s["text"]))}</a></li>'
+            return f'<li>{e(smart(s if isinstance(s, str) else s.get("text", "")))}</li>'
         sources = f'<details class="fold"><summary>Sources</summary><ul class="sources">{"".join(src_li(s) for s in ep["sources"])}</ul></details>'
-    folds = chapters + transcript_html(ep) + sources
+    ideas = ""
+    if ep.get("key_ideas"):
+        ideas = ('<details class="fold"><summary>Key ideas</summary><ul class="ideas">'
+                 + "".join(f"<li>{e(smart(i))}</li>" for i in ep["key_ideas"]) + "</ul></details>")
+    folds = chapters + ideas + transcript_html(ep) + sources
     pull = ""
     if ep.get("pull"):
         q = ep["pull"]
         cap = (f'<a href="#" data-t="{to_seconds(q["at"])}">Hear it at {clock(to_seconds(q["at"]))}</a>'
                if q.get("at") else "From the episode")
-        pull = (f'<figure class="pull"><blockquote>&ldquo;{e(q["text"])}&rdquo;</blockquote>'
+        pull = (f'<figure class="pull"><blockquote>&ldquo;{e(smart(q["text"]))}&rdquo;</blockquote>'
                 f'<figcaption>{cap}</figcaption></figure>')
     inner = (f"{pull}{player_html(src, dur) if src else ''}"
-             f'<p class="summary">{e(ep.get("summary") or b["note"])}</p>{dl}'
+             f'<p class="summary">{e(smart(ep.get("summary") or b["note"]))}</p>{dl}'
              f"{f'<div class=folds>{folds}</div>' if folds else ''}")
     return b, meta, inner
 
@@ -408,6 +421,11 @@ details summary::-webkit-details-marker{display:none}
 .ep:not(:has(.player)) [data-t]{pointer-events:none;cursor:default}
 .sources{margin:0 0 18px;padding-left:1.1em;display:grid;gap:8px;font:400 14px/1.5 var(--sans);color:var(--muted)}
 .sources a{color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--faint)}
+.sources{list-style:none;padding-left:0}
+.sources .src-h{margin-top:10px;font:400 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.sources .src-h:first-child{margin-top:0}
+.ideas{margin:0 0 18px;padding-left:1.1em;display:grid;gap:12px;font:400 17px/1.55 var(--serif);color:var(--text)}
+.ideas li::marker{color:var(--muted)}
 
 /* Player */
 .player{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;margin-top:24px;

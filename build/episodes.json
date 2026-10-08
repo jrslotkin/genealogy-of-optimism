@@ -53,5 +53,127 @@
       "text": "In 1995, Wired magazine declared that Teilhard had seen the Net coming half a century early, the globe clothing itself with a brain.",
       "at": "8:04"
     }
+  },
+  {
+    "num": 2,
+    "duration": 602,
+    "summary": "A Moscow librarian, mistaken for a beggar, argues that humanity's single moral duty is to defeat death and physically resurrect every ancestor through science. The episode lays out Fedorov's common task in his own terms, traces its path from Dostoevsky's circle to Tsiolkovsky's rockets and the Soviet space program, then turns on it: Bulgakov's theological objection, the question of the dead's consent, and what a century of hindsight did to the project.",
+    "pull": {
+      "text": "Progress itself, in his account, is an accusation. It makes ancestors into the accused and descendants into judges, sacrificing the fathers for the comfort of the sons.",
+      "at": "2:56"
+    },
+    "audio_file": "ep002.mp3",
+    "audio_url": "",
+    "chapters": [
+      [
+        "0:00",
+        "Opening: the librarian in the reading room"
+      ],
+      [
+        "0:29",
+        "This is A Genealogy of Technological Optimism"
+      ],
+      [
+        "0:37",
+        "The man: who wrote it, and under what pressure"
+      ],
+      [
+        "1:33",
+        "The claim: death as the single root"
+      ],
+      [
+        "2:36",
+        "Sonship and the common task"
+      ],
+      [
+        "3:54",
+        "The mechanics: particles, rockets, new worlds"
+      ],
+      [
+        "5:00",
+        "Reception: Dostoevsky, Solovyov, the Soviets"
+      ],
+      [
+        "5:53",
+        "The turn: the strongest objections"
+      ],
+      [
+        "7:18",
+        "Hindsight: what landed"
+      ],
+      [
+        "8:33",
+        "Hindsight: what breaks"
+      ],
+      [
+        "9:23",
+        "Close"
+      ]
+    ],
+    "key_ideas": [
+      "Fedorov's claim: death is the single root of every human problem, and humanity's common task is the physical resurrection of all the dead, achieved by human scientific action, not divine miracle.",
+      "The machinery of the argument: non-kindred relations, sonship as well as brotherhood, supramoralism, the museum as the institution of memory, and the regulation of nature, including space travel to recover the ancestors' particles and house the resurrected.",
+      "The book was never published in Fedorov's lifetime; two disciples assembled it from notes, drafts, and essays into posthumous volumes in 1906 and 1913. Its first readers included Dostoevsky, Tolstoy, and Solovyov.",
+      "The strongest objection is Bulgakov's: the project never answers what life and death are, so reassembled matter cannot restore the person, and no laboratory can reach what is more than matter.",
+      "Where it lands: the engineering failed, but the provocation stands. Tsiolkovsky carried the space-travel logic into rocketry, transhumanism and cryonics took up the lineage, and every theory of progress still has to answer for the dead it writes off."
+    ],
+    "transcript_file": "ep002-transcript.txt",
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Nikolai Fedorov, The Philosophy of the Common Task, edited by N. P. Peterson and V. A. Kozhevnikov, vol. 1 (Vernyi, 1906); vol. 2 (Moscow, 1913). A posthumous collection of notes, drafts, and essays; Fedorov published almost nothing in his lifetime."
+      },
+      {
+        "text": "English translation: Elisabeth Koutaissoff and Marilyn Minto, trans., What Was Man Created For? The Philosophy of the Common Task (Lausanne: L'Age d'Homme; Belmont, MA: Honeyglen Publishing, 1990). Research for this episode drew on the English translation and the freely available text at regels.org."
+      },
+      {
+        "heading": "Expert sources"
+      },
+      {
+        "text": "George M. Young, Nikolai F. Fedorov: An Introduction (Belmont, MA: Norland Publishing, 1979)."
+      },
+      {
+        "text": "Stephen Lukashevich, N. F. Fedorov (1828-1903): A Study in Russian Eupsychian and Utopian Thought (Newark: University of Delaware Press, 1977)."
+      },
+      {
+        "text": "Andrzej Walicki, A History of Russian Thought from the Enlightenment to Marxism (Stanford: Stanford University Press, 1979)."
+      },
+      {
+        "text": "Sarah J. Young, \"Russian thought lecture 9: Nikolai Fedorov and the utopia of the resurrected,\" lecture notes, UCL School of Slavonic and East European Studies, 2013.",
+        "url": "https://sarahjyoung.com/site/2013/03/05/russian-thought-lecture-9-nikolai-fedorov-and-the-utopia-of-the-resurrected/"
+      },
+      {
+        "text": "Nikolai Berdyaev, \"The Religion of Resusciative Resurrection: The Philosophy of the Common Task of N. F. Fedorov\" (1915)."
+      },
+      {
+        "text": "Sergei Bulgakov, Unfading Light (1917), chapter critiquing Fedorov's common task."
+      },
+      {
+        "text": "Michael Hagemeister, on Fedorov's project of universal salvation and Russian cosmism, Haus der Kulturen der Welt.",
+        "url": "https://archiv.hkw.de/en/programm/projekte/veranstaltung/p_135477.php"
+      },
+      {
+        "heading": "Further reading"
+      },
+      {
+        "text": "Nader Elhefnawy, \"Resurrecting Nikolai Fedorov,\" The Space Review, 2006."
+      },
+      {
+        "text": "Brian Harvey, Russian Planetary Exploration: History, Development, Legacy and Prospects (Chichester: Springer/Praxis, 2007)."
+      },
+      {
+        "text": "Frank J. Tipler, The Physics of Immortality: Modern Cosmology, God and the Resurrection of the Dead (New York: Doubleday, 1994)."
+      },
+      {
+        "text": "Anton Vidokle, interview on Russian cosmism, The Berliner.",
+        "url": "https://www.the-berliner.com/politics/interview-with-anton-vidokle/"
+      },
+      {
+        "text": "\"Nikolai Fyodorov (philosopher).\"",
+        "url": "https://en.wikipedia.org/wiki/Nikolai_Fyodorov_(philosopher)"
+      }
+    ]
   }
 ]
