@@ -6,6 +6,7 @@ Episode data lives in build/episodes.json. Transcripts go in build/episodes/. Ep
 lives once, in docs/audio/ (named ep001.mp3, ep002.mp3, ...); a new file dropped in
 build/episodes/ is moved there on the next build.
 """
+import hashlib
 import html
 import json
 import os
@@ -38,7 +39,7 @@ EP_DIR = pathlib.Path(os.environ.get("EP_DIR", ROOT / "episodes"))
 EP_JSON = pathlib.Path(os.environ.get("EPISODES_JSON", ROOT / "episodes.json"))
 OUT = pathlib.Path(os.environ.get("SITE_OUT", ROOT.parent / "docs"))
 MONTH = "October 2026"
-HERO_CROP = 1390 / 1600          # top of the cover art, above the title banner
+HERO_CROP = 1392 / 1600          # top of the cover art, above the title banner
 HERO_H = round(1200 * HERO_CROP)
 
 DESCRIPTION = ("One hundred books in ten acts, ten minutes each: how the idea of technological "
@@ -626,7 +627,8 @@ def build_html(zip_info):
     <div class="earlier">{rows}</div>
   </section>
 """
-    og = f"{SITE_URL}/og.jpg"
+    # Versioned so X, iMessage and Slack fetch a fresh preview when the cover art changes.
+    og = f"{SITE_URL}/og.jpg?v={hashlib.sha1(COVER_SRC.read_bytes()).hexdigest()[:8]}"
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -672,7 +674,7 @@ def build_html(zip_info):
         </div>
       </div>
     </div>
-    <figure class="cover"><img src="hero.jpg" width="1200" height="{HERO_H}" alt="A lone figure on a ridge faces a radiant sun above power lines, a cooling tower and a city."></figure>
+    <figure class="cover"><img src="hero.jpg" width="1200" height="{HERO_H}" alt="A lone figure on a ridge beneath a rising sun whose rays run down into a rocket on its launch pad, power lines, a data center and a cooling tower."></figure>
     <div class="hero-foot">
       <span>Created and hosted by <a href="{e(HOST_URL)}" target="_blank" rel="noopener">{e(HOST)}</a></span>
       <span class="n">{released} of 100 released</span>
@@ -735,7 +737,7 @@ def build_assets():
     art.resize((1200, round(1200 * art.size[1] / art.size[0])), Image.LANCZOS).save(
         OUT / "hero.jpg", quality=86, optimize=True, progressive=True)
     w = cover.size[0]
-    sun = cover.crop((int(w * .26), int(w * .16), int(w * .74), int(w * .64)))
+    sun = cover.crop((int(w * .25), int(w * .025), int(w * .75), int(w * .525)))
     sun.resize((180, 180), Image.LANCZOS).save(OUT / "apple-touch-icon.png", optimize=True)
     sun.resize((64, 64), Image.LANCZOS).save(OUT / "favicon.png", optimize=True)
     if PDF_SRC.exists():
