@@ -1,8 +1,8 @@
 TITLE = "A Genealogy of Technological Optimism"
 
 INTRO = [
-    "This is an intellectual genealogy of technological optimism in 100 books, ordered as an argument in ten acts. It starts with the theology the idea of progress grew out of and the psychology of the people who act on it. It then moves through how knowledge grows, how markets and institutions turn knowledge into growth, how innovation is built and financed, and the attempt to engineer away every remaining constraint.",
-    "About three quarters of the books make the case. The other quarter are the strongest arguments against it. Each critic sits next to the claims it attacks, and critiques of technology as such are held for the final act.",
+    "This is an intellectual genealogy of technological optimism in 100 books, ordered as an argument in ten acts. It begins with the theology that the idea of progress grew out of, and the psychology of the people who act on it. Then it follows how knowledge grows, how markets and institutions turn it into growth, how innovation is built and financed, and the attempt to engineer away every remaining constraint.",
+    "About three quarters of the books make the case. The other quarter are the strongest arguments against it. Each critic sits next to the claims it attacks, and critiques of technology itself are held for the final act. The last book, David Deutsch’s The Beginning of Infinity, has to try to answer the critics.",
     "Roughly 40 titles are canonical and 60 are the sources the canon was built from. Several people here have read, taught, or written about many of them, so the order is the part most worth arguing with. Years are first publication in the original language.",
 ]
 

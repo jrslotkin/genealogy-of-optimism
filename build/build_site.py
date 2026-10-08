@@ -48,14 +48,14 @@ READ_WPM = 230                   # reading speed used for "Read the episode · N
 DESCRIPTION = ("One hundred books in ten acts, ten minutes each: how the idea of technological "
                "progress was built, and the strongest arguments against it.")
 NOTE = [
-    "An intellectual genealogy of technological optimism in 100 books, ordered as an argument "
-    "in ten acts. It starts with the theology the idea of progress grew out of and the psychology "
-    "of the people who act on it. It then moves through how knowledge grows, how markets and "
-    "institutions turn knowledge into growth, how innovation is built and financed, and the "
-    "attempt to engineer away every remaining constraint.",
-    "About three quarters of the books make the case. The other quarter are the strongest "
-    "arguments against it. Each critic sits next to the claims it attacks, and critiques of "
-    "technology as such are held for the end.",
+    "An intellectual genealogy of technological optimism, told in 100 books, one ten-minute episode each, "
+    "and ordered as an argument in ten acts. It begins with the theology that the idea of progress grew out of, "
+    "and the psychology of the people who act on it. Then it follows how knowledge grows, how markets and "
+    "institutions turn it into growth, how innovation is built and financed, and the attempt to engineer away "
+    "every remaining constraint.",
+    "About three quarters of the books make the case. The other quarter are the strongest arguments against it. "
+    "Each critic sits next to the claims it attacks, and critiques of technology itself are held for the end. "
+    "The last book, David Deutsch\u2019s The Beginning of Infinity, has to try to answer the critics.",
 ]
 
 
@@ -976,7 +976,7 @@ def build_html(zip_info):
   <section class="sec note" aria-labelledby="note-h">
     <div class="sec-head"><h2 id="note-h">The series</h2><span></span><span></span></div>
     <div class="row"><div class="gut"></div><div class="body">
-      {''.join(f'<p>{e(p)}</p>' for p in NOTE)}
+      {''.join(f'<p>{e(p)}</p>'.replace('The Beginning of Infinity', '<em>The Beginning of Infinity</em>') for p in NOTE)}
     </div></div>
   </section>
 
