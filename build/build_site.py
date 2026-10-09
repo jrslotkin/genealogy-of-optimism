@@ -574,6 +574,9 @@ footer a:hover{color:var(--ink)}
 .epnav > *{display:grid;gap:8px;align-content:start;text-decoration:none;color:var(--ink)}
 .epnav > :last-child{text-align:right;grid-column:2}
 .epnav .t{font:400 21px/1.25 var(--serif);text-wrap:balance}
+.soon-follow{font:400 13px/1.4 var(--sans);color:var(--muted);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.soon-follow:hover{color:var(--ink)}
+#follow{scroll-margin-top:24px}
 .epnav a:hover .t{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--faint)}
 .epnav .soon .t{color:var(--muted)}
 
@@ -816,7 +819,8 @@ ANALYTICS_JS = r"""
     var href=el.getAttribute("href")||"";
     if(el.hasAttribute("data-app")){lastApp=el.getAttribute("data-app");
       track("follow_click",{app:lastApp,app_name:el.getAttribute("data-name"),
-        placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
+        placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os"),
+        page:document.documentElement.getAttribute("data-page")||"home"},true);return;}
     if(el.id==="copy"){track("feed_copied",{});return;}
     if(el.classList.contains("open-out")){track("open_in_browser_click",merge(ep(el),{in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"}),true);return;}
     if(el.classList.contains("start-link")){var inAct=el.closest("details.act");track("start_here_click",merge(ep(el),{page:document.documentElement.getAttribute("data-page")||"home",from:inAct?"act":"episode",act:inAct?((inAct.querySelector(".ar")||{}).textContent||"").trim():undefined}),true);return;}
@@ -1079,7 +1083,8 @@ def build_episode_page(ep):
                     f'<span class="t">{k}. {e(BOOKS[k]["title"])}</span></a>')
         if rel == "next" and k <= 100:
             return (f'<div class="soon"><span class="label">Coming next</span>'
-                    f'<span class="t">{k}. {e(BOOKS[k]["title"])}</span></div>')
+                    f'<span class="t">{k}. {e(BOOKS[k]["title"])}</span>'
+                    f'<a class="soon-follow" href="#follow">Follow to get it when it&rsquo;s out</a></div>')
         return "<span></span>"
     nav = f'<nav class="epnav" aria-label="More episodes">{nav_item(n - 1, "prev", "Previous episode")}{nav_item(n + 1, "next", "Next episode")}</nav>'
     return f"""<!doctype html>
@@ -1124,8 +1129,7 @@ def build_episode_page(ep):
       {inner}
     </div>
   </article>
-{read}
-  <section class="sec follow" aria-labelledby="follow-h">
+  <section class="sec follow" id="follow" aria-labelledby="follow-h">
     <div class="sec-head"><h2 id="follow-h">Follow the series</h2><span></span><span class="label">{len(RELEASED)} of 100 released</span></div>
     <div class="row"><div class="gut"></div><div class="body">
       <p class="follow-lede">{e(DESCRIPTION)}</p>
@@ -1138,6 +1142,7 @@ def build_episode_page(ep):
       <a class="textlink" href="{R}">All ten acts and every episode</a>
     </div></div>
   </section>
+{read}
 
   {nav}
 

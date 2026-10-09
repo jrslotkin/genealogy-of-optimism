@@ -274,6 +274,9 @@ footer a:hover{color:var(--ink)}
 .epnav > *{display:grid;gap:8px;align-content:start;text-decoration:none;color:var(--ink)}
 .epnav > :last-child{text-align:right;grid-column:2}
 .epnav .t{font:400 21px/1.25 var(--serif);text-wrap:balance}
+.soon-follow{font:400 13px/1.4 var(--sans);color:var(--muted);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.soon-follow:hover{color:var(--ink)}
+#follow{scroll-margin-top:24px}
 .epnav a:hover .t{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--faint)}
 .epnav .soon .t{color:var(--muted)}
 
@@ -686,7 +689,8 @@ footer a:hover{color:var(--ink)}
     var href=el.getAttribute("href")||"";
     if(el.hasAttribute("data-app")){lastApp=el.getAttribute("data-app");
       track("follow_click",{app:lastApp,app_name:el.getAttribute("data-name"),
-        placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
+        placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os"),
+        page:document.documentElement.getAttribute("data-page")||"home"},true);return;}
     if(el.id==="copy"){track("feed_copied",{});return;}
     if(el.classList.contains("open-out")){track("open_in_browser_click",merge(ep(el),{in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"}),true);return;}
     if(el.classList.contains("start-link")){var inAct=el.closest("details.act");track("start_here_click",merge(ep(el),{page:document.documentElement.getAttribute("data-page")||"home",from:inAct?"act":"episode",act:inAct?((inAct.querySelector(".ar")||{}).textContent||"").trim():undefined}),true);return;}
