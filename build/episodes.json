@@ -399,7 +399,7 @@
   {
     "num": 4,
     "duration": 0,
-    "summary": "Condorcet wrote the founding document of progress while hiding from the Terror, and died in custody before it was published. The episode lays out the Sketch in his terms, with its ten epochs, its three hopes for the future, and anti-colonial passages that rarely make the summaries. Malthus replies with sheep's heads and cabbages, Isaiah Berlin with value pluralism, and the demographic transition settles part of the argument in a way neither side expected. Plus what is still unknown about how Condorcet died.",
+    "summary": "Condorcet wrote the founding document of progress while hiding from the Terror, and died in custody before it was published. The episode lays out the Sketch in his terms, with its ten epochs, its three hopes for the future, and anti-colonial passages that rarely make the summaries. Malthus replies with the arithmetic of population, Isaiah Berlin with value pluralism, and the demographic transition settles part of the argument in a way neither side expected. Plus what is still unknown about how Condorcet died.",
     "pull": {
       "text": "Nature has fixed no limits to our hopes.",
       "at": "2:20"
@@ -424,40 +424,36 @@
         "The ten epochs and the three hopes"
       ],
       [
-        "2:14",
+        "2:21",
         "Bacon again: perfectibility as timetable"
       ],
       [
-        "2:41",
+        "2:46",
         "What's in the book: the anti-colonial passages"
       ],
       [
-        "3:20",
+        "3:44",
         "The tension: an empire of reason"
       ],
       [
-        "3:52",
+        "4:19",
         "Death at Bourg-la-Reine"
       ],
       [
-        "4:24",
-        "Malthus answers: sheep's heads and cabbages"
+        "4:55",
+        "Malthus answers: geometric against arithmetic"
       ],
       [
-        "5:37",
+        "6:00",
         "Berlin answers: values collide"
       ],
       [
-        "6:17",
+        "6:47",
         "Where I come down"
       ],
       [
-        "7:04",
-        "The afterlife: Comte to the longevity clinic"
-      ],
-      [
-        "8:00",
-        "Close: the locked room"
+        "7:20",
+        "The afterlife: Comte to the pitch deck"
       ]
     ],
     "key_ideas": [
@@ -466,7 +462,7 @@
       "The text is stranger than its reputation. It condemns \"our sanguinary contempt for men of a different complexion or a different creed\" and calls for equal rights between the sexes, while also sketching a European-led \"civilizing\" mission.",
       "Malthus's objection: population grows geometrically and food arithmetically, and naming no limit is not the same as proving there isn't one.",
       "Berlin's objection: values don't harmonize under reason. Liberty and equality collide, and a system that assumes otherwise keeps rediscovering the conflict.",
-      "Where the episode lands: Malthus had the better logic in 1798, and then the demographic transition, which neither man foresaw, moved the limits he was counting on."
+      "Where the episode lands: Malthus found the real weakness in the tenth epoch, but both of his curves bent. Birth rates fell as societies got richer and more educated, and food production outran his arithmetic."
     ],
     "transcript_file": "ep004-transcript.txt",
     "sources": [
