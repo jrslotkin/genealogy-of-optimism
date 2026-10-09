@@ -1047,7 +1047,7 @@ def build_html(zip_info):
 """
 
 
-OG_LAYOUT = "2"   # bump when the share-card design changes, so apps fetch the new image
+OG_LAYOUT = "3"   # bump when the share-card design changes, so apps fetch the new image
 
 
 def og_version(*parts):
@@ -1167,18 +1167,19 @@ def build_episode_ogs(eps):
             q = smart((ep.get("pull") or {}).get("text") or bk["note"])
             # Cover art carries the show's name and is what people see in their podcast app;
             # the quote is the hook; the book names the episode. Everything sized to read as a thumbnail.
-            size = 46 if len(q) <= 110 else 40 if len(q) <= 170 else 35 if len(q) <= 230 else 31
+            size = 64   # the largest that fits; stepped down in the page below
+            lines = 2 if len(q) <= 60 else 4 if len(q) <= 110 else 6 if len(q) <= 170 else 8
             dur = to_seconds(ep.get("duration") or 0)
             tmp = OUT / "_og_ep.html"
             tmp.write_text(f"""<!doctype html><meta charset="utf-8"><style>{faces()}
 html,body{{margin:0;width:1200px;height:630px;background:#fff;color:#121212}}
-.w{{box-sizing:border-box;width:1200px;height:630px;padding:80px;display:grid;grid-template-columns:minmax(0,1fr) 470px;gap:64px}}
-.t{{display:flex;flex-direction:column;justify-content:space-between;height:470px;min-width:0;overflow:hidden}}
-.ey{{font:500 19px/1 Geist;letter-spacing:.14em;text-transform:uppercase;color:#6E6E69}}
-blockquote{{margin:0;padding-left:.36em;text-indent:-.36em;font:italic 330 {size}px/1.18 Newsreader;letter-spacing:-.01em;color:#121212;text-wrap:balance}}
+.w{{box-sizing:border-box;width:1200px;height:630px;padding:80px 64px;display:grid;grid-template-columns:minmax(0,1fr) 470px;gap:56px}}
+.t{{display:flex;flex-direction:column;justify-content:space-between;gap:34px;height:470px;min-width:0;overflow:hidden}}
+.ey{{font:500 22px/1 Geist;letter-spacing:.12em;text-transform:uppercase;color:#5E5E59}}
+blockquote{{margin:0;padding-left:.36em;text-indent:-.36em;font:italic 420 {size}px/1.16 Newsreader;letter-spacing:-.012em;color:#121212;text-wrap:balance}}
 .bk{{border-top:1px solid #E4E4E1;padding-top:18px}}
-.bt{{font:400 34px/1.1 Newsreader;color:#121212;text-wrap:balance}}
-.bm{{margin-top:8px;font:400 19px/1.2 Geist;color:#6E6E69}}
+.bt{{font:400 38px/1.1 Newsreader;color:#121212;text-wrap:balance}}
+.bm{{margin-top:8px;font:400 22px/1.2 Geist;color:#5E5E59}}
 img{{width:470px;height:470px;border-radius:4px;display:block;box-shadow:0 30px 60px -30px rgba(0,0,0,.4)}}
 </style><div class="w"><div class="t"><div class="ey">Episode {n} of 100</div>
 <blockquote>&ldquo;{e(q)}&rdquo;</blockquote>
@@ -1188,10 +1189,11 @@ img{{width:470px;height:470px;border-radius:4px;display:block;box-shadow:0 30px 
             pg.goto(tmp.as_uri())
             pg.evaluate("document.fonts.ready")
             pg.wait_for_timeout(250)
-            # a long quote steps down until the column fits
-            pg.evaluate("""() => { const t = document.querySelector('.t'), q = document.querySelector('blockquote');
+            # the quote steps down from large until it fits the column in at most `lines` lines
+            pg.evaluate("""(maxLines) => { const t = document.querySelector('.t'), q = document.querySelector('blockquote');
               let s = parseFloat(getComputedStyle(q).fontSize);
-              while (t.scrollHeight > t.clientHeight + 1 && s > 24) { s -= 1; q.style.fontSize = s + 'px'; } }""")
+              const nLines = () => Math.round(q.getBoundingClientRect().height / (s * 1.16));
+              while ((t.scrollHeight > t.clientHeight + 1 || nLines() > maxLines) && s > 26) { s -= 1; q.style.fontSize = s + 'px'; } }""", lines)
             d = OUT / "ep" / str(n)
             d.mkdir(parents=True, exist_ok=True)
             pg.screenshot(path=str(d / "og.png"))
