@@ -256,5 +256,144 @@
         "url": "https://en.wikipedia.org/wiki/Nikolai_Fyodorov_(philosopher)"
       }
     ]
+  },
+  {
+    "num": 3,
+    "duration": 648,
+    "summary": "A disgraced Lord Chancellor writes the blueprint for the perfect research institution: Salomon's House, with its spies, its nine offices of scientific labor, and its oath of secrecy. The episode lays out Bacon's New Atlantis in his own terms, tests the famous claim that it fathered the Royal Society, then turns on it: thirty-six men deciding in secret what mankind may know, the domination-of-nature critique, and what four centuries of hindsight did to the program.",
+    "pull": {
+      "text": "The knowledge of causes, and secret motions of things; and the enlarging of the bounds of human empire, to the effecting of all things possible.",
+      "at": "2:03"
+    },
+    "audio_file": "ep003.mp3",
+    "audio_url": "",
+    "chapters": [
+      [
+        "0:00",
+        "Teaser: the spies of Salomon's House"
+      ],
+      [
+        "0:20",
+        "This is A Genealogy of Technological Optimism"
+      ],
+      [
+        "0:28",
+        "The man: rise and fall of Francis Bacon"
+      ],
+      [
+        "1:00",
+        "A work unfinished: Rawley's edition"
+      ],
+      [
+        "1:30",
+        "Bensalem and the Strangers' House"
+      ],
+      [
+        "2:03",
+        "Salomon's House: the end and the offices"
+      ],
+      [
+        "2:35",
+        "The nine offices"
+      ],
+      [
+        "3:15",
+        "The galleries and the thirty-three wishes"
+      ],
+      [
+        "3:41",
+        "Reception: the Royal Society claim"
+      ],
+      [
+        "4:19",
+        "The claim, qualified"
+      ],
+      [
+        "4:56",
+        "The turn: the oath of secrecy"
+      ],
+      [
+        "5:37",
+        "The turn: instrumental reason"
+      ],
+      [
+        "6:12",
+        "The turn: the language of Baconian science"
+      ],
+      [
+        "6:46",
+        "Harvey's verdict"
+      ],
+      [
+        "7:06",
+        "Hindsight: what landed"
+      ],
+      [
+        "7:36",
+        "Hindsight: what breaks"
+      ],
+      [
+        "8:13",
+        "Correction: knowledge is power"
+      ],
+      [
+        "8:40",
+        "Close: the half he didn't write"
+      ]
+    ],
+    "key_ideas": [
+      "Bacon's claim: the end of Salomon's House is \"the knowledge of causes, and secret motions of things; and the enlarging of the bounds of human empire, to the effecting of all things possible.\" Organized inquiry becomes the engine of human power, blueprinted before any such institution existed.",
+      "The machinery: thirty-six fellows in nine offices (Merchants of Light sailing under false flags, Depredators, Mystery-men, Pioneers, Compilers, Dowry-men, Lamps, Inoculators, and the Interpreters of Nature), plus the galleries of inventions and inventors and the Magnalia Naturae's thirty-three wished-for works.",
+      "The book was unfinished. Rawley headed it \"A Worke unfinished,\" and Bacon never wrote the promised frame of laws, so the Fathers of Salomon's House answer to no one.",
+      "The strongest objection is the oath of secrecy: thirty-six men decide in secret which discoveries mankind may see, telling even the state only what they choose. It is the charter for every later argument that technical elites should decide what the public may know.",
+      "Where it lands: the research university, the national laboratory, Bush's Endless Frontier, and ARPA are Baconianism as federal policy. But the secrecy logic now scales to entire fields, and Stokes's Pasteur's Quadrant puts the most fertile science back inside Salomon's House."
+    ],
+    "transcript_file": "ep003-transcript.txt",
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Francis Bacon, New Atlantis, in Sylva Sylvarum (London: William Lee, 1626/1627), headed \"A Worke unfinished\" in William Rawley's edition.",
+        "url": "https://www.gutenberg.org/ebooks/2434"
+      },
+      {
+        "heading": "Expert sources"
+      },
+      {
+        "text": "Stanford Encyclopedia of Philosophy, s.v. \"Francis Bacon,\" revised 2012.",
+        "url": "https://plato.stanford.edu/archives/fall2012/entries/francis-bacon/"
+      },
+      {
+        "text": "Perez Zagorin, Francis Bacon (Princeton, NJ: Princeton University Press, 1998)."
+      },
+      {
+        "text": "Lisa Jardine, Francis Bacon: Discovery and the Art of Discourse (Cambridge: Cambridge University Press, 1974)."
+      },
+      {
+        "text": "Brian Vickers, \"Francis Bacon, feminist historiography, and the dominion of nature,\" Journal of the History of Ideas 69, no. 1 (2008): 117-141."
+      },
+      {
+        "heading": "Further reading"
+      },
+      {
+        "text": "Thomas Sprat, The History of the Royal Society of London (London: 1667)."
+      },
+      {
+        "text": "Theodor W. Adorno and Max Horkheimer, Dialectic of Enlightenment (1944; English translation, 1972)."
+      },
+      {
+        "text": "C. S. Lewis, The Abolition of Man (London: Oxford University Press, 1943)."
+      },
+      {
+        "text": "Vannevar Bush, Science, The Endless Frontier (Washington, DC: U.S. Government Printing Office, 1945)."
+      },
+      {
+        "text": "Donald E. Stokes, Pasteur's Quadrant: Basic Science and Technological Innovation (Washington, DC: Brookings Institution Press, 1997)."
+      },
+      {
+        "text": "Evelyn Fox Keller, Reflections on Gender and Science (New Haven, CT: Yale University Press, 1985)."
+      }
+    ]
   }
 ]
