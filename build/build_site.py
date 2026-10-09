@@ -1152,7 +1152,8 @@ def build_episode_ogs(eps):
         for ep in eps:
             n, bk = ep["num"], BOOKS[ep["num"]]
             q = smart((ep.get("pull") or {}).get("text") or bk["note"])
-            size = 64 if len(q) <= 110 else 56 if len(q) <= 170 else 50 if len(q) <= 230 else 44
+            size = 80 if len(q) <= 60 else 64 if len(q) <= 110 else 56 if len(q) <= 170 else 50 if len(q) <= 230 else 44
+            balance = "text-wrap:balance;" if len(q) <= 60 else ""   # a short line breaks evenly, not with one word left over
             dur = to_seconds(ep.get("duration") or 0)
             tmp = OUT / "_og_ep.html"
             tmp.write_text(f"""<!doctype html><meta charset="utf-8"><style>{faces()}
@@ -1160,7 +1161,7 @@ html,body{{margin:0;width:1200px;height:630px;background:#fff;color:#121212}}
 .w{{box-sizing:border-box;width:1200px;height:630px;padding:54px 72px 50px;display:flex;flex-direction:column}}
 .top{{display:flex;justify-content:space-between;font:400 15px/1 Geist;letter-spacing:.16em;text-transform:uppercase;color:#6E6E69}}
 .q{{flex:1;display:flex;align-items:center}}
-blockquote{{margin:0;padding-left:.38em;font:italic 330 {size}px/1.2 Newsreader;letter-spacing:-.01em;text-indent:-.38em;color:#121212}}
+blockquote{{margin:0;padding-left:.38em;font:italic 330 {size}px/1.2 Newsreader;letter-spacing:-.01em;text-indent:-.38em;color:#121212;{balance}}}
 .bot{{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:22px;border-top:1px solid #E4E4E1;padding-top:20px}}
 .bot img{{width:64px;height:64px;border-radius:3px;display:block}}
 .t{{font:400 28px/1.15 Newsreader}}
