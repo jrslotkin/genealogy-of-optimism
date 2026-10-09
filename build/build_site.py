@@ -655,14 +655,16 @@ JS = r"""
       else{a.className="pill";a.textContent=a.getAttribute("data-name");row.appendChild(a);}});}
 
   /* If an app link does nothing, the page stays in front: offer the manual route */
-  var hint=document.getElementById("hint"),timer=null;
+  /* Browsers often ask "Open in <app>?" first, so wait a few seconds, and take the hint back if the app opens late */
+  var hint=document.getElementById("hint"),timer=null,tapAt=0;
   function cancel(){if(timer){clearTimeout(timer);timer=null;}}
   window.addEventListener("blur",cancel);
-  document.addEventListener("visibilitychange",function(){if(document.hidden)cancel();});
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)return;cancel();
+    if(hint&&!hint.hidden&&Date.now()-tapAt<15000)hint.hidden=true;});
   document.querySelectorAll("[data-app]").forEach(function(a){
     if(/^https?:/.test(a.getAttribute("href")))return;
-    a.addEventListener("click",function(){cancel();
-      timer=setTimeout(function(){if(hint&&!document.hidden&&document.hasFocus())hint.hidden=false;},2200);});});
+    a.addEventListener("click",function(){cancel();tapAt=Date.now();
+      timer=setTimeout(function(){if(hint&&!document.hidden&&document.hasFocus())hint.hidden=false;},4000);});});
 
   /* Copy the feed */
   var copy=document.getElementById("copy"),code=document.getElementById("feed-url");
@@ -842,7 +844,10 @@ ANALYTICS_JS = r"""
 
   /* An app link that opened nothing */
   var hint=document.getElementById("hint");
-  if(hint&&window.MutationObserver)new MutationObserver(function(){if(!hint.hidden)track("follow_app_not_opened",{app:lastApp});})
+  var hintShown=false;
+  if(hint&&window.MutationObserver)new MutationObserver(function(){
+    if(!hint.hidden){hintShown=true;track("follow_app_not_opened",{app:lastApp});}
+    else if(hintShown&&document.hidden){hintShown=false;track("follow_app_opened_late",{app:lastApp},true);}})
     .observe(hint,{attributes:true,attributeFilter:["hidden"]});
 
   /* Folds, earlier episodes, acts */

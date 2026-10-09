@@ -39,7 +39,8 @@ The key is public by design: it can send events, not read them.
   UTM tags, every click, heatmaps, rage and dead clicks, web vitals, JavaScript errors, and
   session replays when replay is on in the PostHog project.
 - **Custom events:**
-  - Following: `follow_click` (by app), `follow_app_not_opened`, `feed_copied`,
+  - Following: `follow_click` (by app), `follow_app_not_opened`, `follow_app_opened_late` (the app opened
+    after the browser asked first), `feed_copied`,
     `rss_link_click`, `other_apps_click`
   - Listening: `episode_play` (with trigger: play button, pull quote, chapter, transcript),
     `episode_listen` (seconds heard, share of episode heard), `episode_progress` (25/50/75/90%),
