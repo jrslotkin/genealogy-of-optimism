@@ -286,11 +286,16 @@ def act_html(roman, name, entries):
         books.append(f'<li id="book-{num}" data-n="{num}"{" class=out" if out else ""}><span class="bn">{num}</span>'
                      f'<span class="bt">{e(main_title(title))}<span class="ba">{e(author)}<span class="dot">{year}</span></span></span>'
                      f'{listen}<span class="bnote">{e(note)}</span></li>')
+    # Readers who open an act with nothing released yet get one quiet path to audio
+    soon = ""
+    if 1 in RELEASED and not any(b[0] in RELEASED for b in entries):
+        soon = ('<p class="act-soon">This act\u2019s episodes aren\u2019t out yet. '
+                '<a class="start-link" href="ep/1/">Start with Episode 1</a></p>')
     return f"""
         <details class="act">
           <summary><span class="ar">{roman}</span><span class="an">{e(name)}</span>
             <span class="ticks" aria-hidden="true">{ticks}</span><span class="rg">{a}&ndash;{z}</span></summary>
-          <ol class="books">{''.join(books)}</ol>
+          {soon}<ol class="books">{''.join(books)}</ol>
         </details>"""
 
 
@@ -464,6 +469,8 @@ details summary::-webkit-details-marker{display:none}
 .start-link{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 .start-link::after{content:" \\2192"}
 .start-link:hover{text-decoration-color:var(--ink)}
+.act-soon{margin:2px 0 14px;padding-left:106px;font:400 14px/1.5 var(--sans);color:var(--muted)}
+.act-soon .start-link{white-space:nowrap}
 .player-note{margin:12px 0 0;font:400 14px/1.5 var(--sans);color:var(--ink)}
 .player-note a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 .player-note a:hover{text-decoration-color:var(--ink)}
@@ -602,6 +609,7 @@ footer a:hover{color:var(--ink)}
   .act summary{grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"r n g" "r t t";gap:8px 12px}
   .ar{grid-area:r;align-self:start;padding-top:4px}.an{grid-area:n}.rg{grid-area:g}.ticks{grid-area:t;flex-wrap:wrap}
   .books{padding-left:0}
+  .act-soon{padding-left:46px}
   .player{grid-template-columns:auto minmax(0,1fr);gap:10px 14px;padding:12px 14px}
   .label,.sec-head h2,.kicker,.pull figcaption,.fold summary,.help summary{font-size:12px;letter-spacing:.14em}
   .ep-row > summary .body{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:baseline}
@@ -809,7 +817,7 @@ ANALYTICS_JS = r"""
         placement:el.closest("#primary")?"primary":"secondary",page_os:document.documentElement.getAttribute("data-os")},true);return;}
     if(el.id==="copy"){track("feed_copied",{});return;}
     if(el.classList.contains("open-out")){track("open_in_browser_click",merge(ep(el),{in_app_browser:document.documentElement.getAttribute("data-inapp")||"none"}),true);return;}
-    if(el.classList.contains("start-link")){track("start_here_click",merge(ep(el),{page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}
+    if(el.classList.contains("start-link")){var inAct=el.closest("details.act");track("start_here_click",merge(ep(el),{page:document.documentElement.getAttribute("data-page")||"home",from:inAct?"act":"episode",act:inAct?((inAct.querySelector(".ar")||{}).textContent||"").trim():undefined}),true);return;}
     if(el.classList.contains("note-follow")){track("player_note_follow_click",ep(el));return;}
     if(el.classList.contains("share")){track("share_click",merge(ep(el),{method:navigator.share?"share_sheet":"copy_link",
       page:document.documentElement.getAttribute("data-page")||"home"}),true);return;}
