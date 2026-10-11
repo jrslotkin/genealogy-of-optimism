@@ -510,5 +510,131 @@
         "url": "https://doi.org/10.1080/09608788.2025.2593505"
       }
     ]
+  },
+  {
+    "num": 5,
+    "duration": 0,
+    "summary": "Robert Nisbet's History of the Idea of Progress (1980) argues that the idea is twenty-five hundred years old, Western, and religious at the root, and that by 1980 it was dying. The episode follows his case from Hesiod and Augustine to the split between progress as freedom and progress as power, then tests it against Bury's narrower definition, the reviewers who found Nisbet's definition slippery, and an epilogue the next four decades did not bear out.",
+    "pull": {
+      "text": "Advance from the inferior to the superior must seem as real and certain as anything in the laws of nature.",
+      "at": "2:20"
+    },
+    "audio_file": "ep005.mp3",
+    "audio_url": "",
+    "chapters": [
+      [
+        "0:00",
+        "Teaser: a crisis of confidence"
+      ],
+      [
+        "0:26",
+        "This is A Genealogy of Technological Optimism"
+      ],
+      [
+        "0:35",
+        "Robert Nisbet, from Maricopa to Columbia"
+      ],
+      [
+        "1:24",
+        "Aimed at Bury"
+      ],
+      [
+        "2:07",
+        "The definition, and the creed"
+      ],
+      [
+        "2:28",
+        "The evidence marches in order"
+      ],
+      [
+        "3:22",
+        "Progress as freedom, progress as power"
+      ],
+      [
+        "4:04",
+        "Progress at Bay: the five premises and the epilogue"
+      ],
+      [
+        "4:57",
+        "The early reviews"
+      ],
+      [
+        "5:40",
+        "The definition wobbles"
+      ],
+      [
+        "6:22",
+        "The method: a paperchase of great names"
+      ],
+      [
+        "6:58",
+        "The book contradicts itself"
+      ],
+      [
+        "7:25",
+        "Read today"
+      ],
+      [
+        "7:42",
+        "Bury, Nisbet, and the next question"
+      ]
+    ],
+    "key_ideas": [
+      "Nisbet's claim: progress is one continuous Western tradition, twenty-five hundred years long and religious at the root, much older than J. B. Bury's 1920 account allows.",
+      "The structure: five chapters of genesis, from the classical world through the early Christians to the Great Renewal, then the triumph split into progress as freedom (Turgot to Spencer) and progress as power (Rousseau to Marx).",
+      "The surprises: Malthus counts as a believer, the Renaissance is an eclipse, and Teilhard de Chardin gets four pages in The Persistence of Progress as the twentieth century's philosopher of history.",
+      "The objections: the definition never settles, the elements listed at the start don't match the five premises at the end, and the roll call of great names never shows what ordinary people believed.",
+      "Where the episode lands: Bury is right about the date, and Nisbet is right that the theory runs on older parts. Whether those parts still need their Christian maker is the next book's question."
+    ],
+    "transcript_file": "ep005-transcript.txt",
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Robert Nisbet, History of the Idea of Progress (New York: Basic Books, 1980)."
+      },
+      {
+        "heading": "Expert sources"
+      },
+      {
+        "text": "J. B. Bury, The Idea of Progress: An Inquiry into Its Origin and Growth (London: Macmillan, 1920).",
+        "url": "https://www.gutenberg.org/ebooks/4557"
+      },
+      {
+        "text": "Frank E. Manuel, Shapes of Philosophical History (Stanford, CA: Stanford University Press, 1965)."
+      },
+      {
+        "text": "Theodor E. Mommsen, \"St. Augustine and the Christian Idea of Progress,\" Journal of the History of Ideas 12, no. 3 (1951): 346-374."
+      },
+      {
+        "text": "Ludwig Edelstein, The Idea of Progress in Classical Antiquity (Baltimore: Johns Hopkins Press, 1967)."
+      },
+      {
+        "heading": "Reviews"
+      },
+      {
+        "text": "J. M. Cameron, \"Sounding Off,\" New York Review of Books, April 17, 1980."
+      },
+      {
+        "text": "Robert C. Solomon, review of History of the Idea of Progress, Chicago Review 32, no. 2 (1980): 120-123."
+      },
+      {
+        "text": "Robert V. Andelson, \"Progress or Providence,\" Modern Age 25, no. 1 (Winter 1981): 80-83. Quotes Russell Kirk, The Conservative Mind (1953)."
+      },
+      {
+        "text": "William Marina, \"Faith in Progress,\" Reason, June 1981.",
+        "url": "https://reason.com/1981/06/01/faith-in-progress/"
+      },
+      {
+        "text": "Gorman Beauchamp, \"The Politics of Progress,\" Michigan Quarterly Review 21, no. 4 (1982): 658-673."
+      },
+      {
+        "heading": "Further reading"
+      },
+      {
+        "text": "Steven Pinker, Enlightenment Now: The Case for Reason, Science, Humanism, and Progress (New York: Viking, 2018)."
+      }
+    ]
   }
 ]
