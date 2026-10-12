@@ -636,5 +636,135 @@
         "text": "Steven Pinker, Enlightenment Now: The Case for Reason, Science, Humanism, and Progress (New York: Viking, 2018)."
       }
     ]
+  },
+  {
+    "num": 6,
+    "duration": 549,
+    "summary": "Karl Löwith's Meaning in History (1949) argues that every modern philosophy of history is Christian eschatology with the theology taken out: Christian by derivation, non-Christian by consequence. The episode follows the book backward from Burckhardt to the Bible, through Joachim of Fiore's three ages and Condorcet's tenth epoch, then takes up the objections: Helmut Kuhn's charge that the book is itself a philosophy of history, and Hans Blumenberg's 1966 answer, which gets the next episode.",
+    "pull": {
+      "text": "The modern mind has not made up its mind whether it should be Christian or pagan.",
+      "at": "4:11"
+    },
+    "audio_file": "ep006.mp3",
+    "audio_url": "",
+    "chapters": [
+      [
+        "0:00",
+        "Teaser: the exile's question"
+      ],
+      [
+        "0:31",
+        "This is A Genealogy of Technological Optimism"
+      ],
+      [
+        "0:42",
+        "Nisbet's handoff: does progress need its maker?"
+      ],
+      [
+        "1:34",
+        "The three-way contrast: circle, line, hybrid"
+      ],
+      [
+        "2:30",
+        "Walking backward through time"
+      ],
+      [
+        "3:25",
+        "Joachim of Fiore and the tenth epoch"
+      ],
+      [
+        "4:06",
+        "The line everyone quotes"
+      ],
+      [
+        "4:33",
+        "First readers: Kuhn's objection"
+      ],
+      [
+        "5:35",
+        "The Conclusion refuses the cure"
+      ],
+      [
+        "6:07",
+        "Blumenberg's answer"
+      ],
+      [
+        "6:51",
+        "Löwith narrows the claim"
+      ],
+      [
+        "7:20",
+        "The shape is still there"
+      ],
+      [
+        "8:00",
+        "Heidelberg, and the book's afterlife"
+      ]
+    ],
+    "key_ideas": [
+      "Löwith's claim: every modern philosophy of history is secularized Christian eschatology, Christian by derivation and non-Christian by consequence.",
+      "The three-way contrast: the Greek circle, the biblical line from creation to consummation, and the modern hybrid of endless forward motion with no terminus.",
+      "Joachim of Fiore's three ages and Condorcet's tenth epoch are the book's two main examples of the pattern at work.",
+      "Kuhn's objection: the genealogy is itself a philosophy of history, marching toward the undoing of the modern view.",
+      "Blumenberg's objection: what looks like stolen theology is new thought reoccupying problems the old theology left behind.",
+      "Where the episode lands: the narrowed 1968 claim stands, and Kuhn's charge stands with it."
+    ],
+    "transcript_file": "ep006-transcript.txt",
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Karl Löwith, Meaning in History: The Theological Implications of the Philosophy of History (Chicago: University of Chicago Press, 1949).",
+        "url": "https://books.google.com/books?id=FcwN-pF8dGQC"
+      },
+      {
+        "heading": "Expert sources"
+      },
+      {
+        "text": "Daniel Herskowitz, \"Karl Löwith's Secularization Thesis and the Jewish Reception of Heidegger,\" Religions 12, no. 6 (2021): 411.",
+        "url": "https://www.mdpi.com/2077-1444/12/6/411"
+      },
+      {
+        "text": "Helmut Kuhn, review of Meaning in History, The Journal of Philosophy 46, no. 25 (December 1949): 825."
+      },
+      {
+        "text": "Carl Schmitt, \"Three Possibilities for a Christian Conception of History,\" translated by Mario Wenning, Telos 147 (Summer 2009): 167-170. Originally \"Drei Stufen historischer Sinngebung,\" Universitas 5 (1950): 927-931."
+      },
+      {
+        "text": "Karl Löwith, review of Hans Blumenberg, Die Legitimität der Neuzeit, Philosophische Rundschau 15 (1968): 195-201."
+      },
+      {
+        "text": "Willem Styfhals and Stéphane Symons, eds., Genealogies of the Secular: The Making of Modern German Thought (Albany: SUNY Press, 2019)."
+      },
+      {
+        "text": "Sjoerd Griffioen, Contesting Modernity in the German Secularization Debate: Karl Löwith, Hans Blumenberg and Carl Schmitt in Polemical Contexts (Leiden: Brill, 2022)."
+      },
+      {
+        "text": "Matthias Bormuth, \"Meaning in History: A Comparison Between the Works of Karl Löwith and Erich Auerbach,\" Religions 3, no. 2 (2012): 151-162.",
+        "url": "https://www.mdpi.com/2077-1444/3/2/151"
+      },
+      {
+        "heading": "Further reading"
+      },
+      {
+        "text": "Hans Blumenberg, The Legitimacy of the Modern Age, translated by Robert M. Wallace (Cambridge, MA: MIT Press, 1983). Originally Die Legitimität der Neuzeit (1966)."
+      },
+      {
+        "text": "Hans Blumenberg, \"'Säkularisation': Kritik einer Kategorie historischer Illegitimität,\" in Die Philosophie und die Frage nach dem Fortschritt, edited by Helmut Kuhn and Franz Wiedmann (Munich: Pustet, 1964), 240-265. The 1962 Münster congress paper."
+      },
+      {
+        "text": "Jayne Svenungsson, \"A Secular Utopia: Remarks on the Löwith-Blumenberg Debate,\" in Jewish Thought, Utopia and Revolution, edited by Elena Namli, Jayne Svenungsson, and Alana Vincent (Amsterdam: Rodopi, 2014), 69-84."
+      },
+      {
+        "text": "Jeffrey A. Barash, \"The Sense of History: On the Political Implications of Karl Löwith's Concept of Secularization,\" History and Theory 37, no. 1 (1998): 69-82."
+      },
+      {
+        "text": "Richard Wolin, \"Karl Löwith: The Stoic Response to Modern Nihilism,\" in Heidegger's Children (Princeton: Princeton University Press, 2001), 70-100."
+      },
+      {
+        "text": "Jürgen Habermas, \"Karl Löwith: Stoic Retreat from Historical Consciousness,\" in Philosophical-Political Profiles (Cambridge, MA: MIT Press, 1983), 79-98."
+      }
+    ]
   }
 ]
