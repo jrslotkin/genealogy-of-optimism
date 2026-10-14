@@ -889,5 +889,114 @@
         "text": "Hannes Bajohr et al., eds., History, Metaphors, Fables: A Hans Blumenberg Reader (Ithaca, NY: Cornell University Press, 2020)."
       }
     ]
+  },
+  {
+    "num": 8,
+    "duration": 591,
+    "summary": "Max Weber's The Protestant Ethic and the Spirit of Capitalism, published as two essays in 1904 and 1905, asks why methodical profit seeking came to feel like a duty. Weber traces the ethic from Benjamin Franklin back through Luther's idea of the calling to Calvinist predestination and Richard Baxter's discipline of time. The episode then follows the replies the book drew: Felix Rachfahl in Weber's lifetime, R. H. Tawney and Kurt Samuelsson after his death, and the later tests by Davide Cantoni and by Sascha Becker and Ludger Woessmann, and lands on the mechanism that survives the evidence against the strong thesis.",
+    "pull": {
+      "text": "A doctrine nobody designed for economic life reorganized how ordinary people spent their hours, and the reorganization outlived the doctrine by centuries.",
+      "at": "8:19"
+    },
+    "audio_file": "ep008.mp3",
+    "audio_url": "",
+    "chapters": [
+      [
+        "0:00",
+        "Teaser: the mowers who worked less"
+      ],
+      [
+        "0:23",
+        "This is A Genealogy of Technological Optimism"
+      ],
+      [
+        "0:32",
+        "A breakdown, and a return to work"
+      ],
+      [
+        "1:42",
+        "The Baden tables and Franklin's ethic"
+      ],
+      [
+        "2:49",
+        "Beruf, the calling in German"
+      ],
+      [
+        "3:30",
+        "Predestination and the discipline of time"
+      ],
+      [
+        "4:40",
+        "Accumulation nobody intended"
+      ],
+      [
+        "6:06",
+        "Rachfahl, Tawney, and Samuelsson reply"
+      ],
+      [
+        "7:20",
+        "The literacy underneath the gap"
+      ],
+      [
+        "8:08",
+        "What survives the strong thesis"
+      ]
+    ],
+    "key_ideas": [
+      "Weber's claim: the ascetic Protestant churches, above all Calvinism, gave methodical work in a calling a religious weight, and that weight helped form the spirit of capitalism.",
+      "The calling: Luther's Bible translation gave the German word Beruf its worldly sense, and Calvinist predestination turned a well ordered working life into evidence a believer could read.",
+      "Inner-worldly asceticism: the discipline of the monastery moved into the workshop, wasting time became a sin, and Richard Baxter's Christian Directory states the ethic Weber builds on.",
+      "Unintended accumulation: believers who earned methodically and refused luxury put earnings back into the enterprise, and capital grew as a byproduct of anxiety about salvation.",
+      "The shell as hard as steel: Weber's stahlhartes Gehäuse reached English readers as Talcott Parsons's iron cage, and the ethic kept running after the theology drained out of it.",
+      "The replies and the tests: Tawney moved capitalist enterprise back before Calvin, Samuelsson found the preachers colder on profit than the thesis needs, and Becker and Woessmann traced Weber's income gap to Protestant literacy."
+    ],
+    "transcript_file": "ep008-transcript.txt",
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Max Weber, \"Die protestantische Ethik und der Geist des Kapitalismus,\" Archiv für Sozialwissenschaft und Sozialpolitik 20 (1904) and 21 (1905); revised edition in Gesammelte Aufsätze zur Religionssoziologie I (Tübingen: Mohr Siebeck, 1920); English translation by Talcott Parsons, The Protestant Ethic and the Spirit of Capitalism (London: George Allen and Unwin, 1930)."
+      },
+      {
+        "heading": "Expert sources"
+      },
+      {
+        "text": "Peter Baehr, \"The 'Iron Cage' and the 'Shell as Hard as Steel': Parsons, Weber, and the Stahlhartes Gehäuse Metaphor in The Protestant Ethic and the Spirit of Capitalism,\" History and Theory 40, no. 2 (2001): 153-169."
+      },
+      {
+        "text": "Lawrence A. Scaff, Max Weber in America (Princeton, NJ: Princeton University Press, 2011)."
+      },
+      {
+        "text": "Felix Rachfahl, \"Kalvinismus und Kapitalismus,\" Internationale Wochenschrift für Wissenschaft, Kunst und Technik (1909), with Weber's replies to Rachfahl and to H. Karl Fischer, in The Protestant Ethic Debate: Weber's Replies to His Critics, 1907-1910, edited by David J. Chalcraft and Austin Harrington (Liverpool: Liverpool University Press, 2001).",
+        "url": "https://www.jstor.org/stable/j.ctt5vjc0p"
+      },
+      {
+        "text": "R. H. Tawney, Religion and the Rise of Capitalism (London: John Murray, 1926)."
+      },
+      {
+        "text": "Kurt Samuelsson, Religion and Economic Development (London: Heinemann, 1961). First published in Swedish, 1957."
+      },
+      {
+        "heading": "Further reading"
+      },
+      {
+        "text": "Sascha O. Becker and Ludger Woessmann, \"Was Weber Wrong? A Human Capital Theory of Protestant Economic History,\" Quarterly Journal of Economics 124, no. 2 (2009): 531-596.",
+        "url": "https://doi.org/10.1162/qjec.2009.124.2.531"
+      },
+      {
+        "text": "Davide Cantoni, \"The Economic Effects of the Protestant Reformation: Testing the Weber Hypothesis in the German Lands,\" Journal of the European Economic Association 13, no. 4 (2015): 561-598.",
+        "url": "https://www.econstor.eu/bitstream/10419/104397/1/lmu-mdp_2013-04.pdf"
+      },
+      {
+        "text": "Werner Sombart, Der moderne Kapitalismus (Leipzig: Duncker und Humblot, 1902)."
+      },
+      {
+        "text": "Richard Baxter, A Christian Directory (London, 1673)."
+      },
+      {
+        "text": "Benjamin Franklin, \"Advice to a Young Tradesman\" (1748)."
+      }
+    ]
   }
 ]
