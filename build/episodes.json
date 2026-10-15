@@ -998,5 +998,136 @@
         "text": "Benjamin Franklin, \"Advice to a Young Tradesman\" (1748)."
       }
     ]
+  },
+  {
+    "num": 9,
+    "duration": 569,
+    "summary": "Michael Novak's The Spirit of Democratic Capitalism, published in 1982, argues that a free society rests on three systems working together. A democratic polity limits political power, a market economy lets people build and fail and build again, and a pluralistic moral culture supplies habits like trust and self-restraint that the other two systems cannot produce alone. Novak wrote the book as a Catholic who had started out as a democratic socialist, and the episode follows his argument, the reviewers who pushed back, and the tests that history supplied afterward.",
+    "pull": {
+      "text": "Novak doesn't trust the state with the economy, he doesn't trust the market with the culture, and he doesn't trust the church with either of them.",
+      "at": "8:08"
+    },
+    "audio_file": "ep009.mp3",
+    "audio_url": "",
+    "chapters": [
+      [
+        "0:00",
+        "Teaser: nineteen men in the road at Lattimer"
+      ],
+      [
+        "0:26",
+        "This is A Genealogy of Technological Optimism"
+      ],
+      [
+        "0:36",
+        "The socialist who wrote about Lattimer"
+      ],
+      [
+        "1:41",
+        "Three systems working as one"
+      ],
+      [
+        "2:53",
+        "An empty shrine at the center"
+      ],
+      [
+        "3:53",
+        "Where wealth comes from"
+      ],
+      [
+        "4:56",
+        "Twilight while the Soviet Union stood"
+      ],
+      [
+        "5:39",
+        "A limited theology, and a hard test"
+      ],
+      [
+        "6:16",
+        "The Wall, China, and the crash"
+      ],
+      [
+        "7:25",
+        "Agreement with a pope, unproven influence"
+      ],
+      [
+        "7:51",
+        "Three-way distrust"
+      ]
+    ],
+    "key_ideas": [
+      "Democratic capitalism in Novak's definition joins a democratic polity, an economy based on markets and incentives, and a pluralistic moral and cultural system, and he argues that each system needs the other two.",
+      "Novak places an empty shrine at the center of a pluralist order, and he treats original sin as a design constraint, so the system divides power and expects failure.",
+      "The Catholic social teaching Novak inherited was strong on distributing goods and nearly silent on creating them, and he argues that a theology has to explain where wealth comes from.",
+      "Novak's sharpest chapters answer socialism as it existed and the liberation theology of Gustavo Gutiérrez, and he argues that Latin America's poverty owed more to inherited institutions there than to exploitation by the United States.",
+      "Irving Kristol praised the book in strong terms, Kirkus charged Novak with ignoring the realities of democratic socialism, and K. E. Grubbs warned in Reason that Novak wanted commerce tamed by an independent moral culture.",
+      "Novak argues in his introduction that capitalism's natural logic leads toward democracy, and China tests that claim, because market growth there has run for more than four decades under a one-party state."
+    ],
+    "transcript_file": "ep009-transcript.txt",
+    "sources": [
+      {
+        "heading": "The book"
+      },
+      {
+        "text": "Michael Novak, The Spirit of Democratic Capitalism (New York: Simon and Schuster, 1982)."
+      },
+      {
+        "heading": "Expert sources"
+      },
+      {
+        "text": "Kirkus Reviews, review of The Spirit of Democratic Capitalism by Michael Novak (1982).",
+        "url": "https://www.kirkusreviews.com/book-reviews/a/michael-novak-10/the-spirit-of-democratic-capitalism/"
+      },
+      {
+        "text": "K. E. Grubbs Jr., \"A Christian Defense of Capitalism,\" Reason, December 1, 1982.",
+        "url": "https://reason.com/1982/12/01/a-christian-defense-of-capital/"
+      },
+      {
+        "text": "Samuel McCracken, \"A Theology of Capitalism,\" review of The Spirit of Democratic Capitalism by Michael Novak, Commentary (1982).",
+        "url": "https://www.commentary.org/articles/samuel-mccracken/the-spirit-of-democratic-capitalism-by-michael-novak/"
+      },
+      {
+        "text": "Ben Cooper, \"The Spirit of Democratic Capitalism by Michael Novak,\" Centre for Enterprise, Markets and Ethics.",
+        "url": "https://theceme.org/ben-cooper-spirit-democratic-capitalism-michael-novak/"
+      },
+      {
+        "text": "Flavio Felice, \"The Spirit of Democratic Capitalism: Thirty Years Later,\" American Enterprise Institute.",
+        "url": "https://www.aei.org/commentary/the-spirit-of-democratic-capitalism-thirty-years-later/"
+      },
+      {
+        "text": "Brian C. Anderson, \"The Soul of Democratic Capitalism,\" City Journal, February 17, 2017.",
+        "url": "https://static-cj.manhattan.institute/article/the-soul-of-democratic-capitalism"
+      },
+      {
+        "text": "Policraticus, \"Assertions and Nuance: Michael Novak and Pope John Paul II,\" Vox Nova (Patheos), February 29, 2008.",
+        "url": "https://www.patheos.com/blogs/voxnova/2008/02/29/assertions-and-nuance-michael-novak-and-pope-john-paul-ii/"
+      },
+      {
+        "text": "American Enterprise Institute, \"AEI Mourns the Loss of Michael Novak,\" February 17, 2017.",
+        "url": "https://www.aei.org/society-and-culture/aei-mourns-the-loss-of-michael-novak/comment-page-1/"
+      },
+      {
+        "text": "Zinn Education Project, \"Sept. 10, 1897: Lattimer Massacre,\" drawing on the Pennsylvania Historical and Museum Commission.",
+        "url": "https://www.zinnedproject.org/news/tdih/lattimer-massacre/"
+      },
+      {
+        "heading": "Further reading"
+      },
+      {
+        "text": "Michael Novak, The Guns of Lattimer (New York: Basic Books, 1978)."
+      },
+      {
+        "text": "Gustavo Gutiérrez, A Theology of Liberation (Maryknoll, NY: Orbis Books, 1973). First published in Spanish, 1971."
+      },
+      {
+        "text": "John Paul II, Centesimus Annus (Vatican City, 1991)."
+      },
+      {
+        "text": "Michael Novak, The Catholic Ethic and the Spirit of Capitalism (New York: Free Press, 1993)."
+      },
+      {
+        "text": "Robert Nisbet, History of the Idea of Progress (New York: Basic Books, 1980)."
+      }
+    ]
   }
 ]
